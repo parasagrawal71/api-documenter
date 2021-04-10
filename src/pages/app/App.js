@@ -1,9 +1,13 @@
 import React from "react";
 import "./App.css";
-// import Endpoint from ';
+import EndpointComponent from "components/endpoint/Endpoint";
 
 function App() {
-  return <main>Hi</main>;
+  return (
+    <main>
+      <EndpointComponent />
+    </main>
+  );
 }
 
 export default App;
