@@ -1,3 +1,97 @@
-.main-container {
+@import '../../utils/commonStyles/flex.scss';
+@import '../../utils/commonStyles/styles.scss';
 
+.main-container {
+    padding: 20px;
+    font-size: 0.9em;
+    margin-left: 25%; // TODO: REMOVE LATER
+
+    &>* { // All immediate children irrespective of element
+        margin-bottom: 10px;
+    }
+
+    &>*:last-child { // Last immediate child irrespective of element
+        margin-bottom: 0;
+    }
+
+    .title {
+        border-bottom: 2px solid lightgrey;
+        padding-bottom: 5px;
+        font-size: 1.3em;
+    }
+
+    .method-path {        
+        .method {
+            text-transform: uppercase;
+            margin-right: 10px;
+            font-weight: bold;
+            color: darkolivegreen;
+        }
+
+        .path {
+
+        }
+    }
+
+    .description {
+        font-size: 0.9em;
+        color: #585858;
+        margin-bottom: 40px;
+    }
+
+    .parameters {
+        margin-bottom: 20px;
+
+        .parameters__title {
+            padding-bottom: 10px;
+        }
+    }
+
+    .request-headers {
+        margin-bottom: 20px;
+        
+        .request-headers__title {   
+            padding-bottom: 10px;
+        }
+    }
+
+    .request-response-bodies {
+        @include flex-row-sb;
+
+        .request-body {
+            flex: 1;
+            margin-right: 60px;
+            @include flex-col;
+            
+            .request-body__title{
+                padding-bottom: 10px;    
+            }
+    
+            .request-body__json {
+                flex: 1;
+                background: #2B2F3E;
+                color: white;
+                padding: 5px 10px;
+                border-radius: 3px;
+            }
+        }
+    
+        .response-body {
+            flex: 1;
+            @include flex-col;
+
+            .response-body__title{
+                padding-bottom: 10px;    
+            }
+    
+            .response-body__json {
+                flex: 1;
+                background: #2B2F3E;
+                color: white;
+                padding: 5px 10px;
+                border-radius: 3px;
+            }
+        }
+
+    }
 }

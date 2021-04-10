@@ -1,0 +1,62 @@
+{
+  "method": "put",
+  "path": "/user/${userID}",
+  "title": "Edit a user",
+  "description": "This endpoint will edit a user record",
+  "parameters": [
+    {
+      "name": "email",
+      "type": "string",
+      "style": "query",
+      "required": true,
+      "description": "Email ID of user",
+      "value": "example@gmail.com"
+    },
+    {
+      "name": "email",
+      "type": "string",
+      "style": "query",
+      "required": true,
+      "description": "Email ID of user",
+      "value": "example@gmail.com"
+    }
+  ],
+  "requestHeaders": [
+    {
+      "name": "Authorization",
+      "value": "<TOKEN_VALUE>",
+      "required": true
+    }
+  ],
+  "requestBody": {
+    "username": "parasagrawal",
+    "email": "parasagrawal@gmail.com"
+  },
+  "responseBody": {
+    "status": "SUCCESS",
+    "message": "User updated successfully",
+    "data": {
+      "username": "parasagrawal",
+      "email": "parasagrawal@gmail.com"
+    }
+  },
+  "examples": [
+    {
+      "requestBody": {
+        "username": "parasagrawal",
+        "email": "parasagrawal@gmail.com"
+      },
+      "response": {
+        "statusCode": 200,
+        "body": {
+          "status": "SUCCESS",
+          "message": "User updated successfully",
+          "data": {
+            "username": "parasagrawal",
+            "email": "parasagrawal@gmail.com"
+          }
+        }
+      }
+    }
+  ]
+}
