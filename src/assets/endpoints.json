@@ -1,7 +1,7 @@
 [
   {
-    "method": "put",
-    "path": "/user/{userID}",
+    "method": "get",
+    "path": "https://jsonplaceholder.typicode.com/posts",
     "title": "Edit a user",
     "description": "This endpoint will edit a user record",
     "parameters": [
@@ -34,9 +34,11 @@
       "email": "parasagrawal@gmail.com"
     },
     "responseBody": {
-      "status": "SUCCESS",
-      "message": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris",
+      "statusCode": 200,
       "data": {
+        "message1": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris",
+        "message2": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris",
+        "message3": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris",
         "username": "parasagrawal",
         "email": "parasagrawal@gmail.com"
       }

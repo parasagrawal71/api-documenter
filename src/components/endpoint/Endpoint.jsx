@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from "react";
+import React, { useReducer, useState, useEffect, useRef } from "react";
 import { Button } from "@material-ui/core";
 import { ArrowRight as ArrowRightIcon } from "@material-ui/icons";
 import axios from "axios";
@@ -18,11 +18,16 @@ const Endpoint = (props) => {
   // const {} = props;
 
   /* ########################### HOOKS HERE ########################### */
+  const jsonTextareaRef = useRef(null);
+
   const [addMode, setAddMode] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [openExamples, setOpenExamples] = useState({});
   const [openPopup, setOpenPopup] = useState(false);
   const [popupContent, setPopupContent] = useState(false);
+  const [requestBody, setRequestBody] = useState("");
+  const [apiResponse, setApiResponse] = useState("");
+
   const endpointReducers = (state, action) => {
     let updateArr = [];
 
@@ -73,6 +78,10 @@ const Endpoint = (props) => {
     endpointReducers,
     props?.endpoint
   );
+
+  useEffect(() => {
+    enableTabIndentationInTextArea();
+  }, []);
 
   /* ########################### VARIABLES HERE ########################### */
   const allFields = {
@@ -166,16 +175,66 @@ const Endpoint = (props) => {
   };
 
   const sendApiCall = () => {
+    const headersToSend = {};
+    endpoint?.requestHeaders?.map((header) => {
+      headersToSend[header?.name] = header?.value;
+      return header;
+    });
+
+    const paramsToSend = {};
+    endpoint?.parameters?.map((param) => {
+      paramsToSend[param?.name] = param?.value;
+      return param;
+    });
+
     axios
       .request({
         method: endpoint?.method,
         url: endpoint?.path,
+        data: requestBody,
+        params: paramsToSend,
+        headers: {
+          ...headersToSend,
+          "Content-Type": "application/json",
+        },
       })
-      .then((apiResponse) => {
-        console.log("apiResponse", apiResponse);
+      .then((response) => {
+        console.log("response", response);
+        const apiResponseTemp = {
+          statusCode: response?.status,
+          data: response?.data,
+        };
+        setApiResponse(apiResponseTemp);
       })
       .catch((apiError) => {
         console.log("apiError", apiError);
+      });
+  };
+
+  const enableTabIndentationInTextArea = () => {
+    document
+      .getElementById("json-textarea")
+      .addEventListener("keydown", (e) => {
+        if (e.key === "Tab") {
+          e.preventDefault();
+
+          // Get the cursor position
+          const { selectionStart, selectionEnd } = e.target;
+
+          // update the state
+          const currentValue = e.target.value;
+          setRequestBody(
+            `${currentValue.substring(
+              0,
+              selectionStart
+            )}${"\t"}${currentValue.substring(selectionEnd)}`
+          );
+
+          // update the cursor position after the state is updated
+          // eslint-disable-next-line
+          jsonTextareaRef.current.selectionStart = jsonTextareaRef.current.selectionEnd =
+            selectionStart + 1;
+        }
       });
   };
 
@@ -244,16 +303,39 @@ const Endpoint = (props) => {
       <section className={appStyles["request-response-bodies"]}>
         <section className={appStyles["request-body"]}>
           <div className={appStyles["request-body__title"]}>Request Body</div>
-          <div className={appStyles["request-body__json"]}>
-            <pre>{prettyPrintJson(endpoint?.requestBody)}</pre>
-          </div>
+          <textarea
+            ref={jsonTextareaRef}
+            id="json-textarea"
+            className={appStyles["request-body__json"]}
+            rows="10"
+            value={requestBody}
+            onChange={(e) => {
+              setRequestBody(e?.target?.value);
+            }}
+          />
         </section>
 
         <section className={appStyles["response-body"]}>
-          <div className={appStyles["response-body__title"]}>Response Body</div>
-          <div className={appStyles["response-body__json"]}>
-            <pre>{prettyPrintJson(endpoint?.responseBody)}</pre>
+          <div className={appStyles["response-body__title"]}>
+            <span>Response Body</span>
+            <span>{apiResponse?.statusCode}</span>
           </div>
+          <div className={appStyles["response-body__json"]}>
+            <pre>{prettyPrintJson(apiResponse?.data)}</pre>
+          </div>
+          <Button
+            variant="outlined"
+            className={appStyles["response-view-more-btn"]}
+            onClick={() => {
+              setOpenPopup(true);
+              setPopupContent({
+                title: `Response Body  ${apiResponse?.statusCode}`,
+                json: apiResponse?.data,
+              });
+            }}
+          >
+            View More
+          </Button>
         </section>
       </section>
       {/* ************************************************************************************************* */}
@@ -343,14 +425,12 @@ const Endpoint = (props) => {
       {/* ************************************************************************************************* */}
 
       {/* ************************************** POPUP starts here **************************************** */}
-      <PopupComponent openPopup={openPopup} setOpenPopup={setOpenPopup}>
-        <section className={appStyles["view-more-popup"]}>
-          <div>{popupContent?.title}</div>
-          <div className={appStyles["view-more__json-cnt"]}>
-            <pre>{prettyPrintJson(popupContent?.json)}</pre>
-          </div>
-        </section>
-      </PopupComponent>
+      <PopupComponent
+        openPopup={openPopup}
+        setOpenPopup={setOpenPopup}
+        title={popupContent?.title}
+        content={popupContent?.json}
+      />
       {/* ************************************************************************************************* */}
     </section>
   );

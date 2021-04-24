@@ -1,17 +1,32 @@
+@import "../../utils/commonStyles/flex.scss";
+
 .main-cnt {
-    .dialog-cnt {
-        padding: 20px;
-        height: fit-content !important;
-        width: 100% !important;
-        overflow-x: overlay;
+  .dialog-cnt {
+    padding: 20px;
+    height: fit-content !important;
+    width: 100% !important;
+    overflow: overlay;
 
-        &::-webkit-scrollbar {
-            height: 10px;
-        }
-
-        &::-webkit-scrollbar-thumb {
-            background-color: rgba(0, 0, 0, 0.2);
-            border-radius: 5px;
-        }
+    &::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
     }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(0, 0, 0, 0.2);
+      border-radius: 5px;
+    }
+  }
+
+  .view-more-popup {
+    .view-more__json-cnt {
+      pre {
+        white-space: pre-wrap;
+        white-space: -moz-pre-wrap;
+        white-space: -pre-wrap;
+        white-space: -o-pre-wrap;
+        word-wrap: break-word;
+      }
+    }
+  }
 }

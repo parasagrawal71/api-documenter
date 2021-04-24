@@ -1,12 +1,15 @@
 import React from "react";
 import { Dialog } from "@material-ui/core";
 
+// IMPORT USER-DEFINED COMPONENTS HERE
+import { prettyPrintJson } from "utils/functions";
+
 // IMPORT ASSETS HERE
 import appStyles from "./Popup.module.scss";
 
 const Popup = (props) => {
   // PROPS HERE
-  const { openPopup, setOpenPopup, children } = props;
+  const { openPopup, setOpenPopup, title, content } = props;
 
   return (
     <Dialog
@@ -19,7 +22,12 @@ const Popup = (props) => {
         setOpenPopup(false);
       }}
     >
-      {children}
+      <section className={appStyles["view-more-popup"]}>
+        <div>{title}</div>
+        <div className={appStyles["view-more__json-cnt"]}>
+          <pre>{prettyPrintJson(content)}</pre>
+        </div>
+      </section>
     </Dialog>
   );
 };
