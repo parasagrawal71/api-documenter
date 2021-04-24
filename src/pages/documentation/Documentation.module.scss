@@ -2,4 +2,16 @@
 
 .main-container {
     flex: 1;
+
+    .content-cnt {
+        display: flex;
+
+        .table-of-contents {
+            flex: 1;
+        }
+
+        .endpoints-cnt {
+            flex: 4;
+        }
+    }
 }

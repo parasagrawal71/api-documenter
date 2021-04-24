@@ -1,0 +1,8 @@
+{
+    "user": "folder",
+    "auth": "folder",
+    "orders": {
+        "pastOrders": "folder",
+        "currentOrders": "folder"
+    }
+}

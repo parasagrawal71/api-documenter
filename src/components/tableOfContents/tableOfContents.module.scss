@@ -1,0 +1,22 @@
+.main-container {
+    font-size: 12px;
+    padding-top: 20px;
+
+    .main-header {
+        font-size: 14px;
+        padding-left: 10px;
+    }
+
+    .api-folders {
+    }
+
+    .api-folder {
+        display: flex;
+        align-items: center;
+        margin: 5px 0;
+
+        .api-folder-name {
+            padding-left: 10px;
+        }
+    }
+}
