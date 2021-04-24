@@ -6,7 +6,11 @@ import moment from "moment";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
 import { ThemeTextField } from "utils/commonStyles/styledComponents";
-import { capitalizeFirstLetter, prettyPrintJson } from "utils/functions";
+import {
+  capitalizeFirstLetter,
+  getStatusText,
+  prettyPrintJson,
+} from "utils/functions";
 import AppTableComponent from "components/appTable/AppTable";
 import PopupComponent from "components/popup/Popup";
 
@@ -70,6 +74,18 @@ const Endpoint = (props) => {
         updateArr = [];
         return { ...state, requestHeaders: updatedReqHeaders };
 
+      case "examples":
+        updateArr = action?.payload;
+        const updatedExamples = state?.examples?.map((example, index) => {
+          if (index === updateArr?.[1]) {
+            example[updateArr?.[0]] = updateArr?.[2];
+            return example;
+          }
+          return example;
+        });
+        updateArr = [];
+        return { ...state, examples: updatedExamples };
+
       default:
         throw new Error("Unknown type");
     }
@@ -84,24 +100,6 @@ const Endpoint = (props) => {
   }, []);
 
   /* ########################### VARIABLES HERE ########################### */
-  const allFields = {
-    title: {
-      value: endpoint?.title,
-      width: "100%",
-    },
-    method: {
-      value: endpoint?.method,
-      width: "100px",
-    },
-    path: {
-      value: endpoint?.path,
-      width: "calc(100% - 110px)",
-    },
-    description: {
-      value: endpoint?.description,
-    },
-  };
-
   const parameterTableHeaders = [
     {
       displayName: "Name",
@@ -145,24 +143,38 @@ const Endpoint = (props) => {
   ];
 
   /* ########################### FUNCTIONS HERE ########################### */
-  const TextFieldBoxOrValue = (fieldName, isMultiline) => {
+  const TextFieldBoxOrValue = (
+    fieldName,
+    fieldValue,
+    isMultiline,
+    arrayIndex
+  ) => {
     return addMode || editMode ? (
       <ThemeTextField
         variant="outlined"
-        width={allFields?.[fieldName]?.width}
-        value={editMode ? allFields?.[fieldName]?.value : ""}
+        width={
+          fieldName === "method"
+            ? "100px"
+            : fieldName === "path"
+            ? "calc(100% - 110px)"
+            : "100%"
+        }
+        value={editMode ? fieldValue : ""}
         placeholder={capitalizeFirstLetter(fieldName)}
         multiline={isMultiline === "multiline"}
         onChange={(e) => {
           dispatchEndpoint({
             type: fieldName,
-            payload: e?.target?.value,
+            payload:
+              fieldName === "examples"
+                ? ["title", arrayIndex, e?.target?.value]
+                : e?.target?.value,
           });
         }}
         rows={2}
       />
     ) : (
-      allFields?.[fieldName]?.value
+      fieldValue
     );
   };
 
@@ -243,7 +255,7 @@ const Endpoint = (props) => {
       <section className={appStyles["main-header"]}>
         <div className={appStyles["main-header--left"]}>
           <span className={appStyles.title}>
-            {TextFieldBoxOrValue("title")}
+            {TextFieldBoxOrValue("title", endpoint?.title)}
           </span>
           <span className={appStyles.updatedAt}>
             Updated At:{" "}
@@ -263,12 +275,14 @@ const Endpoint = (props) => {
       </section>
       <div className={appStyles["method-path"]}>
         <span className={appStyles.method}>
-          {TextFieldBoxOrValue("method")}
+          {TextFieldBoxOrValue("method", endpoint?.method)}
         </span>
-        <span className={appStyles.path}>{TextFieldBoxOrValue("path")}</span>
+        <span className={appStyles.path}>
+          {TextFieldBoxOrValue("path", endpoint?.path)}
+        </span>
       </div>
       <div className={appStyles.description}>
-        {TextFieldBoxOrValue("description", "multiline")}
+        {TextFieldBoxOrValue("description", endpoint?.description, "multiline")}
       </div>
 
       {/* ************************************* PARAMETERS starts here ************************************ */}
@@ -307,29 +321,44 @@ const Endpoint = (props) => {
             ref={jsonTextareaRef}
             id="json-textarea"
             className={appStyles["request-body__json"]}
-            rows="10"
+            rows="15"
             value={requestBody}
             onChange={(e) => {
               setRequestBody(e?.target?.value);
             }}
+            disabled={addMode || editMode}
           />
         </section>
 
         <section className={appStyles["response-body"]}>
           <div className={appStyles["response-body__title"]}>
             <span>Response Body</span>
-            <span>{apiResponse?.statusCode}</span>
+            <span
+              className={
+                String(apiResponse?.statusCode)?.startsWith("2")
+                  ? appStyles.green
+                  : appStyles.red
+              }
+            >
+              {apiResponse
+                ? `${apiResponse?.statusCode} ${getStatusText(
+                    apiResponse?.statusCode
+                  )}`
+                : null}
+            </span>
           </div>
           <div className={appStyles["response-body__json"]}>
             <pre>{prettyPrintJson(apiResponse?.data)}</pre>
           </div>
           <Button
             variant="outlined"
+            disabled={apiResponse === ""}
             className={appStyles["response-view-more-btn"]}
             onClick={() => {
               setOpenPopup(true);
               setPopupContent({
-                title: `Response Body  ${apiResponse?.statusCode}`,
+                title: "Response Body",
+                statusCode: apiResponse?.statusCode,
                 json: apiResponse?.data,
               });
             }}
@@ -351,7 +380,6 @@ const Endpoint = (props) => {
                 tabIndex="0"
                 onKeyDown={() => {}}
                 onClick={() => {
-                  console.log(!openExamples?.[exampleIndex]);
                   setOpenExamples({
                     ...openExamples,
                     [exampleIndex]: !openExamples?.[exampleIndex],
@@ -362,7 +390,14 @@ const Endpoint = (props) => {
                   <ArrowRightIcon style={{ padding: 0 }} />
                 </span>
                 <span>Example {exampleIndex + 1}:&nbsp;&nbsp;</span>
-                <span>{example?.title}</span>
+                <span className={appStyles.flex1}>
+                  {TextFieldBoxOrValue(
+                    "examples",
+                    example?.title,
+                    "",
+                    exampleIndex
+                  )}
+                </span>
               </section>
 
               {openExamples?.[exampleIndex] && (
@@ -395,10 +430,23 @@ const Endpoint = (props) => {
 
                   <section className={appStyles["example-response-body"]}>
                     <div className={appStyles["example-response-body__title"]}>
-                      Response Body
+                      <span>Response Body</span>
+                      <span
+                        className={
+                          String(example?.response?.statusCode)?.startsWith("2")
+                            ? appStyles.green
+                            : appStyles.red
+                        }
+                      >
+                        {example?.response
+                          ? `${example?.response?.statusCode} ${getStatusText(
+                              example?.response?.statusCode
+                            )}`
+                          : null}
+                      </span>
                     </div>
                     <div className={appStyles["example-response-body__json"]}>
-                      <pre>{prettyPrintJson(endpoint?.responseBody)}</pre>
+                      <pre>{prettyPrintJson(example?.response?.data)}</pre>
                     </div>
                     <Button
                       variant="outlined"
@@ -409,7 +457,8 @@ const Endpoint = (props) => {
                           title: `Example ${exampleIndex + 1}: ${
                             example?.title
                           }`,
-                          json: endpoint?.responseBody,
+                          statusCode: example?.response?.statusCode,
+                          json: example?.response?.data,
                         });
                       }}
                     >
@@ -430,6 +479,7 @@ const Endpoint = (props) => {
         setOpenPopup={setOpenPopup}
         title={popupContent?.title}
         content={popupContent?.json}
+        statusCode={popupContent?.statusCode}
       />
       {/* ************************************************************************************************* */}
     </section>

@@ -44,6 +44,7 @@ const AppTable = (props) => {
     return headerKey === "value" || addMode || editMode ? (
       <ThemeTextField
         variant="outlined"
+        disabled={headerKey === "value" && (editMode || addMode)}
         value={headerKey === "value" || editMode ? fieldValue : ""}
         multiline={isMultiline === "multiline"}
         onChange={(e) => {

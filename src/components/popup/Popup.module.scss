@@ -19,7 +19,20 @@
   }
 
   .view-more-popup {
-    .view-more__json-cnt {
+    .view-more-popup__title {
+      display: flex;
+      justify-content: space-between;
+
+      .green {
+        color: green;
+      }
+
+      .red {
+        color: red;
+      }
+    }
+
+    .view-more-popup__json-cnt {
       pre {
         white-space: pre-wrap;
         white-space: -moz-pre-wrap;
