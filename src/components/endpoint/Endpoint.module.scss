@@ -1,5 +1,5 @@
 @import '../../utils/commonStyles/flex.scss';
-@import '../../utils/commonStyles/styles.scss';
+@import '../../utils/commonStyles/index.scss';
 
 .main-container {
     padding: 20px;
@@ -34,7 +34,6 @@
     }
 
     .description {
-        font-size: 0.9em;
         color: #585858;
         margin-bottom: 40px;
     }
@@ -49,7 +48,7 @@
 
     .request-headers {
         margin-bottom: 20px;
-        
+
         .request-headers__title {   
             padding-bottom: 10px;
         }
@@ -93,5 +92,12 @@
             }
         }
 
+        pre {
+            white-space: pre-wrap;
+            white-space: -moz-pre-wrap;
+            white-space: -pre-wrap;
+            white-space: -o-pre-wrap;
+            word-wrap: break-word;
+        }
     }
 }

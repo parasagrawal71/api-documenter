@@ -1,6 +1,6 @@
 {
   "method": "put",
-  "path": "/user/${userID}",
+  "path": "/user/{userID}",
   "title": "Edit a user",
   "description": "This endpoint will edit a user record",
   "parameters": [
@@ -34,7 +34,7 @@
   },
   "responseBody": {
     "status": "SUCCESS",
-    "message": "User updated successfully",
+    "message": "User data updated successfully User data updated successfully User data updated successfully User data updated successfully User data updated successfully",
     "data": {
       "username": "parasagrawal",
       "email": "parasagrawal@gmail.com"
@@ -50,7 +50,7 @@
         "statusCode": 200,
         "body": {
           "status": "SUCCESS",
-          "message": "User updated successfully",
+          "message": "User data updated successfully",
           "data": {
             "username": "parasagrawal",
             "email": "parasagrawal@gmail.com"

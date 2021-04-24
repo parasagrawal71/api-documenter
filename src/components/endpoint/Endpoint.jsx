@@ -11,13 +11,15 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
+import { ThemeTextField } from "utils/commonStyles/styledComponents";
+import { capitalizeFirstLetter, prettyPrintJson } from "utils/functions";
 
 // IMPORT ASSETS HERE
 import appStyles from "./Endpoint.module.scss";
 
 const Endpoint = (props) => {
   // PROPS HERE
-  const { endpoint } = props;
+  const { endpoint, addMode, editMode } = props;
   const {
     method,
     path,
@@ -36,22 +38,56 @@ const Endpoint = (props) => {
   });
   const classes = useStyles();
 
-  const prettyPrintJson = (jsonData) => (
-    <pre>{JSON.stringify(jsonData, null, 2)}</pre>
-  );
+  const allFields = {
+    title: {
+      value: title,
+      width: "100%",
+    },
+    method: {
+      value: method,
+      width: "100px",
+    },
+    path: {
+      value: path,
+      width: "calc(100% - 110px)",
+    },
+    description: {
+      value: description,
+    },
+  };
+
+  const TextFieldBoxOrValue = (fieldName, isMultiline) => {
+    return addMode ? (
+      <ThemeTextField
+        variant="outlined"
+        width={allFields?.[fieldName]?.width}
+        placeholder={capitalizeFirstLetter(fieldName)}
+        multiline={isMultiline === "multiline"}
+        rows={2}
+      />
+    ) : (
+      allFields?.[fieldName]?.value
+    );
+  };
 
   return (
     <section className={appStyles["main-container"]}>
-      <div className={appStyles.title}>{title}</div>
+      <div className={appStyles.title}>{TextFieldBoxOrValue("title")}</div>
       <div className={appStyles["method-path"]}>
         {method && path && (
           <>
-            <span className={appStyles.method}>{method}</span>
-            <span className={appStyles.path}>{path}</span>
+            <span className={appStyles.method}>
+              {TextFieldBoxOrValue("method")}
+            </span>
+            <span className={appStyles.path}>
+              {TextFieldBoxOrValue("path")}
+            </span>
           </>
         )}
       </div>
-      <div className={appStyles.description}>{description}</div>
+      <div className={appStyles.description}>
+        {TextFieldBoxOrValue("description", "multiline")}
+      </div>
 
       {/* PARAMETERS */}
       <section className={appStyles.parameters}>
@@ -118,14 +154,14 @@ const Endpoint = (props) => {
         <section className={appStyles["request-body"]}>
           <div className={appStyles["request-body__title"]}>Request Body</div>
           <div className={appStyles["request-body__json"]}>
-            {prettyPrintJson(requestBody)}
+            <pre>{prettyPrintJson(requestBody)}</pre>
           </div>
         </section>
 
         <section className={appStyles["response-body"]}>
           <div className={appStyles["response-body__title"]}>Response Body</div>
           <div className={appStyles["response-body__json"]}>
-            {prettyPrintJson(responseBody)}
+            <pre>{prettyPrintJson(responseBody)}</pre>
           </div>
         </section>
       </section>
