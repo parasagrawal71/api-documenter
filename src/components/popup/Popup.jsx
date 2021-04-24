@@ -1,17 +1,10 @@
-import React, { useState } from "react";
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from "@material-ui/core";
+import React from "react";
+import { Dialog } from "@material-ui/core";
 
 // IMPORT ASSETS HERE
 import appStyles from "./Popup.module.scss";
 
-export default function AlertDialog(props) {
+const Popup = (props) => {
   // PROPS HERE
   const { openPopup, setOpenPopup, children } = props;
 
@@ -29,4 +22,6 @@ export default function AlertDialog(props) {
       {children}
     </Dialog>
   );
-}
+};
+
+export default Popup;
