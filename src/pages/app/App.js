@@ -1,21 +1,17 @@
 import React from "react";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
-import EndpointComponent from "components/endpoint/Endpoint";
-import HeaderComponent from "components/header/Header";
+import DocumentationPage from "pages/documentation/Documentation";
 
 // IMPORT ASSETS HERE
 import "./App.css";
 
-import endpoint from "./endpoint.json"; // TODO: REMOVE LATER
-
-function App() {
+const App = () => {
   return (
     <main className="App">
-      <HeaderComponent />
-      <EndpointComponent endpoint={endpoint} />
+      <DocumentationPage />
     </main>
   );
-}
+};
 
 export default App;
