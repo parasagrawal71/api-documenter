@@ -25,6 +25,10 @@
     "jsx-a11y/anchor-is-valid": "off",
     "arrow-body-style": "off",
     "no-unused-vars": "warn",
-    "no-nested-ternary": "warn"
+    "no-nested-ternary": "warn",
+    "react/no-array-index-key": "off",
+    "react/destructuring-assignment": "off",
+    "no-case-declarations": "off",
+    "no-param-reassign": "off"
   }
 }

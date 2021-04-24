@@ -1,68 +1,149 @@
-import React from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import React, { useReducer, useState } from "react";
+import { Button } from "@material-ui/core";
+import axios from "axios";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
 import { ThemeTextField } from "utils/commonStyles/styledComponents";
 import { capitalizeFirstLetter, prettyPrintJson } from "utils/functions";
+import AppTable from "components/appTable/AppTable";
 
 // IMPORT ASSETS HERE
 import appStyles from "./Endpoint.module.scss";
 
 const Endpoint = (props) => {
-  // PROPS HERE
-  const { endpoint, addMode, editMode } = props;
-  const {
-    method,
-    path,
-    title,
-    description,
-    parameters,
-    requestHeaders,
-    requestBody,
-    responseBody,
-  } = endpoint || {};
+  /* ########################### PROPS HERE ########################### */
+  // const {} = props;
 
-  const useStyles = makeStyles({
-    table: {
-      minWidth: 650,
-    },
-  });
-  const classes = useStyles();
+  /* ########################### HOOKS HERE ########################### */
+  const endpointReducers = (state, action) => {
+    let updateArr = [];
 
+    switch (action?.type) {
+      case "method":
+        return { ...state, method: action?.payload };
+
+      case "path":
+        return { ...state, path: action?.payload };
+
+      case "title":
+        return { ...state, title: action?.payload };
+
+      case "description":
+        return { ...state, description: action?.payload };
+
+      case "parameters":
+        updateArr = action?.payload;
+        const updatedParameters = state?.parameters?.map((param, index) => {
+          if (index === updateArr?.[1]) {
+            param[updateArr?.[0]] = updateArr?.[2];
+            return param;
+          }
+          return param;
+        });
+        updateArr = [];
+        return { ...state, parameters: updatedParameters };
+
+      case "requestHeaders":
+        updateArr = action?.payload;
+        const updatedReqHeaders = state?.requestHeaders?.map(
+          (reqHeader, index) => {
+            if (index === updateArr?.[1]) {
+              reqHeader[updateArr?.[0]] = updateArr?.[2];
+              return reqHeader;
+            }
+            return reqHeader;
+          }
+        );
+        updateArr = [];
+        return { ...state, requestHeaders: updatedReqHeaders };
+
+      default:
+        throw new Error("Unknown type");
+    }
+  };
+  const [endpoint, dispatchEndpoint] = useReducer(
+    endpointReducers,
+    props?.endpoint
+  );
+  const [addMode, setAddMode] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+
+  /* ########################### VARIABLES HERE ########################### */
   const allFields = {
     title: {
-      value: title,
+      value: endpoint?.title,
       width: "100%",
     },
     method: {
-      value: method,
+      value: endpoint?.method,
       width: "100px",
     },
     path: {
-      value: path,
+      value: endpoint?.path,
       width: "calc(100% - 110px)",
     },
     description: {
-      value: description,
+      value: endpoint?.description,
     },
   };
 
+  const parameterTableHeaders = [
+    {
+      displayName: "Name",
+      key: "name",
+    },
+    {
+      displayName: "Type",
+      key: "type",
+    },
+    {
+      displayName: "Style",
+      key: "style",
+    },
+    {
+      displayName: "Required",
+      key: "required",
+    },
+    {
+      displayName: "Value",
+      key: "value",
+    },
+    {
+      displayName: "Description",
+      key: "description",
+    },
+  ];
+
+  const reqHeadTableHeaders = [
+    {
+      displayName: "Name",
+      key: "name",
+    },
+    {
+      displayName: "Required",
+      key: "required",
+    },
+    {
+      displayName: "Value",
+      key: "value",
+    },
+  ];
+
+  /* ########################### FUNCTIONS HERE ########################### */
   const TextFieldBoxOrValue = (fieldName, isMultiline) => {
-    return addMode ? (
+    return addMode || editMode ? (
       <ThemeTextField
         variant="outlined"
         width={allFields?.[fieldName]?.width}
+        value={editMode ? allFields?.[fieldName]?.value : ""}
         placeholder={capitalizeFirstLetter(fieldName)}
         multiline={isMultiline === "multiline"}
+        onChange={(e) => {
+          dispatchEndpoint({
+            type: fieldName,
+            payload: e?.target?.value,
+          });
+        }}
         rows={2}
       />
     ) : (
@@ -70,101 +151,98 @@ const Endpoint = (props) => {
     );
   };
 
+  const handleEditSaveBtn = () => {
+    if (!editMode) {
+      setEditMode(true);
+    } else {
+      setEditMode(false);
+    }
+  };
+
+  const sendApiCall = () => {
+    axios
+      .request({
+        method: endpoint?.method,
+        url: endpoint?.path,
+      })
+      .then((apiResponse) => {
+        console.log("apiResponse", apiResponse);
+      })
+      .catch((apiError) => {
+        console.log("apiError", apiError);
+      });
+  };
+
   return (
     <section className={appStyles["main-container"]}>
-      <div className={appStyles.title}>{TextFieldBoxOrValue("title")}</div>
+      <section className={appStyles["main-header"]}>
+        <div className={appStyles.title}>{TextFieldBoxOrValue("title")}</div>
+        <div className={appStyles["action-btns"]}>
+          <Button variant="outlined" onClick={handleEditSaveBtn}>
+            {!editMode ? "Edit" : "Save"}
+          </Button>
+          {!editMode && (
+            <Button variant="outlined" onClick={sendApiCall}>
+              Send
+            </Button>
+          )}
+        </div>
+      </section>
       <div className={appStyles["method-path"]}>
-        {method && path && (
-          <>
-            <span className={appStyles.method}>
-              {TextFieldBoxOrValue("method")}
-            </span>
-            <span className={appStyles.path}>
-              {TextFieldBoxOrValue("path")}
-            </span>
-          </>
-        )}
+        <span className={appStyles.method}>
+          {TextFieldBoxOrValue("method")}
+        </span>
+        <span className={appStyles.path}>{TextFieldBoxOrValue("path")}</span>
       </div>
       <div className={appStyles.description}>
         {TextFieldBoxOrValue("description", "multiline")}
       </div>
 
-      {/* PARAMETERS */}
+      {/* ************************************* PARAMETERS starts here ************************************ */}
       <section className={appStyles.parameters}>
         <div className={appStyles.parameters__title}>Parameters</div>
-        <TableContainer component={Paper}>
-          <Table className={classes.table} aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell>Type</TableCell>
-                <TableCell>Style</TableCell>
-                <TableCell>Required</TableCell>
-                <TableCell>Value</TableCell>
-                <TableCell>Description</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {parameters?.map((param) => (
-                <TableRow key={param.name}>
-                  <TableCell component="th" scope="row">
-                    {param.name}
-                  </TableCell>
-                  <TableCell>{param.type}</TableCell>
-                  <TableCell>{param.style}</TableCell>
-                  <TableCell>{param.required}</TableCell>
-                  <TableCell>{param.value}</TableCell>
-                  <TableCell>{param.description}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        <AppTable
+          tableHeaders={parameterTableHeaders}
+          tableRows={endpoint?.parameters}
+          arrayKey="parameters"
+          dispatchEndpoint={dispatchEndpoint}
+          editMode={editMode}
+          addMode={addMode}
+        />
       </section>
+      {/* ************************************************************************************************* */}
 
-      {/* REQUEST HEADERS */}
+      {/* ********************************** REQUEST HEADERS starts here ********************************** */}
       <section className={appStyles["request-headers"]}>
         <div className={appStyles["request-headers__title"]}>Headers</div>
-        <TableContainer component={Paper}>
-          <Table className={classes.table} aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell>Required</TableCell>
-                <TableCell>Value</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {requestHeaders?.map((reqHeader) => (
-                <TableRow key={reqHeader.name}>
-                  <TableCell component="th" scope="row">
-                    {reqHeader.name}
-                  </TableCell>
-                  <TableCell>{reqHeader.required}</TableCell>
-                  <TableCell>{reqHeader.value}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        <AppTable
+          tableHeaders={reqHeadTableHeaders}
+          tableRows={endpoint?.requestHeaders}
+          arrayKey="requestHeaders"
+          dispatchEndpoint={dispatchEndpoint}
+          editMode={editMode}
+          addMode={addMode}
+        />
       </section>
+      {/* ************************************************************************************************* */}
 
-      {/* REQUEST BODY */}
+      {/* ************************************ REQUEST BODY starts here *********************************** */}
       <section className={appStyles["request-response-bodies"]}>
         <section className={appStyles["request-body"]}>
           <div className={appStyles["request-body__title"]}>Request Body</div>
           <div className={appStyles["request-body__json"]}>
-            <pre>{prettyPrintJson(requestBody)}</pre>
+            <pre>{prettyPrintJson(endpoint?.requestBody)}</pre>
           </div>
         </section>
 
         <section className={appStyles["response-body"]}>
           <div className={appStyles["response-body__title"]}>Response Body</div>
           <div className={appStyles["response-body__json"]}>
-            <pre>{prettyPrintJson(responseBody)}</pre>
+            <pre>{prettyPrintJson(endpoint?.responseBody)}</pre>
           </div>
         </section>
       </section>
+      {/* ************************************************************************************************ */}
     </section>
   );
 };

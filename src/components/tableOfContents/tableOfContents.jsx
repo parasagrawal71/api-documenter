@@ -26,7 +26,7 @@ const tableOfContents = () => {
       <section className={appStyles["api-folder"]}>
         <ArrowRightIcon />
         <FolderOutlinedIcon />
-        <span className={appStyles["api-folder-name"]}>Readme</span>
+        <span className={appStyles["api-folder-name"]}>README</span>
       </section>
       <section className={appStyles["api-folders"]}>
         {sortedApiKeys?.map((api) => {

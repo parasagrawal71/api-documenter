@@ -13,10 +13,22 @@
         margin-bottom: 0;
     }
 
-    .title {
+    .main-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         border-bottom: 2px solid lightgrey;
         padding-bottom: 5px;
-        font-size: 1.3em;
+
+        .title {
+            font-size: 1.3em;
+        }
+
+        .action-btns{
+            &>*:not(:last-child) {
+                margin-right: 20px;
+            }
+        }
     }
 
     .method-path {        
