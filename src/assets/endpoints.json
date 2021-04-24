@@ -35,7 +35,7 @@
     },
     "responseBody": {
       "status": "SUCCESS",
-      "message": "User data updated successfully User data updated successfully User data updated successfully User data updated successfully User data updated successfully",
+      "message": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris",
       "data": {
         "username": "parasagrawal",
         "email": "parasagrawal@gmail.com"
@@ -43,6 +43,7 @@
     },
     "examples": [
       {
+        "title": "Edit a user Success",
         "requestBody": {
           "username": "parasagrawal",
           "email": "parasagrawal@gmail.com"
@@ -59,6 +60,7 @@
           }
         }
       }
-    ]
+    ],
+    "updatedAt": 1619262777309
   }
 ]

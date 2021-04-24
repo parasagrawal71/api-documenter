@@ -1,6 +1,8 @@
 import React, { useReducer, useState } from "react";
 import { Button } from "@material-ui/core";
+import { ArrowRight as ArrowRightIcon } from "@material-ui/icons";
 import axios from "axios";
+import moment from "moment";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
 import { ThemeTextField } from "utils/commonStyles/styledComponents";
@@ -67,6 +69,7 @@ const Endpoint = (props) => {
   );
   const [addMode, setAddMode] = useState(false);
   const [editMode, setEditMode] = useState(false);
+  const [openExamples, setOpenExamples] = useState({});
 
   /* ########################### VARIABLES HERE ########################### */
   const allFields = {
@@ -105,12 +108,12 @@ const Endpoint = (props) => {
       key: "required",
     },
     {
-      displayName: "Value",
-      key: "value",
-    },
-    {
       displayName: "Description",
       key: "description",
+    },
+    {
+      displayName: "Value",
+      key: "value",
     },
   ];
 
@@ -176,7 +179,15 @@ const Endpoint = (props) => {
   return (
     <section className={appStyles["main-container"]}>
       <section className={appStyles["main-header"]}>
-        <div className={appStyles.title}>{TextFieldBoxOrValue("title")}</div>
+        <div className={appStyles["main-header--left"]}>
+          <span className={appStyles.title}>
+            {TextFieldBoxOrValue("title")}
+          </span>
+          <span className={appStyles.updatedAt}>
+            Updated At:{" "}
+            {moment(endpoint?.updatedAt).format("DD-MM-YYYY hh:mm A")}
+          </span>
+        </div>
         <div className={appStyles["action-btns"]}>
           <Button variant="outlined" onClick={handleEditSaveBtn}>
             {!editMode ? "Edit" : "Save"}
@@ -226,7 +237,7 @@ const Endpoint = (props) => {
       </section>
       {/* ************************************************************************************************* */}
 
-      {/* ************************************ REQUEST BODY starts here *********************************** */}
+      {/* *************************** REQUEST and RESPONSE BODY starts here ******************************* */}
       <section className={appStyles["request-response-bodies"]}>
         <section className={appStyles["request-body"]}>
           <div className={appStyles["request-body__title"]}>Request Body</div>
@@ -242,7 +253,61 @@ const Endpoint = (props) => {
           </div>
         </section>
       </section>
-      {/* ************************************************************************************************ */}
+      {/* ************************************************************************************************* */}
+
+      {/* ************************************** EXAMPLES starts here ************************************* */}
+      <section className={appStyles["examples-cnt"]}>
+        {endpoint?.examples?.map((example, exampleIndex) => {
+          return (
+            <section key={exampleIndex} className={appStyles["example-cnt"]}>
+              <section
+                className={appStyles["example-row"]}
+                role="button"
+                tabIndex="0"
+                onKeyDown={() => {}}
+                onClick={() => {
+                  console.log(!openExamples?.[exampleIndex]);
+                  setOpenExamples({
+                    ...openExamples,
+                    [exampleIndex]: !openExamples?.[exampleIndex],
+                  });
+                }}
+              >
+                <span>
+                  <ArrowRightIcon style={{ padding: 0 }} />
+                </span>
+                <span>Example {exampleIndex + 1}:&nbsp;&nbsp;</span>
+                <span>{example?.title}</span>
+              </section>
+
+              {openExamples?.[exampleIndex] && (
+                <section
+                  className={appStyles["example-request-response-bodies"]}
+                >
+                  <section className={appStyles["example-request-body"]}>
+                    <div className={appStyles["example-request-body__title"]}>
+                      Request Body
+                    </div>
+                    <div className={appStyles["example-request-body__json"]}>
+                      <pre>{prettyPrintJson(endpoint?.requestBody)}</pre>
+                    </div>
+                  </section>
+
+                  <section className={appStyles["example-response-body"]}>
+                    <div className={appStyles["example-response-body__title"]}>
+                      Response Body
+                    </div>
+                    <div className={appStyles["example-response-body__json"]}>
+                      <pre>{prettyPrintJson(endpoint?.responseBody)}</pre>
+                    </div>
+                  </section>
+                </section>
+              )}
+            </section>
+          );
+        })}
+      </section>
+      {/* ************************************************************************************************* */}
     </section>
   );
 };

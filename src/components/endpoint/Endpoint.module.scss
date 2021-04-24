@@ -20,10 +20,19 @@
         border-bottom: 2px solid lightgrey;
         padding-bottom: 5px;
 
-        .title {
-            font-size: 1.3em;
+        .main-header--left {
+            display: flex;
+            align-items: center;
+            
+            .title {
+                font-size: 1.3em;
+            }   
+            .updatedAt {
+                padding-left: 15px;
+                font-size: 12px;
+                color: darkgrey;
+            }
         }
-
         .action-btns{
             &>*:not(:last-child) {
                 margin-right: 20px;
@@ -67,6 +76,7 @@
 
     .request-response-bodies {
         @include flex-row-sb;
+        margin-bottom: 20px;
 
         .request-body {
             flex: 1;
@@ -109,6 +119,75 @@
             white-space: -pre-wrap;
             white-space: -o-pre-wrap;
             word-wrap: break-word;
+        }
+    }
+
+    .examples-cnt {
+        .example-cnt {
+            &:hover {
+                cursor: pointer;
+            }
+
+            .example-row {
+                border: 1px solid lightgrey;
+                padding: 10px;
+                border-radius: 5px;
+                display: flex;
+                align-items: center;
+
+                span {
+                    display: flex;
+                    align-items: center;
+                }
+            }
+
+            .example-request-response-bodies {
+                @include flex-row-sb;
+                margin: 20px;
+        
+                .example-request-body {
+                    flex: 1;
+                    margin-right: 60px;
+                    @include flex-col;
+                    
+                    .example-request-body__title{
+                        padding-bottom: 10px;    
+                    }
+            
+                    .example-request-body__json {
+                        flex: 1;
+                        background: #2B2F3E;
+                        color: white;
+                        padding: 5px 10px;
+                        border-radius: 3px;
+                    }
+                }
+            
+                .example-response-body {
+                    flex: 1;
+                    @include flex-col;
+        
+                    .example-response-body__title{
+                        padding-bottom: 10px;    
+                    }
+            
+                    .example-response-body__json {
+                        flex: 1;
+                        background: #2B2F3E;
+                        color: white;
+                        padding: 5px 10px;
+                        border-radius: 3px;
+                    }
+                }
+        
+                pre {
+                    white-space: pre-wrap;
+                    white-space: -moz-pre-wrap;
+                    white-space: -pre-wrap;
+                    white-space: -o-pre-wrap;
+                    word-wrap: break-word;
+                }
+            }
         }
     }
 }

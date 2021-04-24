@@ -41,10 +41,10 @@ const AppTable = (props) => {
     fieldValue,
     isMultiline
   ) => {
-    return addMode || editMode ? (
+    return headerKey === "value" || addMode || editMode ? (
       <ThemeTextField
         variant="outlined"
-        value={editMode ? fieldValue : ""}
+        value={headerKey === "value" || editMode ? fieldValue : ""}
         multiline={isMultiline === "multiline"}
         onChange={(e) => {
           dispatchEndpoint({
