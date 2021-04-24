@@ -149,6 +149,7 @@
                     flex: 1;
                     margin-right: 60px;
                     @include flex-col;
+                    position: relative;
                     
                     .example-request-body__title{
                         padding-bottom: 10px;    
@@ -166,6 +167,7 @@
                 .example-response-body {
                     flex: 1;
                     @include flex-col;
+                    position: relative;
         
                     .example-response-body__title{
                         padding-bottom: 10px;    
@@ -178,6 +180,15 @@
                         padding: 5px 10px;
                         border-radius: 3px;
                     }
+                }
+
+                .view-more-btn {
+                    font-size: 10px;
+                    position: absolute;
+                    bottom: 5px;
+                    left: calc(50% - 55px);
+                    color: white;
+                    border-color: white;
                 }
         
                 pre {

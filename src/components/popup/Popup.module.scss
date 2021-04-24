@@ -1,0 +1,17 @@
+.main-cnt {
+    .dialog-cnt {
+        padding: 20px;
+        height: fit-content !important;
+        width: 100% !important;
+        overflow-x: overlay;
+
+        &::-webkit-scrollbar {
+            height: 10px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+        }
+    }
+}

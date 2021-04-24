@@ -7,7 +7,8 @@ import moment from "moment";
 // IMPORT USER-DEFINED COMPONENTS HERE
 import { ThemeTextField } from "utils/commonStyles/styledComponents";
 import { capitalizeFirstLetter, prettyPrintJson } from "utils/functions";
-import AppTable from "components/appTable/AppTable";
+import AppTableComponent from "components/appTable/AppTable";
+import PopupComponent from "components/popup/Popup";
 
 // IMPORT ASSETS HERE
 import appStyles from "./Endpoint.module.scss";
@@ -17,6 +18,11 @@ const Endpoint = (props) => {
   // const {} = props;
 
   /* ########################### HOOKS HERE ########################### */
+  const [addMode, setAddMode] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [openExamples, setOpenExamples] = useState({});
+  const [openPopup, setOpenPopup] = useState(false);
+  const [popupContent, setPopupContent] = useState(false);
   const endpointReducers = (state, action) => {
     let updateArr = [];
 
@@ -67,9 +73,6 @@ const Endpoint = (props) => {
     endpointReducers,
     props?.endpoint
   );
-  const [addMode, setAddMode] = useState(false);
-  const [editMode, setEditMode] = useState(false);
-  const [openExamples, setOpenExamples] = useState({});
 
   /* ########################### VARIABLES HERE ########################### */
   const allFields = {
@@ -212,7 +215,7 @@ const Endpoint = (props) => {
       {/* ************************************* PARAMETERS starts here ************************************ */}
       <section className={appStyles.parameters}>
         <div className={appStyles.parameters__title}>Parameters</div>
-        <AppTable
+        <AppTableComponent
           tableHeaders={parameterTableHeaders}
           tableRows={endpoint?.parameters}
           arrayKey="parameters"
@@ -226,7 +229,7 @@ const Endpoint = (props) => {
       {/* ********************************** REQUEST HEADERS starts here ********************************** */}
       <section className={appStyles["request-headers"]}>
         <div className={appStyles["request-headers__title"]}>Headers</div>
-        <AppTable
+        <AppTableComponent
           tableHeaders={reqHeadTableHeaders}
           tableRows={endpoint?.requestHeaders}
           arrayKey="requestHeaders"
@@ -291,6 +294,21 @@ const Endpoint = (props) => {
                     <div className={appStyles["example-request-body__json"]}>
                       <pre>{prettyPrintJson(endpoint?.requestBody)}</pre>
                     </div>
+                    <Button
+                      variant="outlined"
+                      className={appStyles["view-more-btn"]}
+                      onClick={() => {
+                        setOpenPopup(true);
+                        setPopupContent({
+                          title: `Example ${exampleIndex + 1}: ${
+                            example?.title
+                          }`,
+                          json: endpoint?.requestBody,
+                        });
+                      }}
+                    >
+                      View More
+                    </Button>
                   </section>
 
                   <section className={appStyles["example-response-body"]}>
@@ -300,6 +318,21 @@ const Endpoint = (props) => {
                     <div className={appStyles["example-response-body__json"]}>
                       <pre>{prettyPrintJson(endpoint?.responseBody)}</pre>
                     </div>
+                    <Button
+                      variant="outlined"
+                      className={appStyles["view-more-btn"]}
+                      onClick={() => {
+                        setOpenPopup(true);
+                        setPopupContent({
+                          title: `Example ${exampleIndex + 1}: ${
+                            example?.title
+                          }`,
+                          json: endpoint?.responseBody,
+                        });
+                      }}
+                    >
+                      View More
+                    </Button>
                   </section>
                 </section>
               )}
@@ -307,6 +340,17 @@ const Endpoint = (props) => {
           );
         })}
       </section>
+      {/* ************************************************************************************************* */}
+
+      {/* ************************************** POPUP starts here **************************************** */}
+      <PopupComponent openPopup={openPopup} setOpenPopup={setOpenPopup}>
+        <section className={appStyles["view-more-popup"]}>
+          <div>{popupContent?.title}</div>
+          <div className={appStyles["view-more__json-cnt"]}>
+            <pre>{prettyPrintJson(popupContent?.json)}</pre>
+          </div>
+        </section>
+      </PopupComponent>
       {/* ************************************************************************************************* */}
     </section>
   );
