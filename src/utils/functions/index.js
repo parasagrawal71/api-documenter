@@ -37,3 +37,12 @@ export const getStatusText = (statusCode) => {
 
   return statuses[Number(statusCode)];
 };
+
+export const validateJSON = (jsonStringToValidate) => {
+  try {
+    JSON.parse(jsonStringToValidate);
+  } catch (e) {
+    return false;
+  }
+  return true;
+};

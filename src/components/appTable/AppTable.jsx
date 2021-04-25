@@ -11,7 +11,10 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
-import { ThemeTextField } from "utils/commonStyles/styledComponents";
+import {
+  ThemeTextField,
+  ThemeCheckbox,
+} from "utils/commonStyles/styledComponents";
 import { capitalizeFirstLetter } from "utils/functions";
 
 // IMPORT ASSETS HERE
@@ -41,23 +44,42 @@ const AppTable = (props) => {
     fieldValue,
     isMultiline
   ) => {
-    return headerKey === "value" || addMode || editMode ? (
-      <ThemeTextField
-        variant="outlined"
-        disabled={headerKey === "value" && (editMode || addMode)}
-        value={headerKey === "value" || editMode ? fieldValue : ""}
-        multiline={isMultiline === "multiline"}
-        onChange={(e) => {
-          dispatchEndpoint({
-            type: arrayKey,
-            payload: [headerKey, rowIndex, e?.target?.value],
-          });
-        }}
-        rows={2}
-      />
-    ) : (
-      fieldValue
-    );
+    if (headerKey === "required") {
+      return addMode || editMode ? (
+        <ThemeCheckbox
+          color="primary"
+          checked={Boolean(fieldValue)}
+          onClick={(e) => {
+            dispatchEndpoint({
+              type: arrayKey,
+              payload: [headerKey, rowIndex, e?.target?.checked],
+            });
+          }}
+        />
+      ) : fieldValue ? (
+        "required"
+      ) : (
+        "optional"
+      );
+    } else if (headerKey === "value" || addMode || editMode) {
+      return (
+        <ThemeTextField
+          variant="outlined"
+          disabled={headerKey === "value" && (editMode || addMode)}
+          value={headerKey === "value" || editMode ? fieldValue : ""}
+          multiline={isMultiline === "multiline"}
+          onChange={(e) => {
+            dispatchEndpoint({
+              type: arrayKey,
+              payload: [headerKey, rowIndex, e?.target?.value],
+            });
+          }}
+          rows={2}
+        />
+      );
+    } else {
+      return fieldValue;
+    }
   };
 
   return (

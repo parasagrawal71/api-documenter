@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { TextField } from "@material-ui/core";
+import { TextField, Checkbox } from "@material-ui/core";
 
 export const ThemeTextField = styled(TextField)({
   width: (props) => (props?.width ? props.width : "100%"),
@@ -35,4 +35,8 @@ export const ThemeTextField = styled(TextField)({
   ".MuiInputBase-multiline": {
     padding: 8,
   },
+});
+
+export const ThemeCheckbox = styled(Checkbox)({
+  padding: 0,
 });

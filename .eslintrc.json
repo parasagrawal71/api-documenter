@@ -29,6 +29,8 @@
     "react/no-array-index-key": "off",
     "react/destructuring-assignment": "off",
     "no-case-declarations": "off",
-    "no-param-reassign": "off"
+    "no-param-reassign": "off",
+    "consistent-return": "off",
+    "no-else-return": "off"
   }
 }

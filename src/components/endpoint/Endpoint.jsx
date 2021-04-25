@@ -10,6 +10,7 @@ import {
   capitalizeFirstLetter,
   getStatusText,
   prettyPrintJson,
+  validateJSON,
 } from "utils/functions";
 import AppTableComponent from "components/appTable/AppTable";
 import PopupComponent from "components/popup/Popup";
@@ -31,6 +32,7 @@ const Endpoint = (props) => {
   const [popupContent, setPopupContent] = useState(false);
   const [requestBody, setRequestBody] = useState("");
   const [apiResponse, setApiResponse] = useState("");
+  const [invalidReqBody, setInvalidReqBody] = useState(false);
 
   const endpointReducers = (state, action) => {
     let updateArr = [];
@@ -104,14 +106,6 @@ const Endpoint = (props) => {
     {
       displayName: "Name",
       key: "name",
-    },
-    {
-      displayName: "Type",
-      key: "type",
-    },
-    {
-      displayName: "Style",
-      key: "style",
     },
     {
       displayName: "Required",
@@ -199,6 +193,11 @@ const Endpoint = (props) => {
       return param;
     });
 
+    if (requestBody && !validateJSON(requestBody)) {
+      setInvalidReqBody(true);
+      return console.log("Invalid");
+    }
+
     axios
       .request({
         method: endpoint?.method,
@@ -250,6 +249,15 @@ const Endpoint = (props) => {
       });
   };
 
+  const prettifyRequestBody = () => {
+    if (!validateJSON(requestBody)) {
+      return setInvalidReqBody(true);
+    }
+
+    const prettyReqBody = JSON.stringify(JSON.parse(requestBody), undefined, 4);
+    setRequestBody(prettyReqBody);
+  };
+
   return (
     <section className={appStyles["main-container"]}>
       <section className={appStyles["main-header"]}>
@@ -287,7 +295,7 @@ const Endpoint = (props) => {
 
       {/* ************************************* PARAMETERS starts here ************************************ */}
       <section className={appStyles.parameters}>
-        <div className={appStyles.parameters__title}>Parameters</div>
+        <div className={appStyles.parameters__title}>Query Parameters</div>
         <AppTableComponent
           tableHeaders={parameterTableHeaders}
           tableRows={endpoint?.parameters}
@@ -316,7 +324,18 @@ const Endpoint = (props) => {
       {/* *************************** REQUEST and RESPONSE BODY starts here ******************************* */}
       <section className={appStyles["request-response-bodies"]}>
         <section className={appStyles["request-body"]}>
-          <div className={appStyles["request-body__title"]}>Request Body</div>
+          <div className={appStyles["request-body__title"]}>
+            <span>Request Body</span>
+            <span
+              className={appStyles.prettify}
+              role="button"
+              tabIndex="0"
+              onKeyDown={() => {}}
+              onClick={prettifyRequestBody}
+            >
+              Prettify
+            </span>
+          </div>
           <textarea
             ref={jsonTextareaRef}
             id="json-textarea"
@@ -324,10 +343,14 @@ const Endpoint = (props) => {
             rows="15"
             value={requestBody}
             onChange={(e) => {
+              setInvalidReqBody(false);
               setRequestBody(e?.target?.value);
             }}
             disabled={addMode || editMode}
           />
+          <span className={appStyles.invalidJSONErr}>
+            {invalidReqBody ? "Invalid JSON" : ""}
+          </span>
         </section>
 
         <section className={appStyles["response-body"]}>

@@ -7,17 +7,13 @@
     "parameters": [
       {
         "name": "email",
-        "type": "string",
-        "style": "query",
         "required": true,
         "description": "Email ID of user",
         "value": "example@gmail.com"
       },
       {
         "name": "username",
-        "type": "string",
-        "style": "query",
-        "required": true,
+        "required": false,
         "description": "Username of user",
         "value": "example"
       }

@@ -77,16 +77,26 @@
 
   .request-response-bodies {
     @include flex-row-sb;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 
     .request-body {
       flex: 1;
       margin-right: 60px;
       @include flex-col;
       height: 250px;
+      position: relative;
 
       .request-body__title {
         padding-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .prettify {
+            cursor: pointer;
+            color: darkgrey;
+            font-size: 11px;
+        }
       }
 
       .request-body__json {
@@ -105,6 +115,13 @@
           background-color: rgba(0, 0, 0, 0.2);
           border-radius: 5px;
         }
+      }
+
+      .invalidJSONErr {
+          position: absolute;
+          right: 0;
+          bottom: -20px;
+          color: red;
       }
     }
 
