@@ -5,7 +5,10 @@ import axios from "axios";
 import moment from "moment";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
-import { ThemeTextField } from "utils/commonStyles/styledComponents";
+import {
+  ThemeTextField,
+  ThemeAutocomplete,
+} from "utils/commonStyles/styledComponents";
 import {
   capitalizeFirstLetter,
   getStatusText,
@@ -136,6 +139,17 @@ const Endpoint = (props) => {
     },
   ];
 
+  const exampleTableHeaders = [
+    {
+      displayName: "Name",
+      key: "name",
+    },
+    {
+      displayName: "Value",
+      key: "value",
+    },
+  ];
+
   /* ########################### FUNCTIONS HERE ########################### */
   const TextFieldBoxOrValue = (
     fieldName,
@@ -143,33 +157,56 @@ const Endpoint = (props) => {
     isMultiline,
     arrayIndex
   ) => {
-    return addMode || editMode ? (
-      <ThemeTextField
-        variant="outlined"
-        width={
-          fieldName === "method"
-            ? "100px"
-            : fieldName === "path"
-            ? "calc(100% - 110px)"
-            : "100%"
-        }
-        value={editMode ? fieldValue : ""}
-        placeholder={capitalizeFirstLetter(fieldName)}
-        multiline={isMultiline === "multiline"}
-        onChange={(e) => {
-          dispatchEndpoint({
-            type: fieldName,
-            payload:
-              fieldName === "examples"
-                ? ["title", arrayIndex, e?.target?.value]
-                : e?.target?.value,
-          });
-        }}
-        rows={2}
-      />
-    ) : (
-      fieldValue
-    );
+    if (addMode || editMode) {
+      if (fieldName === "method") {
+        return (
+          <ThemeAutocomplete
+            options={["GET", "POST", "PUT", "DELETE", "PATCH"]}
+            getOptionLabel={(option) => option}
+            width="150px"
+            renderInput={(params) => (
+              <ThemeTextField
+                {...params}
+                variant="outlined"
+                size="small"
+                InputLabelProps={{
+                  // shrink: false,
+                  focused: false,
+                }}
+              />
+            )}
+            onChange={(e, selectedOption) => {
+              dispatchEndpoint({
+                type: "method",
+                payload: selectedOption,
+              });
+            }}
+            value={endpoint?.method?.toUpperCase() || ""}
+          />
+        );
+      }
+
+      return (
+        <ThemeTextField
+          variant="outlined"
+          value={editMode ? fieldValue : ""}
+          placeholder={capitalizeFirstLetter(fieldName)}
+          multiline={isMultiline === "multiline"}
+          onChange={(e) => {
+            dispatchEndpoint({
+              type: fieldName,
+              payload:
+                fieldName === "examples"
+                  ? ["title", arrayIndex, e?.target?.value]
+                  : e?.target?.value,
+            });
+          }}
+          rows={2}
+        />
+      );
+    } else {
+      return fieldValue;
+    }
   };
 
   const handleEditSaveBtn = () => {
@@ -282,12 +319,12 @@ const Endpoint = (props) => {
         </div>
       </section>
       <div className={appStyles["method-path"]}>
-        <span className={appStyles.method}>
+        <div className={appStyles.method}>
           {TextFieldBoxOrValue("method", endpoint?.method)}
-        </span>
-        <span className={appStyles.path}>
+        </div>
+        <div className={appStyles.path}>
           {TextFieldBoxOrValue("path", endpoint?.path)}
-        </span>
+        </div>
       </div>
       <div className={appStyles.description}>
         {TextFieldBoxOrValue("description", endpoint?.description, "multiline")}
@@ -424,69 +461,90 @@ const Endpoint = (props) => {
               </section>
 
               {openExamples?.[exampleIndex] && (
-                <section
-                  className={appStyles["example-request-response-bodies"]}
-                >
-                  <section className={appStyles["example-request-body"]}>
-                    <div className={appStyles["example-request-body__title"]}>
-                      Request Body
-                    </div>
-                    <div className={appStyles["example-request-body__json"]}>
-                      <pre>{prettyPrintJson(endpoint?.requestBody)}</pre>
-                    </div>
-                    <Button
-                      variant="outlined"
-                      className={appStyles["view-more-btn"]}
-                      onClick={() => {
-                        setOpenPopup(true);
-                        setPopupContent({
-                          title: `Example ${exampleIndex + 1}: ${
-                            example?.title
-                          }`,
-                          json: endpoint?.requestBody,
-                        });
-                      }}
-                    >
-                      View More
-                    </Button>
+                <section className={appStyles["example-all-cnt"]}>
+                  <section
+                    className={appStyles["example-paramters-reqHeaders"]}
+                  >
+                    <AppTableComponent
+                      tableHeaders={exampleTableHeaders}
+                      tableRows={example?.parameters}
+                      disableValueTextbox
+                    />
+                    <AppTableComponent
+                      tableHeaders={exampleTableHeaders}
+                      tableRows={example?.requestHeaders}
+                      disableValueTextbox
+                    />
                   </section>
 
-                  <section className={appStyles["example-response-body"]}>
-                    <div className={appStyles["example-response-body__title"]}>
-                      <span>Response Body</span>
-                      <span
-                        className={
-                          String(example?.response?.statusCode)?.startsWith("2")
-                            ? appStyles.green
-                            : appStyles.red
-                        }
+                  <section
+                    className={appStyles["example-request-response-bodies"]}
+                  >
+                    <section className={appStyles["example-request-body"]}>
+                      <div className={appStyles["example-request-body__title"]}>
+                        Request Body
+                      </div>
+                      <div className={appStyles["example-request-body__json"]}>
+                        <pre>{prettyPrintJson(endpoint?.requestBody)}</pre>
+                      </div>
+                      <Button
+                        variant="outlined"
+                        className={appStyles["view-more-btn"]}
+                        onClick={() => {
+                          setOpenPopup(true);
+                          setPopupContent({
+                            title: `Example ${exampleIndex + 1}: ${
+                              example?.title
+                            }`,
+                            json: endpoint?.requestBody,
+                          });
+                        }}
                       >
-                        {example?.response
-                          ? `${example?.response?.statusCode} ${getStatusText(
-                              example?.response?.statusCode
-                            )}`
-                          : null}
-                      </span>
-                    </div>
-                    <div className={appStyles["example-response-body__json"]}>
-                      <pre>{prettyPrintJson(example?.response?.data)}</pre>
-                    </div>
-                    <Button
-                      variant="outlined"
-                      className={appStyles["view-more-btn"]}
-                      onClick={() => {
-                        setOpenPopup(true);
-                        setPopupContent({
-                          title: `Example ${exampleIndex + 1}: ${
-                            example?.title
-                          }`,
-                          statusCode: example?.response?.statusCode,
-                          json: example?.response?.data,
-                        });
-                      }}
-                    >
-                      View More
-                    </Button>
+                        View More
+                      </Button>
+                    </section>
+
+                    <section className={appStyles["example-response-body"]}>
+                      <div
+                        className={appStyles["example-response-body__title"]}
+                      >
+                        <span>Response Body</span>
+                        <span
+                          className={
+                            String(example?.response?.statusCode)?.startsWith(
+                              "2"
+                            )
+                              ? appStyles.green
+                              : appStyles.red
+                          }
+                        >
+                          {example?.response
+                            ? `${example?.response?.statusCode} ${getStatusText(
+                                example?.response?.statusCode
+                              )}`
+                            : null}
+                        </span>
+                      </div>
+                      <div className={appStyles["example-response-body__json"]}>
+                        <pre>{prettyPrintJson(example?.response?.data)}</pre>
+                      </div>
+                      <Button
+                        variant="outlined"
+                        className={appStyles["view-more-btn"]}
+                        onClick={() => {
+                          setOpenPopup(true);
+                          setPopupContent({
+                            title: `Example ${exampleIndex + 1}: ${
+                              example?.title
+                            }`,
+                            statusCode: example?.response?.statusCode,
+                            json: example?.response?.data,
+                          });
+                        }}
+                      >
+                        View More
+                      </Button>
+                    </section>
                   </section>
                 </section>
               )}

@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { TextField, Checkbox } from "@material-ui/core";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 
 export const ThemeTextField = styled(TextField)({
   width: (props) => (props?.width ? props.width : "100%"),
@@ -39,4 +40,18 @@ export const ThemeTextField = styled(TextField)({
 
 export const ThemeCheckbox = styled(Checkbox)({
   padding: 0,
+});
+
+export const ThemeAutocomplete = styled(Autocomplete)({
+  width: (props) => (props?.width ? props.width : "100%"),
+  ".MuiInputBase-root": {
+    padding: 0,
+  },
+  label: {
+    transform: "translate(14px, 13px) scale(1)",
+    fontSize: 12,
+  },
+  ".MuiAutocomplete-input": {
+    fontSize: 13,
+  },
 });

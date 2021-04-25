@@ -15,7 +15,6 @@ import {
   ThemeTextField,
   ThemeCheckbox,
 } from "utils/commonStyles/styledComponents";
-import { capitalizeFirstLetter } from "utils/functions";
 
 // IMPORT ASSETS HERE
 import appStyles from "./AppTable.module.scss";
@@ -29,6 +28,7 @@ const AppTable = (props) => {
     editMode,
     dispatchEndpoint,
     arrayKey,
+    disableValueTextbox,
   } = props;
 
   const useStyles = makeStyles({
@@ -61,12 +61,24 @@ const AppTable = (props) => {
       ) : (
         "optional"
       );
-    } else if (headerKey === "value" || addMode || editMode) {
+    } else if (
+      (headerKey === "value" && !disableValueTextbox) ||
+      addMode ||
+      editMode
+    ) {
       return (
         <ThemeTextField
           variant="outlined"
-          disabled={headerKey === "value" && (editMode || addMode)}
-          value={headerKey === "value" || editMode ? fieldValue : ""}
+          disabled={
+            headerKey === "value" &&
+            !disableValueTextbox &&
+            (editMode || addMode)
+          }
+          value={
+            (headerKey === "value" && !disableValueTextbox) || editMode
+              ? fieldValue
+              : ""
+          }
           multiline={isMultiline === "multiline"}
           onChange={(e) => {
             dispatchEndpoint({

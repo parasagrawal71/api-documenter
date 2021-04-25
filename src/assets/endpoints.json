@@ -46,6 +46,22 @@
           "username": "parasagrawal",
           "email": "parasagrawal@gmail.com"
         },
+        "parameters": [
+          {
+            "name": "email",
+            "value": "parasagrawal@gmail.com"
+          },
+          {
+            "name": "username",
+            "value": "parasagrawal"
+          }
+        ],
+        "requestHeaders": [
+          {
+            "name": "Authorization",
+            "value": "<TOKEN_VALUE>"
+          }
+        ],
         "response": {
           "statusCode": 200,
           "data": {

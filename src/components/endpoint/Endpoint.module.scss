@@ -43,6 +43,8 @@
   }
 
   .method-path {
+    @include flex-row-v-cen;
+
     .method {
       text-transform: uppercase;
       margin-right: 10px;
@@ -51,6 +53,7 @@
     }
 
     .path {
+        flex: 1;
     }
   }
 
@@ -93,9 +96,9 @@
         align-items: center;
 
         .prettify {
-            cursor: pointer;
-            color: darkgrey;
-            font-size: 11px;
+          cursor: pointer;
+          color: darkgrey;
+          font-size: 11px;
         }
       }
 
@@ -118,10 +121,10 @@
       }
 
       .invalidJSONErr {
-          position: absolute;
-          right: 0;
-          bottom: -20px;
-          color: red;
+        position: absolute;
+        right: 0;
+        bottom: -20px;
+        color: red;
       }
     }
 
@@ -185,16 +188,16 @@
 
   .examples-cnt {
     .example-cnt {
-      &:hover {
-        cursor: pointer;
-      }
-
       .example-row {
         border: 1px solid lightgrey;
         padding: 10px;
         border-radius: 5px;
         display: flex;
         align-items: center;
+
+        &:hover {
+          cursor: pointer;
+        }
 
         span {
           display: flex;
@@ -206,72 +209,81 @@
         }
       }
 
-      .example-request-response-bodies {
-        @include flex-row-sb;
+      .example-all-cnt {
         margin: 20px;
 
-        .example-request-body {
-          flex: 1;
-          margin-right: 60px;
-          @include flex-col;
-          position: relative;
-
-          .example-request-body__title {
-            padding-bottom: 10px;
+        .example-paramters-reqHeaders {
+          div {
+            margin-bottom: 20px;
           }
+        }
 
-          .example-request-body__json {
+        .example-request-response-bodies {
+          @include flex-row-sb;
+
+          .example-request-body {
             flex: 1;
-            background: #2b2f3e;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 3px;
+            margin-right: 60px;
+            @include flex-col;
+            position: relative;
+
+            .example-request-body__title {
+              padding-bottom: 10px;
+            }
+
+            .example-request-body__json {
+              flex: 1;
+              background: #2b2f3e;
+              color: white;
+              padding: 5px 10px;
+              border-radius: 3px;
+            }
           }
-        }
 
-        .example-response-body {
-          flex: 1;
-          @include flex-col;
-          position: relative;
-
-          .example-response-body__title {
-            padding-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-          }
-
-          .example-response-body__json {
+          .example-response-body {
             flex: 1;
-            background: #2b2f3e;
+            @include flex-col;
+            position: relative;
+
+            .example-response-body__title {
+              padding-bottom: 10px;
+              display: flex;
+              justify-content: space-between;
+            }
+
+            .example-response-body__json {
+              flex: 1;
+              background: #2b2f3e;
+              color: white;
+              padding: 5px 10px;
+              border-radius: 3px;
+            }
+
+            .green {
+              color: green;
+            }
+
+            .red {
+              color: red;
+            }
+          }
+
+          .view-more-btn {
+            font-size: 10px;
+            position: absolute;
+            bottom: 5px;
+            left: calc(50% - 55px);
             color: white;
-            padding: 5px 10px;
-            border-radius: 3px;
+            border-color: white;
           }
 
-          .green {
-            color: green;
+          pre {
+            white-space: pre-wrap;
+            white-space: -moz-pre-wrap;
+            white-space: -pre-wrap;
+            white-space: -o-pre-wrap;
+            word-wrap: break-word;
           }
-
-          .red {
-            color: red;
-          }
-        }
-
-        .view-more-btn {
-          font-size: 10px;
-          position: absolute;
-          bottom: 5px;
-          left: calc(50% - 55px);
-          color: white;
-          border-color: white;
-        }
-
-        pre {
-          white-space: pre-wrap;
-          white-space: -moz-pre-wrap;
-          white-space: -pre-wrap;
-          white-space: -o-pre-wrap;
-          word-wrap: break-word;
         }
       }
     }
