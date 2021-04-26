@@ -29,6 +29,7 @@ const AppTable = (props) => {
     dispatchEndpoint,
     arrayKey,
     disableValueTextbox,
+    cellPadding,
   } = props;
 
   const useStyles = makeStyles({
@@ -101,7 +102,9 @@ const AppTable = (props) => {
           <TableRow>
             {tableHeaders?.map((header, headerIndex) => {
               return (
-                <TableCell key={headerIndex}>{header?.displayName}</TableCell>
+                <TableCell key={headerIndex} style={{ padding: cellPadding }}>
+                  {header?.displayName}
+                </TableCell>
               );
             })}
           </TableRow>
@@ -111,7 +114,7 @@ const AppTable = (props) => {
             <TableRow key={rowIndex}>
               {tableHeaders?.map((header, headerIndex) => {
                 return (
-                  <TableCell key={headerIndex}>
+                  <TableCell key={headerIndex} style={{ padding: cellPadding }}>
                     {TextFieldBoxOrValue(
                       header?.key,
                       rowIndex,

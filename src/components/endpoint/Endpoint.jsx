@@ -26,8 +26,10 @@ const Endpoint = (props) => {
   // const {} = props;
 
   /* ########################### HOOKS HERE ########################### */
+  // REFs HERE
   const jsonTextareaRef = useRef(null);
 
+  // STATE VARIABLES HERE
   const [addMode, setAddMode] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [openExamples, setOpenExamples] = useState({});
@@ -37,6 +39,7 @@ const Endpoint = (props) => {
   const [apiResponse, setApiResponse] = useState("");
   const [invalidReqBody, setInvalidReqBody] = useState(false);
 
+  // REDUCERS HERE
   const endpointReducers = (state, action) => {
     let updateArr = [];
 
@@ -465,16 +468,28 @@ const Endpoint = (props) => {
                   <section
                     className={appStyles["example-paramters-reqHeaders"]}
                   >
-                    <AppTableComponent
-                      tableHeaders={exampleTableHeaders}
-                      tableRows={example?.parameters}
-                      disableValueTextbox
-                    />
-                    <AppTableComponent
-                      tableHeaders={exampleTableHeaders}
-                      tableRows={example?.requestHeaders}
-                      disableValueTextbox
-                    />
+                    <div className={appStyles["example-paramters"]}>
+                      <div className={appStyles["example-paramters__title"]}>
+                        Query Parameters
+                      </div>
+                      <AppTableComponent
+                        tableHeaders={exampleTableHeaders}
+                        tableRows={example?.parameters}
+                        disableValueTextbox
+                        cellPadding="5px 10px"
+                      />
+                    </div>
+                    <div className={appStyles["example-reqHeaders"]}>
+                      <div className={appStyles["example-reqHeaders__title"]}>
+                        Headers
+                      </div>
+                      <AppTableComponent
+                        tableHeaders={exampleTableHeaders}
+                        tableRows={example?.requestHeaders}
+                        disableValueTextbox
+                        cellPadding="5px 10px"
+                      />
+                    </div>
                   </section>
 
                   <section

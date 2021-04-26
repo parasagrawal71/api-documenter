@@ -53,7 +53,7 @@
     }
 
     .path {
-        flex: 1;
+      flex: 1;
     }
   }
 
@@ -213,8 +213,20 @@
         margin: 20px;
 
         .example-paramters-reqHeaders {
-          div {
+          .example-paramters {
             margin-bottom: 20px;
+
+            .example-paramters__title {
+                margin-bottom: 5px;
+            }
+          }
+
+          .example-reqHeaders {
+            margin-bottom: 20px;
+
+            .example-reqHeaders__title {
+                margin-bottom: 5px;
+            }
           }
         }
 
