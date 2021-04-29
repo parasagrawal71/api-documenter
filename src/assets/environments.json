@@ -1,0 +1,28 @@
+[
+  {
+    "envName": "production",
+    "variables": [
+      {
+        "key": "token",
+        "value": "kjsd78337t6dghbsaskjad7w"
+      },
+      {
+        "key": "HOST_URL",
+        "value": "http://localhost:1337"
+      }
+    ]
+  },
+  {
+    "envName": "development",
+    "variables": [
+      {
+        "key": "token",
+        "value": "bhe32789ewudihsbn"
+      },
+      {
+        "key": "HOST_URL",
+        "value": "http://localhost:1337"
+      }
+    ]
+  }
+]

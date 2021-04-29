@@ -1,4 +1,28 @@
+@import "utils/commonStyles/flex.scss";
+
 .app-header {
-    background-color: #4C5264;
-    height: 60px; // TODO: REMOVE LATER
+  @include flex-row-b-sb-cen;
+  background-color: #4c5264;
+  padding: 10px;
+  color: white;
+  height: 40px; // TODO: REMOVE LATER
+
+  .app-header--left {
+    .app-header__appName {
+    }
+  }
+
+  .app-header--right {
+    @include flex-row-v-cen;
+    .app-header__envs-dropdown {
+        margin-right: 10px;
+    }
+    .app-header__edit-env {
+      .app-header__edit-env__icon {
+        &:hover {
+          cursor: pointer;
+        }
+      }
+    }
+  }
 }

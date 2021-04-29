@@ -5,9 +5,9 @@ import { Dialog } from "@material-ui/core";
 import { prettyPrintJson, getStatusText } from "utils/functions";
 
 // IMPORT ASSETS HERE
-import appStyles from "./Popup.module.scss";
+import appStyles from "./ViewMorePopup.module.scss";
 
-const Popup = (props) => {
+const ViewMorePopup = (props) => {
   // PROPS HERE
   const { openPopup, setOpenPopup, title, statusCode, content } = props;
 
@@ -43,4 +43,4 @@ const Popup = (props) => {
   );
 };
 
-export default Popup;
+export default ViewMorePopup;

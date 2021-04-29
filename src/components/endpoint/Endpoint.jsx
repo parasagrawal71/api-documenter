@@ -16,7 +16,7 @@ import {
   validateJSON,
 } from "utils/functions";
 import AppTableComponent from "components/appTable/AppTable";
-import PopupComponent from "components/popup/Popup";
+import ViewMorePopupComponent from "components/viewMorePopup/ViewMorePopup";
 
 // IMPORT ASSETS HERE
 import appStyles from "./Endpoint.module.scss";
@@ -165,7 +165,7 @@ const Endpoint = (props) => {
         return (
           <ThemeAutocomplete
             options={["GET", "POST", "PUT", "DELETE", "PATCH"]}
-            getOptionLabel={(option) => option}
+            getOptionLabel={(option) => option || ""}
             width="150px"
             renderInput={(params) => (
               <ThemeTextField
@@ -570,7 +570,7 @@ const Endpoint = (props) => {
       {/* ************************************************************************************************* */}
 
       {/* ************************************** POPUP starts here **************************************** */}
-      <PopupComponent
+      <ViewMorePopupComponent
         openPopup={openPopup}
         setOpenPopup={setOpenPopup}
         title={popupContent?.title}
