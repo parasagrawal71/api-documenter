@@ -1,9 +1,10 @@
 import React, { useReducer, useState, useEffect, useRef } from "react";
-import { Button } from "@material-ui/core";
+import { Button, Tooltip } from "@material-ui/core";
 import {
   ArrowRight as ArrowRightIcon,
   AddCircleOutlined as AddIcon,
   RemoveCircleOutlined as RemoveIcon,
+  Save as SaveIcon,
 } from "@material-ui/icons";
 import axios from "axios";
 import moment from "moment";
@@ -21,6 +22,7 @@ import {
 } from "utils/functions";
 import AppTableComponent from "components/appTable/AppTable";
 import ViewMorePopupComponent from "components/viewMorePopup/ViewMorePopup";
+import TextfieldPopupComponent from "components/textfieldPopup/TextfieldPopup";
 
 // IMPORT ASSETS HERE
 import appStyles from "./Endpoint.module.scss";
@@ -37,7 +39,8 @@ const Endpoint = (props) => {
   const [addMode, setAddMode] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [openExamples, setOpenExamples] = useState({});
-  const [openPopup, setOpenPopup] = useState(false);
+  const [openTextfieldPopup, setOpenTextfieldPopup] = useState(false);
+  const [openViewMorePopup, setOpenViewMorePopup] = useState(false);
   const [popupContent, setPopupContent] = useState(false);
   const [requestBody, setRequestBody] = useState("");
   const [apiResponse, setApiResponse] = useState("");
@@ -136,8 +139,15 @@ const Endpoint = (props) => {
 
       case "save-example":
         payload = action?.payload;
-        const updatedExamplesAfterAddingNew = [...state?.examples];
-        updatedExamplesAfterAddingNew?.push(payload);
+        const currentEndpoint = payload?.endpoint;
+        const newExample = {
+          title: payload?.title,
+          parameters: currentEndpoint?.parameters,
+          requestHeaders: currentEndpoint?.requestHeaders,
+          requestBody,
+          response: apiResponse,
+        };
+        const updatedExamplesAfterAddingNew = [...state?.examples, newExample];
         return {
           ...state,
           examples: updatedExamplesAfterAddingNew,
@@ -249,8 +259,13 @@ const Endpoint = (props) => {
         <ThemeTextField
           variant="outlined"
           value={editMode ? fieldValue : ""}
-          placeholder={capitalizeFirstLetter(fieldName)}
+          placeholder={
+            fieldName === "examples"
+              ? "Example title"
+              : capitalizeFirstLetter(fieldName)
+          }
           multiline={isMultiline === "multiline"}
+          onClick={(e) => e.stopPropagation()}
           onChange={(e) => {
             dispatchEndpoint({
               type: fieldName,
@@ -259,7 +274,7 @@ const Endpoint = (props) => {
                   ? {
                       headerKey: "title",
                       rowIndex: arrayIndex,
-                      value: e?.target?.checked,
+                      value: e?.target?.value,
                     }
                   : e?.target?.value,
             });
@@ -374,10 +389,20 @@ const Endpoint = (props) => {
           <Button variant="outlined" onClick={handleEditSaveBtn}>
             {!editMode ? "Edit" : "Save"}
           </Button>
-          {!editMode && (
+          {!editMode && !addMode && (
             <Button variant="outlined" onClick={sendApiCall}>
               Send
             </Button>
+          )}
+          {!editMode && !addMode && (
+            <Tooltip title="Save as Example">
+              <SaveIcon
+                className={appStyles.saveIcon}
+                onClick={() => {
+                  setOpenTextfieldPopup(true);
+                }}
+              />
+            </Tooltip>
           )}
         </div>
       </section>
@@ -498,7 +523,7 @@ const Endpoint = (props) => {
             disabled={apiResponse === ""}
             className={appStyles["response-view-more-btn"]}
             onClick={() => {
-              setOpenPopup(true);
+              setOpenViewMorePopup(true);
               setPopupContent({
                 title: "Response Body",
                 statusCode: apiResponse?.statusCode,
@@ -599,7 +624,7 @@ const Endpoint = (props) => {
                         variant="outlined"
                         className={appStyles["view-more-btn"]}
                         onClick={() => {
-                          setOpenPopup(true);
+                          setOpenViewMorePopup(true);
                           setPopupContent({
                             title: `Example ${exampleIndex + 1}: ${
                               example?.title
@@ -640,7 +665,7 @@ const Endpoint = (props) => {
                         variant="outlined"
                         className={appStyles["view-more-btn"]}
                         onClick={() => {
-                          setOpenPopup(true);
+                          setOpenViewMorePopup(true);
                           setPopupContent({
                             title: `Example ${exampleIndex + 1}: ${
                               example?.title
@@ -664,11 +689,24 @@ const Endpoint = (props) => {
 
       {/* ************************************** POPUP starts here **************************************** */}
       <ViewMorePopupComponent
-        openPopup={openPopup}
-        setOpenPopup={setOpenPopup}
+        openPopup={openViewMorePopup}
+        setOpenPopup={setOpenViewMorePopup}
         title={popupContent?.title}
         content={popupContent?.json}
         statusCode={popupContent?.statusCode}
+      />
+
+      <TextfieldPopupComponent
+        openPopup={openTextfieldPopup}
+        setOpenPopup={setOpenTextfieldPopup}
+        endpoint={endpoint}
+        placeholder="Enter title"
+        handleSave={(titleValue) => {
+          dispatchEndpoint({
+            type: "save-example",
+            payload: { endpoint, title: titleValue },
+          });
+        }}
       />
       {/* ************************************************************************************************* */}
     </section>

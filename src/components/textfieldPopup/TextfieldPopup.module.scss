@@ -1,0 +1,27 @@
+@import "../../utils/commonStyles/flex.scss";
+
+.main-cnt {
+  .dialog-cnt {
+    padding: 20px;
+    height: fit-content !important;
+    width: 100% !important;
+    overflow: overlay;
+
+    &::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(0, 0, 0, 0.2);
+      border-radius: 5px;
+    }
+  }
+
+  .action-btns {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 15px;
+  }
+}

@@ -36,6 +36,8 @@
       }
     }
     .action-btns {
+      @include flex-row-v-cen;
+
       & > *:not(:last-child) {
         margin-right: 20px;
       }
@@ -211,6 +213,10 @@
         }
       }
 
+      &:not(:last-child) {
+        margin-bottom: 15px;
+      }
+
       .example-all-cnt {
         margin: 20px;
 
@@ -319,5 +325,11 @@
 
     margin-left: 5px;
     color: darkgrey;
+  }
+
+  .saveIcon {
+    &:hover {
+      cursor: pointer;
+    }
   }
 }
