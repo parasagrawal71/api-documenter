@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { ClickAwayListener } from "@material-ui/core";
 import { ListAlt as ListAltIcon } from "@material-ui/icons";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
@@ -6,6 +7,7 @@ import {
   ThemeAutocomplete,
   ThemeTextField,
 } from "utils/commonStyles/styledComponents";
+import EnvPopoverComponent from "components/envPopover/EnvPopover";
 
 // IMPORT ASSETS HERE
 import environments from "assets/environments";
@@ -14,10 +16,19 @@ import appStyles from "./Header.module.scss";
 const Header = () => {
   // HOOKS HERE
   const [selectedEnv, setSelectedEnv] = useState({});
+  const [openEnvPopover, setOpenEnvPopover] = useState(null);
 
   useEffect(() => {
     setSelectedEnv(environments[0]);
   }, []);
+
+  const toggleOpenEnvPopover = (event) => {
+    setOpenEnvPopover(openEnvPopover ? null : event?.currentTarget);
+  };
+
+  const handleCloseEnvPopover = () => {
+    setOpenEnvPopover(null);
+  };
 
   return (
     <header className={appStyles["app-header"]}>
@@ -47,9 +58,20 @@ const Header = () => {
             value={selectedEnv || ""}
           />
         </div>
-        <div className={appStyles["app-header__edit-env"]}>
-          <ListAltIcon className={appStyles["app-header__edit-env__icon"]} />
-        </div>
+        <ClickAwayListener onClickAway={handleCloseEnvPopover}>
+          <div className={appStyles["app-header__edit-env"]}>
+            <ListAltIcon
+              className={appStyles["app-header__edit-env__icon"]}
+              onClick={toggleOpenEnvPopover}
+            />
+            <EnvPopoverComponent
+              openEnvPopover={openEnvPopover}
+              handleCloseEnvPopover={handleCloseEnvPopover}
+              selectedEnv={selectedEnv}
+              setSelectedEnv={setSelectedEnv}
+            />
+          </div>
+        </ClickAwayListener>
       </section>
     </header>
   );
