@@ -1,6 +1,10 @@
 import React, { useReducer, useState, useEffect, useRef } from "react";
 import { Button } from "@material-ui/core";
-import { ArrowRight as ArrowRightIcon } from "@material-ui/icons";
+import {
+  ArrowRight as ArrowRightIcon,
+  AddCircleOutlined as AddIcon,
+  RemoveCircleOutlined as RemoveIcon,
+} from "@material-ui/icons";
 import axios from "axios";
 import moment from "moment";
 
@@ -41,7 +45,7 @@ const Endpoint = (props) => {
 
   // REDUCERS HERE
   const endpointReducers = (state, action) => {
-    let updateArr = [];
+    let payload = null;
 
     switch (action?.type) {
       case "method":
@@ -57,42 +61,94 @@ const Endpoint = (props) => {
         return { ...state, description: action?.payload };
 
       case "parameters":
-        updateArr = action?.payload;
+        payload = action?.payload;
         const updatedParameters = state?.parameters?.map((param, index) => {
-          if (index === updateArr?.[1]) {
-            param[updateArr?.[0]] = updateArr?.[2];
+          if (index === payload?.rowIndex) {
+            param[payload?.headerKey] = payload?.value;
             return param;
           }
           return param;
         });
-        updateArr = [];
+        payload = null;
         return { ...state, parameters: updatedParameters };
 
+      case "add-parameter":
+        const updatedParametersAfterAddingNew = [...state?.parameters];
+        updatedParametersAfterAddingNew?.push({
+          name: "",
+          required: false,
+          description: "",
+          value: "",
+        });
+        return { ...state, parameters: updatedParametersAfterAddingNew };
+
+      case "remove-parameter":
+        payload = action?.payload;
+        const updatedParametersAfterRemoval = state?.parameters?.filter(
+          (param, index) => index !== payload?.rowIndex
+        );
+        return { ...state, parameters: updatedParametersAfterRemoval };
+
       case "requestHeaders":
-        updateArr = action?.payload;
+        payload = action?.payload;
         const updatedReqHeaders = state?.requestHeaders?.map(
           (reqHeader, index) => {
-            if (index === updateArr?.[1]) {
-              reqHeader[updateArr?.[0]] = updateArr?.[2];
+            if (index === payload?.rowIndex) {
+              reqHeader[payload?.headerKey] = payload?.value;
               return reqHeader;
             }
             return reqHeader;
           }
         );
-        updateArr = [];
+        payload = null;
         return { ...state, requestHeaders: updatedReqHeaders };
 
+      case "add-requestHeader":
+        const updatedRequestHeadersAfterAddingNew = [...state?.requestHeaders];
+        updatedRequestHeadersAfterAddingNew?.push({
+          name: "",
+          required: false,
+          value: "",
+        });
+        return {
+          ...state,
+          requestHeaders: updatedRequestHeadersAfterAddingNew,
+        };
+
+      case "remove-requestHeader":
+        payload = action?.payload;
+        const updatedRequestHeadersAfterRemoval = state?.requestHeaders?.filter(
+          (reqHeader, index) => index !== payload?.rowIndex
+        );
+        return { ...state, requestHeaders: updatedRequestHeadersAfterRemoval };
+
       case "examples":
-        updateArr = action?.payload;
+        payload = action?.payload;
         const updatedExamples = state?.examples?.map((example, index) => {
-          if (index === updateArr?.[1]) {
-            example[updateArr?.[0]] = updateArr?.[2];
+          if (index === payload?.rowIndex) {
+            example[payload?.headerKey] = payload?.value;
             return example;
           }
           return example;
         });
-        updateArr = [];
+        payload = null;
         return { ...state, examples: updatedExamples };
+
+      case "save-example":
+        payload = action?.payload;
+        const updatedExamplesAfterAddingNew = [...state?.examples];
+        updatedExamplesAfterAddingNew?.push(payload);
+        return {
+          ...state,
+          examples: updatedExamplesAfterAddingNew,
+        };
+
+      case "remove-example":
+        payload = action?.payload;
+        const updatedExamplesAfterRemoval = state?.examples?.filter(
+          (example, index) => index !== payload?.rowIndex
+        );
+        return { ...state, examples: updatedExamplesAfterRemoval };
 
       default:
         throw new Error("Unknown type");
@@ -200,7 +256,11 @@ const Endpoint = (props) => {
               type: fieldName,
               payload:
                 fieldName === "examples"
-                  ? ["title", arrayIndex, e?.target?.value]
+                  ? {
+                      headerKey: "title",
+                      rowIndex: arrayIndex,
+                      value: e?.target?.checked,
+                    }
                   : e?.target?.value,
             });
           }}
@@ -335,7 +395,17 @@ const Endpoint = (props) => {
 
       {/* ************************************* PARAMETERS starts here ************************************ */}
       <section className={appStyles.parameters}>
-        <div className={appStyles.parameters__title}>Query Parameters</div>
+        <div className={appStyles.parameters__title}>
+          <span>Query Parameters</span>
+          {(addMode || editMode) && (
+            <AddIcon
+              className={appStyles.addIcon}
+              onClick={() => {
+                dispatchEndpoint({ type: "add-parameter" });
+              }}
+            />
+          )}
+        </div>
         <AppTableComponent
           tableHeaders={parameterTableHeaders}
           tableRows={endpoint?.parameters}
@@ -349,7 +419,17 @@ const Endpoint = (props) => {
 
       {/* ********************************** REQUEST HEADERS starts here ********************************** */}
       <section className={appStyles["request-headers"]}>
-        <div className={appStyles["request-headers__title"]}>Headers</div>
+        <div className={appStyles["request-headers__title"]}>
+          <span>Headers</span>
+          {(addMode || editMode) && (
+            <AddIcon
+              className={appStyles.addIcon}
+              onClick={() => {
+                dispatchEndpoint({ type: "add-requestHeader" });
+              }}
+            />
+          )}
+        </div>
         <AppTableComponent
           tableHeaders={reqHeadTableHeaders}
           tableRows={endpoint?.requestHeaders}
@@ -461,6 +541,19 @@ const Endpoint = (props) => {
                     exampleIndex
                   )}
                 </span>
+                {(editMode || addMode) && (
+                  <span>
+                    <RemoveIcon
+                      className={appStyles.removeIcon}
+                      onClick={() => {
+                        dispatchEndpoint({
+                          type: "remove-example",
+                          payload: { rowIndex: exampleIndex },
+                        });
+                      }}
+                    />
+                  </span>
+                )}
               </section>
 
               {openExamples?.[exampleIndex] && (

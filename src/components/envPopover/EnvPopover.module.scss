@@ -1,3 +1,25 @@
+@import "../../utils/commonStyles/flex.scss";
+
 .padding10px {
   padding: 10px;
+}
+
+.addRemoveIcon {
+  &:hover {
+    cursor: pointer;
+  }
+
+  color: darkgrey;
+}
+
+.envTitle {
+  padding: 10px;
+  padding-bottom: 0;
+  @include flex-row-v-cen;
+  text-transform: capitalize;
+
+  svg {
+    margin-left: 5px;
+    @include flex-row-v-cen;
+  }
 }

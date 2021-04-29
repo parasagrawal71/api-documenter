@@ -8,6 +8,7 @@ import {
   TableRow,
   Paper,
 } from "@material-ui/core";
+import { RemoveCircleOutlined as RemoveIcon } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
@@ -53,7 +54,11 @@ const AppTable = (props) => {
           onClick={(e) => {
             dispatchEndpoint({
               type: arrayKey,
-              payload: [headerKey, rowIndex, e?.target?.checked],
+              payload: {
+                headerKey,
+                rowIndex,
+                value: e?.target?.checked,
+              },
             });
           }}
         />
@@ -84,7 +89,11 @@ const AppTable = (props) => {
           onChange={(e) => {
             dispatchEndpoint({
               type: arrayKey,
-              payload: [headerKey, rowIndex, e?.target?.value],
+              payload: {
+                headerKey,
+                rowIndex,
+                value: e?.target?.value,
+              },
             });
           }}
           rows={2}
@@ -92,6 +101,19 @@ const AppTable = (props) => {
       );
     } else {
       return fieldValue;
+    }
+  };
+
+  const decideDispatchRemoveType = () => {
+    switch (arrayKey) {
+      case "parameters":
+        return "remove-parameter";
+
+      case "requestHeaders":
+        return "remove-requestHeader";
+
+      default:
+        return null;
     }
   };
 
@@ -107,6 +129,7 @@ const AppTable = (props) => {
                 </TableCell>
               );
             })}
+            {(addMode || editMode) && <TableCell />}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -123,6 +146,19 @@ const AppTable = (props) => {
                   </TableCell>
                 );
               })}
+              {(addMode || editMode) && (
+                <TableCell>
+                  <RemoveIcon
+                    className={appStyles.removeIcon}
+                    onClick={() => {
+                      dispatchEndpoint({
+                        type: decideDispatchRemoveType(),
+                        payload: { rowIndex },
+                      });
+                    }}
+                  />
+                </TableCell>
+              )}
             </TableRow>
           ))}
         </TableBody>

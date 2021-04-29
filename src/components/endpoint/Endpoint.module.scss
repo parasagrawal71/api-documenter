@@ -67,6 +67,7 @@
 
     .parameters__title {
       padding-bottom: 10px;
+      @include flex-row-v-cen;
     }
   }
 
@@ -75,6 +76,7 @@
 
     .request-headers__title {
       padding-bottom: 10px;
+      @include flex-row-v-cen;
     }
   }
 
@@ -217,7 +219,7 @@
             margin-bottom: 20px;
 
             .example-paramters__title {
-                margin-bottom: 5px;
+              margin-bottom: 5px;
             }
           }
 
@@ -225,7 +227,7 @@
             margin-bottom: 20px;
 
             .example-reqHeaders__title {
-                margin-bottom: 5px;
+              margin-bottom: 5px;
             }
           }
         }
@@ -299,5 +301,23 @@
         }
       }
     }
+  }
+
+  .addIcon {
+    &:hover {
+      cursor: pointer;
+    }
+
+    margin-left: 5px;
+    color: darkgrey;
+  }
+
+  .removeIcon {
+    &:hover {
+      cursor: pointer;
+    }
+
+    margin-left: 5px;
+    color: darkgrey;
   }
 }

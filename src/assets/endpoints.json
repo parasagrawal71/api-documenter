@@ -21,8 +21,8 @@
     "requestHeaders": [
       {
         "name": "Authorization",
-        "value": "<TOKEN_VALUE>",
-        "required": true
+        "required": true,
+        "value": "<TOKEN_VALUE>"
       }
     ],
     "requestBody": {

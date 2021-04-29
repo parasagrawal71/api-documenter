@@ -46,7 +46,7 @@ const Header = () => {
                 {...params}
                 variant="outlined"
                 size="small"
-                color="white"
+                // color="white"
                 InputLabelProps={{
                   focused: false,
                 }}

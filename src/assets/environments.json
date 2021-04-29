@@ -4,11 +4,11 @@
     "variables": [
       {
         "key": "token",
-        "value": "kjsd78337t6dghbsaskjad7w"
+        "value": "kjsd78337t6dgPRODhbsaskjad7w"
       },
       {
         "key": "HOST_URL",
-        "value": "http://localhost:1337"
+        "value": "https://production.com"
       }
     ]
   },
@@ -17,11 +17,11 @@
     "variables": [
       {
         "key": "token",
-        "value": "bhe32789ewudihsbn"
+        "value": "bhe32789ewDEVudihsbn"
       },
       {
         "key": "HOST_URL",
-        "value": "http://localhost:1337"
+        "value": "https://development.com"
       }
     ]
   }
