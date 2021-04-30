@@ -10,7 +10,11 @@ export const capitalizeFirstLetter = (string) => {
 
 export const prettyPrintJson = (jsonData) => {
   if (jsonData) {
-    const prettyJson = JSON.stringify(JSON.parse(jsonData), undefined, 2);
+    const prettyJson = JSON.stringify(
+      typeof jsonData === "string" ? JSON.parse(jsonData) : jsonData,
+      undefined,
+      2
+    );
     return prettyJson;
   }
 };
