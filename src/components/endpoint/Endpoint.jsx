@@ -2,6 +2,7 @@ import React, { useReducer, useState, useEffect, useRef } from "react";
 import { Button, Tooltip } from "@material-ui/core";
 import {
   ArrowRight as ArrowRightIcon,
+  ArrowDropDown as ArrowDownIcon,
   AddCircleOutlined as AddIcon,
   RemoveCircleOutlined as RemoveIcon,
   Save as SaveIcon,
@@ -555,7 +556,11 @@ const Endpoint = (props) => {
                 }}
               >
                 <span>
-                  <ArrowRightIcon style={{ padding: 0 }} />
+                  {openExamples?.[exampleIndex] ? (
+                    <ArrowDownIcon style={{ padding: 0 }} />
+                  ) : (
+                    <ArrowRightIcon style={{ padding: 0 }} />
+                  )}
                 </span>
                 <span>Example {exampleIndex + 1}:&nbsp;&nbsp;</span>
                 <span className={appStyles.flex1}>
@@ -618,7 +623,7 @@ const Endpoint = (props) => {
                         Request Body
                       </div>
                       <div className={appStyles["example-request-body__json"]}>
-                        <pre>{prettyPrintJson(endpoint?.requestBody)}</pre>
+                        <pre>{prettyPrintJson(example?.requestBody)}</pre>
                       </div>
                       <Button
                         variant="outlined"
@@ -629,7 +634,7 @@ const Endpoint = (props) => {
                             title: `Example ${exampleIndex + 1}: ${
                               example?.title
                             }`,
-                            json: endpoint?.requestBody,
+                            json: example?.requestBody,
                           });
                         }}
                       >

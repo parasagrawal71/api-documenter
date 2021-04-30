@@ -9,8 +9,10 @@ export const capitalizeFirstLetter = (string) => {
 };
 
 export const prettyPrintJson = (jsonData) => {
-  const prettyJson = JSON.stringify(jsonData, undefined, 2);
-  return prettyJson;
+  if (jsonData) {
+    const prettyJson = JSON.stringify(JSON.parse(jsonData), undefined, 2);
+    return prettyJson;
+  }
 };
 
 export const sortObjectKeys = (obj) => {

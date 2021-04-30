@@ -45,6 +45,7 @@ const TextfieldPopup = (props) => {
             onClick={() => {
               handleSave(fieldOne);
               setOpenPopup(false);
+              setFieldOne("");
             }}
           >
             Save

@@ -245,7 +245,9 @@
             flex: 1;
             margin-right: 60px;
             @include flex-col;
+            height: 250px;
             position: relative;
+            max-width: calc(50% - 30px);
 
             .example-request-body__title {
               padding-bottom: 10px;
@@ -257,12 +259,24 @@
               color: white;
               padding: 5px 10px;
               border-radius: 3px;
+              overflow: overlay;
+      
+              &::-webkit-scrollbar {
+                width: 5px;
+                height: 5px;
+              }
+      
+              &::-webkit-scrollbar-thumb {
+                background-color: rgba(255, 255, 255, 0.2);
+                border-radius: 5px;
+              }
             }
           }
 
           .example-response-body {
             flex: 1;
             @include flex-col;
+            height: 250px;
             position: relative;
 
             .example-response-body__title {
@@ -277,6 +291,17 @@
               color: white;
               padding: 5px 10px;
               border-radius: 3px;
+              overflow: overlay;
+      
+              &::-webkit-scrollbar {
+                width: 5px;
+                height: 5px;
+              }
+      
+              &::-webkit-scrollbar-thumb {
+                background-color: rgba(255, 255, 255, 0.2);
+                border-radius: 5px;
+              }
             }
 
             .green {
