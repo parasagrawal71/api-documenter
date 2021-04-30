@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { ClickAwayListener } from "@material-ui/core";
 import { ListAlt as ListAltIcon } from "@material-ui/icons";
 
@@ -13,14 +13,12 @@ import EnvPopoverComponent from "components/envPopover/EnvPopover";
 import environments from "assets/environments";
 import appStyles from "./Header.module.scss";
 
-const Header = () => {
-  // HOOKS HERE
-  const [selectedEnv, setSelectedEnv] = useState({});
-  const [openEnvPopover, setOpenEnvPopover] = useState(null);
+const Header = (props) => {
+  // PROPS HERE
+  const { selectedEnv, setSelectedEnv } = props;
 
-  useEffect(() => {
-    setSelectedEnv(environments[0]);
-  }, []);
+  // HOOKS HERE
+  const [openEnvPopover, setOpenEnvPopover] = useState(null);
 
   const toggleOpenEnvPopover = (event) => {
     setOpenEnvPopover(openEnvPopover ? null : event?.currentTarget);

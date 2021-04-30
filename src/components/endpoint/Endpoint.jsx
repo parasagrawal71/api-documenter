@@ -30,7 +30,7 @@ import appStyles from "./Endpoint.module.scss";
 
 const Endpoint = (props) => {
   /* ########################### PROPS HERE ########################### */
-  // const {} = props;
+  const { selectedEnv } = props;
 
   /* ########################### HOOKS HERE ########################### */
   // REFs HERE
@@ -311,13 +311,31 @@ const Endpoint = (props) => {
 
     if (requestBody && !validateJSON(requestBody)) {
       setInvalidReqBody(true);
-      return console.log("Invalid");
+      return;
+    }
+
+    let modifiedPath = "";
+    if (endpoint?.path?.includes("{{")) {
+      const url = endpoint?.path;
+      const variableName = url?.substring(
+        url.indexOf("{") + 2,
+        url.indexOf("}")
+      );
+      let variableValue = "";
+      selectedEnv?.variables?.map((variable) => {
+        if (variableName === variable?.key) {
+          variableValue = variable?.value;
+        }
+        return variable;
+      });
+      const regex = new RegExp(`{{${variableName}}}`, "");
+      modifiedPath = url.replace(regex, variableValue);
     }
 
     axios
       .request({
         method: endpoint?.method,
-        url: endpoint?.path,
+        url: modifiedPath,
         data: requestBody,
         params: paramsToSend,
         headers: {

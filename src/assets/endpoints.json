@@ -1,7 +1,7 @@
 [
   {
     "method": "get",
-    "path": "https://jsonplaceholder.typicode.com/posts",
+    "path": "{{HOST_URL}}/posts",
     "title": "Edit a user",
     "description": "This endpoint will edit a user record",
     "parameters": [
@@ -22,7 +22,7 @@
       {
         "name": "Authorization",
         "required": true,
-        "value": "<TOKEN_VALUE>"
+        "value": "{{token}}"
       }
     ],
     "requestBody": {
@@ -59,7 +59,7 @@
         "requestHeaders": [
           {
             "name": "Authorization",
-            "value": "<TOKEN_VALUE>"
+            "value": "asnfofihj39nalkjewdf"
           }
         ],
         "response": {

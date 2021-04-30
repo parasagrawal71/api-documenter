@@ -8,7 +8,7 @@
       },
       {
         "key": "HOST_URL",
-        "value": "https://production.com"
+        "value": "https://jsonplaceholder.typicode.com"
       }
     ]
   },
