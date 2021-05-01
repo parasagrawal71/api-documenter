@@ -1,22 +1,49 @@
 .main-container {
-    font-size: 12px;
-    padding-top: 20px;
+  font-size: 12px;
+  padding-top: 20px;
 
-    .main-header {
-        font-size: 14px;
-        padding-left: 10px;
+  .main-header {
+    font-size: 14px;
+    padding-left: 10px;
+  }
+
+  .api-folders {
+  }
+
+  .api-folder-wrapper-1 {
+  }
+
+  .api-folder-wrapper-2 {
+    padding-left: 20px;
+  }
+
+  .api-folder {
+    display: flex;
+    align-items: center;
+    margin: 5px 0;
+
+    .arrow-right-icon {
+      cursor: pointer;
     }
 
-    .api-folders {
+    .api-folder-name {
+      padding-left: 10px;
+    }
+  }
+
+  .api-file {
+    display: flex;
+    align-items: center;
+    margin: 5px 0;
+    padding-left: 58px;
+
+    .api-file-method {
+        font-size: 8px;
+        width: 28px;
+        color: green;
     }
 
-    .api-folder {
-        display: flex;
-        align-items: center;
-        margin: 5px 0;
-
-        .api-folder-name {
-            padding-left: 10px;
-        }
+    .api-file-name {
     }
+  }
 }

@@ -1,8 +1,33 @@
-{
-    "user": "folder",
-    "auth": "folder",
-    "orders": {
-        "pastOrders": "folder",
-        "currentOrders": "folder"
-    }
-}
+[
+  {
+    "folder": "user",
+    "files": [
+      { "method": "GET", "fileName": "Add a user" },
+      { "method": "PUT", "fileName": "Edit a user" },
+      { "method": "DEL", "fileName": "Delete a user" }
+    ]
+  },
+  {
+    "folder": "auth",
+    "files": [
+      { "method": "POST", "fileName": "login" },
+      { "method": "POST", "fileName": "logout" }
+    ]
+  },
+  {
+    "folder": "orders",
+    "subfolders": [
+      {
+        "folder": "pastOrders",
+        "files": [{ "method": "GET", "fileName": "Get all my orders" }]
+      },
+      {
+        "folder": "currentOrders",
+        "files": [
+          { "method": "GET", "fileName": "Get my current orders" },
+          { "method": "PATCH", "fileName": "Return order" }
+        ]
+      }
+    ]
+  }
+]

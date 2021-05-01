@@ -27,6 +27,12 @@ export const sortObjectKeys = (obj) => {
   }
 };
 
+export const sortArrayOfObjs = (arr, byKey) => {
+  if (arr && byKey && Array.isArray(arr)) {
+    return arr.sort((a, b) => a?.[byKey].localeCompare(b?.[byKey]));
+  }
+};
+
 export const getStatusText = (statusCode) => {
   const statuses = {
     200: "OK",
