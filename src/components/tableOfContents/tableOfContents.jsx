@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from "react";
+import { Tooltip } from "@material-ui/core";
 import {
   ArrowRight as ArrowRightIcon,
-  FolderOutlined as FolderOutlinedIcon,
+  ArrowDropDown as ArrowDownIcon,
+  FolderOutlined as FolderIcon,
+  FolderOpenOutlined as FolderOpenIcon,
+  CreateNewFolderOutlined as AddFolderIcon,
+  MoreVert as MoreIcon,
 } from "@material-ui/icons";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
+import TextfieldPopupComponent from "components/textfieldPopup/TextfieldPopup";
+import ActionsPopoverComponent from "components/actionsPopover/ActionsPopover";
 import { sortArrayOfObjs } from "utils/functions";
 
 // IMPORT ASSETS HERE
@@ -15,6 +22,9 @@ const tableOfContents = () => {
   // HOOKS HERE
   const [sortedApiFolders, setSortedApiFolders] = useState([]);
   const [openReadme, setOpenReadme] = useState(false);
+  const [openTextfieldPopup, setOpenTextfieldPopup] = useState(false);
+  const [showApiActions, setShowApiActions] = useState({});
+  const [openActionsPopover, setOpenActionsPopover] = useState({});
 
   useEffect(() => {
     const sortedApis = sortArrayOfObjs(apiList, "folder");
@@ -42,27 +52,87 @@ const tableOfContents = () => {
     setSortedApiFolders(updatedFolders);
   };
 
-  const showApiFolder = (apiObj, subApiObj, subApiIndex) => {
+  const showApiFolder = (apiObj, subApiObj, apiIndex, subApiIndex) => {
+    const handleArrowClick = (e) => {
+      e.stopPropagation();
+      if (apiObj?.folder === "README") {
+        setOpenReadme(!openReadme);
+      } else {
+        openFolder(apiObj?.folder, subApiObj?.folder, apiIndex);
+      }
+    };
+
     return (
       <section
         className={appStyles["api-folder"]}
         key={subApiObj ? subApiObj?.folder : apiObj?.folder}
+        onMouseEnter={(e) => {
+          e.stopPropagation();
+          setShowApiActions({ [subApiObj?.folder || apiObj?.folder]: true });
+        }}
+        onMouseLeave={(e) => {
+          e.stopPropagation();
+          setShowApiActions({ [subApiObj?.folder || apiObj?.folder]: false });
+        }}
       >
-        <ArrowRightIcon
-          className={appStyles["arrow-right-icon"]}
-          onClick={(e) => {
-            e.stopPropagation();
-            if (apiObj?.folder === "README") {
-              setOpenReadme(!openReadme);
-            } else {
-              openFolder(apiObj?.folder, subApiObj?.folder, subApiIndex);
-            }
-          }}
-        />
-        <FolderOutlinedIcon />
-        <span className={appStyles["api-folder-name"]}>
-          {subApiObj ? subApiObj?.folder : apiObj?.folder}
-        </span>
+        <section className={appStyles["api-folder--left"]}>
+          {apiObj?.folder === "README" && openReadme ? (
+            <>
+              <ArrowDownIcon
+                className={appStyles.arrowIcon}
+                onClick={handleArrowClick}
+              />
+              <FolderOpenIcon />
+            </>
+          ) : subApiObj && apiObj?.subfolders?.[subApiIndex]?.opened ? (
+            <>
+              <ArrowDownIcon
+                className={appStyles.arrowIcon}
+                onClick={handleArrowClick}
+              />
+              <FolderOpenIcon />
+            </>
+          ) : !subApiObj && apiObj?.opened ? (
+            <>
+              <ArrowDownIcon
+                className={appStyles.arrowIcon}
+                onClick={handleArrowClick}
+              />
+              <FolderOpenIcon />
+            </>
+          ) : (
+            <>
+              <ArrowRightIcon
+                className={appStyles.arrowIcon}
+                onClick={handleArrowClick}
+              />
+              <FolderIcon />
+            </>
+          )}
+          <span className={appStyles["api-folder-name"]}>
+            {subApiObj ? subApiObj?.folder : apiObj?.folder}
+          </span>
+        </section>
+        {showApiActions?.[subApiObj?.folder || apiObj?.folder] && (
+          <section className={appStyles["api-folder--right"]}>
+            <MoreIcon
+              className={appStyles.actionIcons}
+              onClick={(e) => {
+                e.stopPropagation();
+                setOpenActionsPopover({
+                  [subApiObj?.folder || apiObj?.folder]: true,
+                });
+              }}
+            />
+          </section>
+        )}
+        {openActionsPopover?.[subApiObj?.folder || apiObj?.folder] && (
+          <ActionsPopoverComponent
+            openPopover={openActionsPopover}
+            setOpenPopover={setOpenActionsPopover}
+            hideAddFolder={subApiObj}
+          />
+        )}
       </section>
     );
   };
@@ -78,9 +148,33 @@ const tableOfContents = () => {
     });
   };
 
+  const updateApiFolders = (actionType, folderName) => {
+    switch (actionType) {
+      case "add":
+        const updatedApiFolders = [...sortedApiFolders];
+        updatedApiFolders.push({ folder: folderName });
+        setSortedApiFolders(sortArrayOfObjs(updatedApiFolders, "folder"));
+        return;
+
+      default:
+        return new Error("Invalid action");
+    }
+  };
+
   return (
     <section className={appStyles["main-container"]}>
-      <div className={appStyles["main-header"]}>Table of contents</div>
+      <div className={appStyles["main-header"]}>
+        <span>Table of contents</span>
+        <Tooltip title="Add Folder">
+          <AddFolderIcon
+            className={appStyles.addFolderIcon}
+            onClick={(e) => {
+              e.stopPropagation();
+              setOpenTextfieldPopup(true);
+            }}
+          />
+        </Tooltip>
+      </div>
       <section className={appStyles["api-folder-wrapper-1"]}>
         {showApiFolder({ folder: "README" })}
 
@@ -98,7 +192,7 @@ const tableOfContents = () => {
               key={apiFolder?.folder}
               className={appStyles["api-folder-wrapper-1"]}
             >
-              {showApiFolder(apiFolder)}
+              {showApiFolder(apiFolder, null, folderIndex)}
 
               {apiFolder?.opened &&
                 apiFolder?.subfolders?.map((subFolder, subFolderIndex) => {
@@ -107,7 +201,12 @@ const tableOfContents = () => {
                       key={subFolder?.folder}
                       className={appStyles["api-folder-wrapper-2"]}
                     >
-                      {showApiFolder(apiFolder, subFolder, folderIndex)}
+                      {showApiFolder(
+                        apiFolder,
+                        subFolder,
+                        folderIndex,
+                        subFolderIndex
+                      )}
 
                       {subFolder?.opened && showApiFiles(subFolder?.files)}
                     </section>
@@ -119,6 +218,17 @@ const tableOfContents = () => {
           );
         })}
       </section>
+
+      {/* ************************************** POPUP starts here **************************************** */}
+      <TextfieldPopupComponent
+        openPopup={openTextfieldPopup}
+        setOpenPopup={setOpenTextfieldPopup}
+        placeholder="Enter folder name"
+        handleSave={(value) => {
+          updateApiFolders("add", value);
+        }}
+      />
+      {/* ************************************************************************************************* */}
     </section>
   );
 };

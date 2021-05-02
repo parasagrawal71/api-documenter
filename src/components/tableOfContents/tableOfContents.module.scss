@@ -1,3 +1,5 @@
+@import "utils/commonStyles/flex.scss";
+
 .main-container {
   font-size: 12px;
   padding-top: 20px;
@@ -5,6 +7,25 @@
   .main-header {
     font-size: 14px;
     padding-left: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .addFolderIcon {
+    cursor: pointer;
+    width: 23px;
+    height: 23px;
+  }
+
+  .actionIcons {
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+
+    &:not(:first-child) {
+      margin-left: 3px;
+    }
   }
 
   .api-folders {
@@ -18,16 +39,23 @@
   }
 
   .api-folder {
-    display: flex;
-    align-items: center;
+    @include flex-row-b-sb-cen;
     margin: 5px 0;
+    position: relative;
 
-    .arrow-right-icon {
-      cursor: pointer;
+    .api-folder--left {
+      @include flex-row-v-cen;
+      .arrowIcon {
+        cursor: pointer;
+      }
+
+      .api-folder-name {
+        padding-left: 10px;
+      }
     }
 
-    .api-folder-name {
-      padding-left: 10px;
+    .api-folder--right {
+      @include flex-row-v-cen;
     }
   }
 
@@ -38,9 +66,9 @@
     padding-left: 58px;
 
     .api-file-method {
-        font-size: 8px;
-        width: 28px;
-        color: green;
+      font-size: 8px;
+      width: 28px;
+      color: green;
     }
 
     .api-file-name {

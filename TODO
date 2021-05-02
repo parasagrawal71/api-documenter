@@ -1,3 +1,5 @@
 - Change color of env variable in path or request headers
 - Make "read env variable" dynamic for any number of variables
 - "Add new env" option
+- Search for table of contents
+- Delete folder/file option
