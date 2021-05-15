@@ -24,9 +24,12 @@ export default function ActionsPopover(props) {
     setOpenPopover,
     addFileText,
     hideAddFile,
+    addFileCallback,
     hideAddFolder,
+    addFolderCallback,
     deleteText,
     hideDelete,
+    deleteCallback,
   } = props;
 
   // REFS HERE
@@ -56,19 +59,43 @@ export default function ActionsPopover(props) {
     <section ref={actionsPopupRef} className={appStyles["actions-cnt"]}>
       {!hideAddFile && (
         <div className={appStyles["actions-icons-cnt"]}>
-          <AddIcon className={appStyles.actionIcons} />
+          <AddIcon
+            className={appStyles.actionIcons}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (addFileCallback) {
+                addFileCallback();
+              }
+            }}
+          />
           <span>{addFileText || "Add Request"}</span>
         </div>
       )}
       {!hideAddFolder && (
         <div className={appStyles["actions-icons-cnt"]}>
-          <AddFolderIcon className={appStyles.actionIcons} />
+          <AddFolderIcon
+            className={appStyles.actionIcons}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (addFolderCallback) {
+                addFolderCallback();
+              }
+            }}
+          />
           <span>Add Folder</span>
         </div>
       )}
       {!hideDelete && (
         <div className={appStyles["actions-icons-cnt"]}>
-          <DeleteIcon className={appStyles.actionIcons} />
+          <DeleteIcon
+            className={appStyles.actionIcons}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (deleteCallback) {
+                deleteCallback();
+              }
+            }}
+          />
           <span>{deleteText || "Delete"}</span>
         </div>
       )}

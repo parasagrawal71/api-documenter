@@ -151,6 +151,9 @@ const tableOfContents = () => {
                 ? "Add File"
                 : null
             }
+            // addFolderCallback={}
+            // addFileCallback={}
+            // deleteCallback={}
           />
         )}
       </section>
