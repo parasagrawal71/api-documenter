@@ -9,10 +9,18 @@ import appStyles from "./TextfieldPopup.module.scss";
 
 const TextfieldPopup = (props) => {
   // PROPS HERE
-  const { openPopup, setOpenPopup, handleSave, placeholder, endpoint } = props;
+  const {
+    openPopup,
+    setOpenPopup,
+    handleSave,
+    placeholder1,
+    placeholder2,
+    endpoint,
+  } = props;
 
   // HOOKS HERE
   const [fieldOne, setFieldOne] = useState("");
+  const [fieldTwo, setFieldTwo] = useState("");
 
   useEffect(() => {
     // return () => {
@@ -31,18 +39,33 @@ const TextfieldPopup = (props) => {
       }}
     >
       <section>
-        <div>
+        <div className={appStyles["field-cnt"]}>
           <ThemeTextField
             variant="outlined"
             size="small"
             InputLabelProps={{
               focused: false,
             }}
-            placeholder={placeholder}
+            placeholder={placeholder1}
             value={fieldOne}
             onChange={(e) => setFieldOne(e?.target?.value)}
           />
         </div>
+
+        {placeholder2 && (
+          <div className={appStyles["field-cnt"]}>
+            <ThemeTextField
+              variant="outlined"
+              size="small"
+              InputLabelProps={{
+                focused: false,
+              }}
+              placeholder={placeholder2}
+              value={fieldTwo}
+              onChange={(e) => setFieldTwo(e?.target?.value)}
+            />
+          </div>
+        )}
       </section>
 
       <section className={appStyles["action-btns"]}>
@@ -50,9 +73,10 @@ const TextfieldPopup = (props) => {
           <Button
             variant="outlined"
             onClick={() => {
-              handleSave(fieldOne);
+              handleSave(fieldOne, fieldTwo);
               setOpenPopup({});
               setFieldOne("");
+              setFieldTwo("");
             }}
           >
             Save

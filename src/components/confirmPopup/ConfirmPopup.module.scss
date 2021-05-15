@@ -18,16 +18,16 @@
     }
   }
 
-  .field-cnt {
-    &:not(:first-child) {
-      margin-top: 10px;
-    }
-  }
-
-  .action-btns {
+  .action-btns-cnt {
     display: flex;
     justify-content: flex-end;
     align-items: center;
     margin-top: 15px;
+
+    .action-btn {
+      &:not(:first-child) {
+        margin-left: 10px;
+      }
+    }
   }
 }

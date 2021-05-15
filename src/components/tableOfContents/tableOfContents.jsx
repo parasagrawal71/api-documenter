@@ -5,6 +5,7 @@ import { CreateNewFolderOutlined as AddFolderIcon } from "@material-ui/icons";
 // IMPORT USER-DEFINED COMPONENTS HERE
 import TextfieldPopupComponent from "components/textfieldPopup/TextfieldPopup";
 import FolderOrFileComponent from "components/folderOrFile/FolderOrFile";
+import ConfirmPopupComponent from "components/confirmPopup/ConfirmPopup";
 import { sortArrayOfObjs } from "utils/functions";
 
 // IMPORT ASSETS HERE
@@ -18,11 +19,18 @@ const tableOfContents = () => {
   const [openModels, setOpenModels] = useState(false);
   const [openTextfieldPopup, setOpenTextfieldPopup] = useState({
     open: false,
-    placeholder: "",
+    placeholder1: "",
+    placeholder2: "",
     folderIndex: null,
     subFolderIndex: null,
     fileName: "",
     method: "",
+  });
+  const [openConfirmPopup, setOpenConfirmPopup] = useState({
+    open: false,
+    folderIndex: null,
+    subFolderIndex: null,
+    fileIndex: null,
   });
 
   useEffect(() => {
@@ -54,7 +62,7 @@ const tableOfContents = () => {
   const updateApisTree = (actionType, folder, subFolder, file) => {
     const [folderName, folderIndex] = folder || [];
     const [subFolderName, subFolderIndex] = subFolder || [];
-    const [fileName, method] = file || [];
+    const [fileName, method, fileIndex] = file || [];
 
     switch (actionType) {
       case "add-folder":
@@ -67,121 +75,87 @@ const tableOfContents = () => {
 
       case "add-subfolder":
         const updatedTreeAfterAddingSubFolder = [...sortedApisTree];
-        updatedTreeAfterAddingSubFolder?.[folderIndex]?.subfolders?.push({
-          folderName: subFolderName,
-        });
+        if (updatedTreeAfterAddingSubFolder?.[folderIndex]?.subfolders) {
+          updatedTreeAfterAddingSubFolder?.[folderIndex]?.subfolders?.push({
+            folderName: subFolderName,
+          });
+        } else {
+          updatedTreeAfterAddingSubFolder[folderIndex].subfolders = [];
+          updatedTreeAfterAddingSubFolder?.[folderIndex]?.subfolders?.push({
+            folderName: subFolderName,
+          });
+        }
         setSortedApisTree(updatedTreeAfterAddingSubFolder);
         break;
 
       case "add-file-in-folder":
-        let updatedTreeAfterAddingFileInFolder = [...sortedApisTree];
-        updatedTreeAfterAddingFileInFolder = updatedTreeAfterAddingFileInFolder.map(
-          (aFolder) => {
-            if (aFolder?.folderName === folderName) {
-              aFolder?.files?.push({ method: "", fileName: "" });
-            }
-
-            return aFolder;
-          }
-        );
-        setSortedApisTree(
-          sortArrayOfObjs(updatedTreeAfterAddingFileInFolder, "folderName")
-        );
+        const updatedTreeAfterAddingFileInFolder = [...sortedApisTree];
+        if (updatedTreeAfterAddingFileInFolder?.[folderIndex]?.files) {
+          updatedTreeAfterAddingFileInFolder?.[folderIndex]?.files?.push({
+            method: method.toUpperCase(),
+            fileName,
+          });
+        } else {
+          updatedTreeAfterAddingFileInFolder[folderIndex].files = [];
+          updatedTreeAfterAddingFileInFolder?.[folderIndex]?.files?.push({
+            method: method.toUpperCase(),
+            fileName,
+          });
+        }
+        setSortedApisTree(updatedTreeAfterAddingFileInFolder);
         break;
 
       case "add-file-in-subfolder":
-        let updatedTreeAfterAddingFileInSubFolder = [...sortedApisTree];
-        updatedTreeAfterAddingFileInSubFolder = updatedTreeAfterAddingFileInSubFolder.map(
-          (aFolder) => {
-            if (aFolder?.folderName === folderName) {
-              aFolder?.subfolders?.map((aSubFolder) => {
-                if (aSubFolder?.folderName === subFolderName) {
-                  aSubFolder?.files?.push({ method: "", fileName: "" });
-                }
-                return aSubFolder;
-              });
-            }
-
-            return aFolder;
-          }
-        );
-        setSortedApisTree(
-          sortArrayOfObjs(updatedTreeAfterAddingFileInSubFolder, "folderName")
-        );
+        const updatedTreeAfterAddingFileInSubFolder = [...sortedApisTree];
+        if (
+          updatedTreeAfterAddingFileInSubFolder?.[folderIndex]?.subfolders?.[
+            subFolderIndex
+          ]?.files
+        ) {
+          updatedTreeAfterAddingFileInSubFolder?.[folderIndex]?.subfolders?.[
+            subFolderIndex
+          ]?.files?.push({ method: method.toUpperCase(), fileName });
+        } else {
+          updatedTreeAfterAddingFileInSubFolder[folderIndex].subfolders[
+            subFolderIndex
+          ].files = [];
+          updatedTreeAfterAddingFileInSubFolder?.[folderIndex]?.subfolders?.[
+            subFolderIndex
+          ]?.files?.push({ method: method.toUpperCase(), fileName });
+        }
+        setSortedApisTree(updatedTreeAfterAddingFileInSubFolder);
         break;
 
       case "delete-folder":
         const updatedTreeAfterFolderDeletion = [...sortedApisTree];
-        setSortedApisTree(
-          sortArrayOfObjs(
-            updatedTreeAfterFolderDeletion.filter(
-              (aFolder) => aFolder?.folderName !== folderName
-            ),
-            "folderName"
-          )
-        );
+        updatedTreeAfterFolderDeletion.splice(folderIndex, 1);
+        setSortedApisTree(updatedTreeAfterFolderDeletion);
         break;
 
       case "delete-subfolder":
-        let updatedTreeAfterSubFolderDeletion = [...sortedApisTree];
-        updatedTreeAfterSubFolderDeletion = updatedTreeAfterSubFolderDeletion.map(
-          (aFolder) => {
-            if (aFolder?.folderName === folderName) {
-              const updatedSubFolders = aFolder?.subfolders?.filter(
-                (aSubFolder) => aSubFolder?.folderName !== subFolderName
-              );
-              aFolder.subfolders = updatedSubFolders;
-            }
-
-            return aFolder;
-          }
+        const updatedTreeAfterSubFolderDeletion = [...sortedApisTree];
+        updatedTreeAfterSubFolderDeletion?.[folderIndex]?.subfolders?.splice(
+          subFolderIndex,
+          1
         );
-        setSortedApisTree(
-          sortArrayOfObjs(updatedTreeAfterSubFolderDeletion, "folderName")
-        );
+        setSortedApisTree(updatedTreeAfterSubFolderDeletion);
         break;
 
       case "delete-file-from-folder":
-        let updatedTreeAfterFileDeletionInFolder = [...sortedApisTree];
-        updatedTreeAfterFileDeletionInFolder = updatedTreeAfterFileDeletionInFolder.map(
-          (aFolder) => {
-            if (aFolder?.folderName === folderName) {
-              const updatedFiles = aFolder?.files?.filter(
-                (aFile) => aFile?.fileName !== fileName
-              );
-              aFolder.files = updatedFiles;
-            }
-
-            return aFolder;
-          }
+        const updatedTreeAfterFileDeletionInFolder = [...sortedApisTree];
+        updatedTreeAfterFileDeletionInFolder?.[folderIndex]?.files?.splice(
+          fileIndex,
+          1
         );
-        setSortedApisTree(
-          sortArrayOfObjs(updatedTreeAfterFileDeletionInFolder, "folderName")
-        );
+        setSortedApisTree(updatedTreeAfterFileDeletionInFolder);
         break;
 
       case "delete-file-from-subfolder":
-        let updatedTreeAfterSubFileDeletionInFolder = [...sortedApisTree];
-        updatedTreeAfterSubFileDeletionInFolder = updatedTreeAfterSubFileDeletionInFolder.map(
-          (aFolder) => {
-            if (aFolder?.folderName === folderName) {
-              aFolder?.subfolders?.map((aSubFolder) => {
-                if (aSubFolder?.folderName === subFolderName) {
-                  const updatedFiles = aSubFolder?.files?.filter(
-                    (aFile) => aFile?.fileName !== fileName
-                  );
-                  aSubFolder.files = updatedFiles;
-                }
-                return aSubFolder;
-              });
-            }
-
-            return aFolder;
-          }
-        );
-        setSortedApisTree(
-          sortArrayOfObjs(updatedTreeAfterSubFileDeletionInFolder, "folderName")
-        );
+        const updatedTreeAfterSubFileDeletionInFolder = [...sortedApisTree];
+        updatedTreeAfterSubFileDeletionInFolder?.[folderIndex]?.subfolders?.[
+          subFolderIndex
+        ]?.files?.splice(fileIndex, 1);
+        setSortedApisTree(updatedTreeAfterSubFileDeletionInFolder);
         break;
 
       default:
@@ -259,7 +233,7 @@ const tableOfContents = () => {
               setOpenTextfieldPopup({
                 actionType: "add-folder",
                 open: true,
-                placeholder: "Enter Folder Name",
+                placeholder1: "Enter Folder Name",
               });
             }}
           />
@@ -287,7 +261,23 @@ const tableOfContents = () => {
                   setOpenTextfieldPopup({
                     actionType: "add-subfolder",
                     open: true,
-                    placeholder: "Enter Folder Name",
+                    placeholder1: "Enter Folder Name",
+                    folderIndex,
+                  });
+                }}
+                addFileCallback={() => {
+                  setOpenTextfieldPopup({
+                    actionType: "add-file-in-folder",
+                    open: true,
+                    placeholder1: "Enter File Name",
+                    placeholder2: "Enter Method",
+                    folderIndex,
+                  });
+                }}
+                deleteCallback={() => {
+                  setOpenConfirmPopup({
+                    actionType: "delete-folder",
+                    open: true,
                     folderIndex,
                   });
                 }}
@@ -313,16 +303,43 @@ const tableOfContents = () => {
                         folderObj={subFolder}
                         showActions={["addFile", "delete"]}
                         addFileText="Add Request"
+                        addFileCallback={() => {
+                          setOpenTextfieldPopup({
+                            actionType: "add-file-in-subfolder",
+                            open: true,
+                            placeholder1: "Enter File Name",
+                            placeholder2: "Enter Method",
+                            folderIndex,
+                            subFolderIndex,
+                          });
+                        }}
+                        deleteCallback={() => {
+                          setOpenConfirmPopup({
+                            actionType: "delete-subfolder",
+                            open: true,
+                            folderIndex,
+                            subFolderIndex,
+                          });
+                        }}
                       />
 
                       {subFolder?.opened &&
-                        subFolder?.files?.map((aFileObj) => {
+                        subFolder?.files?.map((aFileObj, fileIndex) => {
                           return (
                             <FolderOrFileComponent
                               key={aFileObj?.folderName}
                               type="file"
                               fileObj={aFileObj}
                               showActions={["delete"]}
+                              deleteCallback={() => {
+                                setOpenConfirmPopup({
+                                  actionType: "delete-file-from-subfolder",
+                                  open: true,
+                                  folderIndex,
+                                  subFolderIndex,
+                                  fileIndex,
+                                });
+                              }}
                             />
                           );
                         })}
@@ -331,13 +348,21 @@ const tableOfContents = () => {
                 })}
 
               {apiFolder?.opened &&
-                apiFolder?.files?.map((aFileObj) => {
+                apiFolder?.files?.map((aFileObj, fileIndex) => {
                   return (
                     <FolderOrFileComponent
                       key={aFileObj?.folderName}
                       type="file"
                       fileObj={aFileObj}
                       showActions={["delete"]}
+                      deleteCallback={() => {
+                        setOpenConfirmPopup({
+                          actionType: "delete-file-from-folder",
+                          open: true,
+                          folderIndex,
+                          fileIndex,
+                        });
+                      }}
                     />
                   );
                 })}
@@ -347,17 +372,32 @@ const tableOfContents = () => {
       </section>
       {/* ************************************************************************************************* */}
 
-      {/* ************************************** POPUP starts here **************************************** */}
+      {/* ************************************** POPUPs starts here **************************************** */}
       <TextfieldPopupComponent
         openPopup={openTextfieldPopup?.open}
         setOpenPopup={setOpenTextfieldPopup}
-        placeholder={openTextfieldPopup?.placeholder}
+        placeholder1={openTextfieldPopup?.placeholder1}
+        placeholder2={openTextfieldPopup?.placeholder2}
         handleSave={(value1, value2) => {
           updateApisTree(
             openTextfieldPopup?.actionType,
             [value1, openTextfieldPopup?.folderIndex],
             [value1, openTextfieldPopup?.subFolderIndex],
             [value1, value2]
+          );
+        }}
+      />
+
+      <ConfirmPopupComponent
+        openPopup={openConfirmPopup?.open}
+        setOpenPopup={setOpenConfirmPopup}
+        confirmText="Delete"
+        confirmCallback={() => {
+          updateApisTree(
+            openConfirmPopup?.actionType,
+            [null, openConfirmPopup?.folderIndex],
+            [null, openConfirmPopup?.subFolderIndex],
+            [null, null, openConfirmPopup?.fileIndex]
           );
         }}
       />
