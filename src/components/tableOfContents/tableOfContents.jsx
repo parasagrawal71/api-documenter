@@ -15,7 +15,7 @@ import ActionsPopoverComponent from "components/actionsPopover/ActionsPopover";
 import { sortArrayOfObjs } from "utils/functions";
 
 // IMPORT ASSETS HERE
-import apiList from "assets/apiList.json";
+import apisTree from "assets/apisTree.json";
 import appStyles from "./tableOfContents.module.scss";
 
 const tableOfContents = () => {
@@ -28,7 +28,7 @@ const tableOfContents = () => {
   const [openActionsPopover, setOpenActionsPopover] = useState({});
 
   useEffect(() => {
-    const sortedApis = sortArrayOfObjs(apiList, "folder");
+    const sortedApis = sortArrayOfObjs(apisTree, "folder");
     setSortedApiFolders(sortedApis);
   }, []);
 
@@ -198,7 +198,7 @@ const tableOfContents = () => {
               setOpenPopover={setOpenActionsPopover}
               hideAddFile
               hideAddFolder
-              deleteText="Delete Request"
+              deleteText="Delete"
             />
           )}
         </div>
