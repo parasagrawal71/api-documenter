@@ -29,7 +29,7 @@ export const sortObjectKeys = (obj) => {
 
 export const sortArrayOfObjs = (arr, byKey) => {
   if (arr && byKey && Array.isArray(arr)) {
-    return arr.sort((a, b) => a?.[byKey].localeCompare(b?.[byKey]));
+    return arr.sort((a, b) => a?.[byKey]?.localeCompare(b?.[byKey]));
   }
 };
 

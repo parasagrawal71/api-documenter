@@ -57,44 +57,53 @@ export default function ActionsPopover(props) {
   return openPopover ? (
     <section ref={actionsPopupRef} className={appStyles["actions-cnt"]}>
       {showActions?.includes("addFile") && (
-        <div className={appStyles["actions-icons-cnt"]}>
-          <AddIcon
-            className={appStyles.actionIcons}
-            onClick={(e) => {
-              e.stopPropagation();
-              if (addFileCallback) {
-                addFileCallback();
-              }
-            }}
-          />
+        <div
+          className={appStyles["actions-icons-cnt"]}
+          onClick={(e) => {
+            e.stopPropagation();
+            if (addFileCallback) {
+              addFileCallback();
+            }
+          }}
+          role="button"
+          onKeyDown={() => {}}
+          tabIndex="0"
+        >
+          <AddIcon className={appStyles.actionIcons} />
           <span>{addFileText || "Add File"}</span>
         </div>
       )}
       {showActions?.includes("addFolder") && (
-        <div className={appStyles["actions-icons-cnt"]}>
-          <AddFolderIcon
-            className={appStyles.actionIcons}
-            onClick={(e) => {
-              e.stopPropagation();
-              if (addFolderCallback) {
-                addFolderCallback();
-              }
-            }}
-          />
+        <div
+          className={appStyles["actions-icons-cnt"]}
+          onClick={(e) => {
+            e.stopPropagation();
+            if (addFolderCallback) {
+              addFolderCallback();
+            }
+          }}
+          role="button"
+          onKeyDown={() => {}}
+          tabIndex="0"
+        >
+          <AddFolderIcon className={appStyles.actionIcons} />
           <span>{addFolderText || "Add Folder"}</span>
         </div>
       )}
       {showActions?.includes("delete") && (
-        <div className={appStyles["actions-icons-cnt"]}>
-          <DeleteIcon
-            className={appStyles.actionIcons}
-            onClick={(e) => {
-              e.stopPropagation();
-              if (deleteCallback) {
-                deleteCallback();
-              }
-            }}
-          />
+        <div
+          className={appStyles["actions-icons-cnt"]}
+          onClick={(e) => {
+            e.stopPropagation();
+            if (deleteCallback) {
+              deleteCallback();
+            }
+          }}
+          role="button"
+          onKeyDown={() => {}}
+          tabIndex="0"
+        >
+          <DeleteIcon className={appStyles.actionIcons} />
           <span>{deleteText || "Delete"}</span>
         </div>
       )}

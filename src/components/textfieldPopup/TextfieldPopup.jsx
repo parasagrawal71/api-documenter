@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Dialog, Button } from "@material-ui/core";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
@@ -14,13 +14,20 @@ const TextfieldPopup = (props) => {
   // HOOKS HERE
   const [fieldOne, setFieldOne] = useState("");
 
+  useEffect(() => {
+    // return () => {
+    //   setOpenPopup({});
+    // };
+    // eslint-disable-next-line
+  }, []);
+
   return (
     <Dialog
       open={openPopup}
       classes={{ paper: appStyles["dialog-cnt"] }}
       className={appStyles["main-cnt"]}
       onClose={() => {
-        setOpenPopup(false);
+        setOpenPopup({});
       }}
     >
       <section>
@@ -44,7 +51,7 @@ const TextfieldPopup = (props) => {
             variant="outlined"
             onClick={() => {
               handleSave(fieldOne);
-              setOpenPopup(false);
+              setOpenPopup({});
               setFieldOne("");
             }}
           >
