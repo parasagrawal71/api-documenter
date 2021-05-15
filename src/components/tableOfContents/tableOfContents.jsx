@@ -13,18 +13,18 @@ import appStyles from "./tableOfContents.module.scss";
 
 const tableOfContents = () => {
   // HOOKS HERE
-  const [sortedApiFolders, setSortedApiFolders] = useState([]);
+  const [sortedApisTree, setSortedApisTree] = useState([]);
   const [openReadme, setOpenReadme] = useState(false);
   const [openModels, setOpenModels] = useState(false);
   const [openTextfieldPopup, setOpenTextfieldPopup] = useState(false);
 
   useEffect(() => {
-    const sortedApis = sortArrayOfObjs(apisTree, "folderName");
-    setSortedApiFolders(sortedApis);
+    const sortedApisTreeTemp = sortArrayOfObjs(apisTree, "folderName");
+    setSortedApisTree(sortedApisTreeTemp);
   }, []);
 
   const openCloseFolder = (folderName, subFolderName, folderIndex) => {
-    const updatedFolders = sortedApiFolders?.map((folderObj, index) => {
+    const updatedFolders = sortedApisTree?.map((folderObj, index) => {
       if (folderObj?.folderName === folderName && !subFolderName) {
         folderObj.opened = !folderObj.opened;
       }
@@ -41,15 +41,15 @@ const tableOfContents = () => {
 
       return folderObj;
     });
-    setSortedApiFolders(updatedFolders);
+    setSortedApisTree(updatedFolders);
   };
 
-  const updateApiFolders = (actionType, folderName) => {
+  const updateApisTree = (actionType, folderName) => {
     switch (actionType) {
       case "add":
-        const updatedApiFolders = [...sortedApiFolders];
-        updatedApiFolders.push({ folder: folderName });
-        setSortedApiFolders(sortArrayOfObjs(updatedApiFolders, "folderName"));
+        const updatedApisTree = [...sortedApisTree];
+        updatedApisTree.push({ folder: folderName });
+        setSortedApisTree(sortArrayOfObjs(updatedApisTree, "folderName"));
         return;
 
       default:
@@ -79,11 +79,11 @@ const tableOfContents = () => {
           [
             { fileName: "Success response format" },
             { fileName: "Error response format" },
-          ].map((fileMapObj) => {
+          ].map((aFileObj) => {
             return (
               <FolderOrFileComponent
                 type="file"
-                fileObj={fileMapObj}
+                fileObj={aFileObj}
                 showActions={["delete"]}
               />
             );
@@ -105,11 +105,11 @@ const tableOfContents = () => {
         />
 
         {openModels &&
-          [{ fileName: "User" }, { fileName: "Endpoint" }].map((fileMapObj) => {
+          [{ fileName: "User" }, { fileName: "Endpoint" }].map((aFileObj) => {
             return (
               <FolderOrFileComponent
                 type="file"
-                fileObj={fileMapObj}
+                fileObj={aFileObj}
                 showActions={["delete"]}
               />
             );
@@ -132,7 +132,7 @@ const tableOfContents = () => {
 
       {/* *********************************** API FOLDERS starts here ************************************* */}
       <section className={appStyles["api-folders"]}>
-        {sortedApiFolders?.map((apiFolder, folderIndex) => {
+        {sortedApisTree?.map((apiFolder, folderIndex) => {
           return (
             <section
               className={appStyles["folder-wrapper"]}
@@ -209,7 +209,7 @@ const tableOfContents = () => {
         setOpenPopup={setOpenTextfieldPopup}
         placeholder="Enter folder name"
         handleSave={(value) => {
-          updateApiFolders("add", value);
+          updateApisTree("add", value);
         }}
       />
       {/* ************************************************************************************************* */}
