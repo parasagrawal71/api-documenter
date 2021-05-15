@@ -54,7 +54,7 @@ const tableOfContents = () => {
 
   const showApiFolder = (apiObj, subApiObj, apiIndex, subApiIndex) => {
     const handleArrowClick = (e) => {
-      e.stopPropagation();
+      // e.stopPropagation(); // DON'T uncomment it. Because of this, actions popover clickaway listener doesn't work on clicking the arrow btn
       if (apiObj?.folder === "README") {
         setOpenReadme(!openReadme);
       } else {
