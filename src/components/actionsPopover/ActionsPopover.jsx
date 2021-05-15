@@ -4,6 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import {
   AddCircleOutline as AddIcon,
   CreateNewFolderOutlined as AddFolderIcon,
+  Delete as DeleteIcon,
 } from "@material-ui/icons";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
@@ -18,7 +19,15 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ActionsPopover(props) {
   // PROPS HERE
-  const { openPopover, setOpenPopover, hideAddFolder } = props;
+  const {
+    openPopover,
+    setOpenPopover,
+    addFileText,
+    hideAddFile,
+    hideAddFolder,
+    deleteText,
+    hideDelete,
+  } = props;
 
   // REFS HERE
   const actionsPopupRef = useRef(null);
@@ -45,14 +54,22 @@ export default function ActionsPopover(props) {
 
   return openPopover ? (
     <section ref={actionsPopupRef} className={appStyles["actions-cnt"]}>
-      <div className={appStyles["actions-icons-cnt"]}>
-        <AddIcon className={appStyles.actionIcons} />
-        <span>Add Request</span>
-      </div>
+      {!hideAddFile && (
+        <div className={appStyles["actions-icons-cnt"]}>
+          <AddIcon className={appStyles.actionIcons} />
+          <span>{addFileText || "Add Request"}</span>
+        </div>
+      )}
       {!hideAddFolder && (
         <div className={appStyles["actions-icons-cnt"]}>
           <AddFolderIcon className={appStyles.actionIcons} />
           <span>Add Folder</span>
+        </div>
+      )}
+      {!hideDelete && (
+        <div className={appStyles["actions-icons-cnt"]}>
+          <DeleteIcon className={appStyles.actionIcons} />
+          <span>{deleteText || "Delete"}</span>
         </div>
       )}
     </section>

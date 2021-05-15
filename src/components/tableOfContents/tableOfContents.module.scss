@@ -12,6 +12,16 @@
     align-items: center;
   }
 
+  .sub-header {
+    border-top: 1px solid lightgrey;
+    padding-top: 5px;
+    font-size: 14px;
+    padding-left: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
   .addFolderIcon {
     cursor: pointer;
     width: 23px;
@@ -62,16 +72,24 @@
   .api-file {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     margin: 5px 0;
     padding-left: 58px;
+    height: 20px;
+    position: relative;
 
-    .api-file-method {
-      font-size: 8px;
-      width: 28px;
-      color: green;
+    .api-file--left {
+      .api-file-method {
+        font-size: 8px;
+        width: 28px;
+        color: green;
+        margin-right: 5px;
+      }
+
+      .api-file-name {
+      }
     }
-
-    .api-file-name {
+    .api-file--right {
     }
   }
 }

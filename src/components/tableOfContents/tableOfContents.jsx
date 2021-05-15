@@ -22,6 +22,7 @@ const tableOfContents = () => {
   // HOOKS HERE
   const [sortedApiFolders, setSortedApiFolders] = useState([]);
   const [openReadme, setOpenReadme] = useState(false);
+  const [openModels, setOpenModels] = useState(false);
   const [openTextfieldPopup, setOpenTextfieldPopup] = useState(false);
   const [showApiActions, setShowApiActions] = useState({});
   const [openActionsPopover, setOpenActionsPopover] = useState({});
@@ -57,6 +58,8 @@ const tableOfContents = () => {
       // e.stopPropagation(); // DON'T uncomment it. Because of this, actions popover clickaway listener doesn't work on clicking the arrow btn
       if (apiObj?.folder === "README") {
         setOpenReadme(!openReadme);
+      } else if (apiObj?.folder === "Models") {
+        setOpenModels(!openModels);
       } else {
         openFolder(apiObj?.folder, subApiObj?.folder, apiIndex);
       }
@@ -77,6 +80,14 @@ const tableOfContents = () => {
       >
         <section className={appStyles["api-folder--left"]}>
           {apiObj?.folder === "README" && openReadme ? (
+            <>
+              <ArrowDownIcon
+                className={appStyles.arrowIcon}
+                onClick={handleArrowClick}
+              />
+              <FolderOpenIcon />
+            </>
+          ) : apiObj?.folder === "Models" && openModels ? (
             <>
               <ArrowDownIcon
                 className={appStyles.arrowIcon}
@@ -130,7 +141,16 @@ const tableOfContents = () => {
           <ActionsPopoverComponent
             openPopover={openActionsPopover}
             setOpenPopover={setOpenActionsPopover}
-            hideAddFolder={subApiObj}
+            hideAddFolder={
+              subApiObj || ["README", "Models"].includes(apiObj?.folder)
+            }
+            addFileText={
+              apiObj?.folder === "Models"
+                ? "Add Model"
+                : apiObj?.folder === "README"
+                ? "Add File"
+                : null
+            }
           />
         )}
       </section>
@@ -140,9 +160,44 @@ const tableOfContents = () => {
   const showApiFiles = (apiFiles) => {
     return apiFiles?.map((file) => {
       return (
-        <div className={appStyles["api-file"]} key={file?.fileName}>
-          <span className={appStyles["api-file-method"]}>{file?.method}</span>
-          <span className={appStyles["api-file-name"]}>{file?.fileName}</span>
+        <div
+          className={appStyles["api-file"]}
+          key={file?.fileName}
+          onMouseEnter={(e) => {
+            e.stopPropagation();
+            setShowApiActions({ [file?.fileName]: true });
+          }}
+          onMouseLeave={(e) => {
+            e.stopPropagation();
+            setShowApiActions({ [file?.fileName]: false });
+          }}
+        >
+          <section className={appStyles["api-file--left"]}>
+            <span className={appStyles["api-file-method"]}>{file?.method}</span>
+            <span className={appStyles["api-file-name"]}>{file?.fileName}</span>
+          </section>
+          {showApiActions?.[file?.fileName] && (
+            <section className={appStyles["api-file--right"]}>
+              <MoreIcon
+                className={appStyles.actionIcons}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setOpenActionsPopover({
+                    [file?.fileName]: true,
+                  });
+                }}
+              />
+            </section>
+          )}
+          {openActionsPopover?.[file?.fileName] && (
+            <ActionsPopoverComponent
+              openPopover={openActionsPopover}
+              setOpenPopover={setOpenActionsPopover}
+              hideAddFile
+              hideAddFolder
+              deleteText="Delete Request"
+            />
+          )}
         </div>
       );
     });
@@ -165,15 +220,6 @@ const tableOfContents = () => {
     <section className={appStyles["main-container"]}>
       <div className={appStyles["main-header"]}>
         <span>Table of contents</span>
-        <Tooltip title="Add Folder">
-          <AddFolderIcon
-            className={appStyles.addFolderIcon}
-            onClick={(e) => {
-              e.stopPropagation();
-              setOpenTextfieldPopup(true);
-            }}
-          />
-        </Tooltip>
       </div>
       <section className={appStyles["api-folder-wrapper-1"]}>
         {showApiFolder({ folder: "README" })}
@@ -184,7 +230,29 @@ const tableOfContents = () => {
             { method: "INFO", fileName: "Error response format" },
           ])}
       </section>
+      <section className={appStyles["api-folder-wrapper-1"]}>
+        {showApiFolder({ folder: "Models" })}
 
+        {openModels &&
+          showApiFiles([
+            { method: "INFO", fileName: "User" },
+            { method: "INFO", fileName: "Endpoint" },
+          ])}
+      </section>
+      <div className={appStyles["sub-header"]}>
+        <span>APIs</span>
+        <Tooltip title="Add Folder">
+          <AddFolderIcon
+            className={appStyles.addFolderIcon}
+            onClick={(e) => {
+              e.stopPropagation();
+              setOpenTextfieldPopup(true);
+            }}
+          />
+        </Tooltip>
+      </div>
+
+      {/* *********************************** API FOLDERS starts here ************************************* */}
       <section className={appStyles["api-folders"]}>
         {sortedApiFolders?.map((apiFolder, folderIndex) => {
           return (
@@ -218,6 +286,7 @@ const tableOfContents = () => {
           );
         })}
       </section>
+      {/* ************************************************************************************************* */}
 
       {/* ************************************** POPUP starts here **************************************** */}
       <TextfieldPopupComponent
