@@ -22,13 +22,12 @@ export default function ActionsPopover(props) {
   const {
     openPopover,
     setOpenPopover,
+    showActions,
     addFileText,
-    hideAddFile,
     addFileCallback,
-    hideAddFolder,
+    addFolderText,
     addFolderCallback,
     deleteText,
-    hideDelete,
     deleteCallback,
   } = props;
 
@@ -57,7 +56,7 @@ export default function ActionsPopover(props) {
 
   return openPopover ? (
     <section ref={actionsPopupRef} className={appStyles["actions-cnt"]}>
-      {!hideAddFile && (
+      {showActions?.includes("addFile") && (
         <div className={appStyles["actions-icons-cnt"]}>
           <AddIcon
             className={appStyles.actionIcons}
@@ -68,10 +67,10 @@ export default function ActionsPopover(props) {
               }
             }}
           />
-          <span>{addFileText || "Add Request"}</span>
+          <span>{addFileText || "Add File"}</span>
         </div>
       )}
-      {!hideAddFolder && (
+      {showActions?.includes("addFolder") && (
         <div className={appStyles["actions-icons-cnt"]}>
           <AddFolderIcon
             className={appStyles.actionIcons}
@@ -82,10 +81,10 @@ export default function ActionsPopover(props) {
               }
             }}
           />
-          <span>Add Folder</span>
+          <span>{addFolderText || "Add Folder"}</span>
         </div>
       )}
-      {!hideDelete && (
+      {showActions?.includes("delete") && (
         <div className={appStyles["actions-icons-cnt"]}>
           <DeleteIcon
             className={appStyles.actionIcons}

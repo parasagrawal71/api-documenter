@@ -1,17 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Tooltip } from "@material-ui/core";
-import {
-  ArrowRight as ArrowRightIcon,
-  ArrowDropDown as ArrowDownIcon,
-  FolderOutlined as FolderIcon,
-  FolderOpenOutlined as FolderOpenIcon,
-  CreateNewFolderOutlined as AddFolderIcon,
-  MoreVert as MoreIcon,
-} from "@material-ui/icons";
+import { CreateNewFolderOutlined as AddFolderIcon } from "@material-ui/icons";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
 import TextfieldPopupComponent from "components/textfieldPopup/TextfieldPopup";
-import ActionsPopoverComponent from "components/actionsPopover/ActionsPopover";
+import FolderOrFileComponent from "components/folderOrFile/FolderOrFile";
 import { sortArrayOfObjs } from "utils/functions";
 
 // IMPORT ASSETS HERE
@@ -24,23 +17,21 @@ const tableOfContents = () => {
   const [openReadme, setOpenReadme] = useState(false);
   const [openModels, setOpenModels] = useState(false);
   const [openTextfieldPopup, setOpenTextfieldPopup] = useState(false);
-  const [showApiActions, setShowApiActions] = useState({});
-  const [openActionsPopover, setOpenActionsPopover] = useState({});
 
   useEffect(() => {
-    const sortedApis = sortArrayOfObjs(apisTree, "folder");
+    const sortedApis = sortArrayOfObjs(apisTree, "folderName");
     setSortedApiFolders(sortedApis);
   }, []);
 
-  const openFolder = (folderName, subFolderName, folderIndex) => {
+  const openCloseFolder = (folderName, subFolderName, folderIndex) => {
     const updatedFolders = sortedApiFolders?.map((folderObj, index) => {
-      if (folderObj?.folder === folderName && !subFolderName) {
+      if (folderObj?.folderName === folderName && !subFolderName) {
         folderObj.opened = !folderObj.opened;
       }
 
       if (subFolderName && index === folderIndex) {
         const updatedSubfolders = folderObj?.subfolders?.map((subFolderObj) => {
-          if (subFolderObj?.folder === subFolderName) {
+          if (subFolderObj?.folderName === subFolderName) {
             subFolderObj.opened = !subFolderObj.opened;
           }
           return subFolderObj;
@@ -53,165 +44,12 @@ const tableOfContents = () => {
     setSortedApiFolders(updatedFolders);
   };
 
-  const showApiFolder = (apiObj, subApiObj, apiIndex, subApiIndex) => {
-    const handleArrowClick = (e) => {
-      // e.stopPropagation(); // DON'T uncomment it. Because of this, actions popover clickaway listener doesn't work on clicking the arrow btn
-      if (apiObj?.folder === "README") {
-        setOpenReadme(!openReadme);
-      } else if (apiObj?.folder === "Models") {
-        setOpenModels(!openModels);
-      } else {
-        openFolder(apiObj?.folder, subApiObj?.folder, apiIndex);
-      }
-    };
-
-    return (
-      <section
-        className={appStyles["api-folder"]}
-        key={subApiObj ? subApiObj?.folder : apiObj?.folder}
-        onMouseEnter={(e) => {
-          e.stopPropagation();
-          setShowApiActions({ [subApiObj?.folder || apiObj?.folder]: true });
-        }}
-        onMouseLeave={(e) => {
-          e.stopPropagation();
-          setShowApiActions({ [subApiObj?.folder || apiObj?.folder]: false });
-        }}
-      >
-        <section className={appStyles["api-folder--left"]}>
-          {apiObj?.folder === "README" && openReadme ? (
-            <>
-              <ArrowDownIcon
-                className={appStyles.arrowIcon}
-                onClick={handleArrowClick}
-              />
-              <FolderOpenIcon />
-            </>
-          ) : apiObj?.folder === "Models" && openModels ? (
-            <>
-              <ArrowDownIcon
-                className={appStyles.arrowIcon}
-                onClick={handleArrowClick}
-              />
-              <FolderOpenIcon />
-            </>
-          ) : subApiObj && apiObj?.subfolders?.[subApiIndex]?.opened ? (
-            <>
-              <ArrowDownIcon
-                className={appStyles.arrowIcon}
-                onClick={handleArrowClick}
-              />
-              <FolderOpenIcon />
-            </>
-          ) : !subApiObj && apiObj?.opened ? (
-            <>
-              <ArrowDownIcon
-                className={appStyles.arrowIcon}
-                onClick={handleArrowClick}
-              />
-              <FolderOpenIcon />
-            </>
-          ) : (
-            <>
-              <ArrowRightIcon
-                className={appStyles.arrowIcon}
-                onClick={handleArrowClick}
-              />
-              <FolderIcon />
-            </>
-          )}
-          <span className={appStyles["api-folder-name"]}>
-            {subApiObj ? subApiObj?.folder : apiObj?.folder}
-          </span>
-        </section>
-        {showApiActions?.[subApiObj?.folder || apiObj?.folder] && (
-          <section className={appStyles["api-folder--right"]}>
-            <MoreIcon
-              className={appStyles.actionIcons}
-              onClick={(e) => {
-                e.stopPropagation();
-                setOpenActionsPopover({
-                  [subApiObj?.folder || apiObj?.folder]: true,
-                });
-              }}
-            />
-          </section>
-        )}
-        {openActionsPopover?.[subApiObj?.folder || apiObj?.folder] && (
-          <ActionsPopoverComponent
-            openPopover={openActionsPopover}
-            setOpenPopover={setOpenActionsPopover}
-            hideAddFolder={
-              subApiObj || ["README", "Models"].includes(apiObj?.folder)
-            }
-            addFileText={
-              apiObj?.folder === "Models"
-                ? "Add Model"
-                : apiObj?.folder === "README"
-                ? "Add File"
-                : null
-            }
-            // addFolderCallback={}
-            // addFileCallback={}
-            // deleteCallback={}
-          />
-        )}
-      </section>
-    );
-  };
-
-  const showApiFiles = (apiFiles) => {
-    return apiFiles?.map((file) => {
-      return (
-        <div
-          className={appStyles["api-file"]}
-          key={file?.fileName}
-          onMouseEnter={(e) => {
-            e.stopPropagation();
-            setShowApiActions({ [file?.fileName]: true });
-          }}
-          onMouseLeave={(e) => {
-            e.stopPropagation();
-            setShowApiActions({ [file?.fileName]: false });
-          }}
-        >
-          <section className={appStyles["api-file--left"]}>
-            <span className={appStyles["api-file-method"]}>{file?.method}</span>
-            <span className={appStyles["api-file-name"]}>{file?.fileName}</span>
-          </section>
-          {showApiActions?.[file?.fileName] && (
-            <section className={appStyles["api-file--right"]}>
-              <MoreIcon
-                className={appStyles.actionIcons}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setOpenActionsPopover({
-                    [file?.fileName]: true,
-                  });
-                }}
-              />
-            </section>
-          )}
-          {openActionsPopover?.[file?.fileName] && (
-            <ActionsPopoverComponent
-              openPopover={openActionsPopover}
-              setOpenPopover={setOpenActionsPopover}
-              hideAddFile
-              hideAddFolder
-              deleteText="Delete"
-            />
-          )}
-        </div>
-      );
-    });
-  };
-
   const updateApiFolders = (actionType, folderName) => {
     switch (actionType) {
       case "add":
         const updatedApiFolders = [...sortedApiFolders];
         updatedApiFolders.push({ folder: folderName });
-        setSortedApiFolders(sortArrayOfObjs(updatedApiFolders, "folder"));
+        setSortedApiFolders(sortArrayOfObjs(updatedApiFolders, "folderName"));
         return;
 
       default:
@@ -224,24 +62,61 @@ const tableOfContents = () => {
       <div className={appStyles["main-header"]}>
         <span>Table of contents</span>
       </div>
-      <section className={appStyles["api-folder-wrapper-1"]}>
-        {showApiFolder({ folder: "README" })}
+
+      {/* ************************************** README starts here **************************************** */}
+      <section className={appStyles["folder-wrapper"]}>
+        <FolderOrFileComponent
+          type="folder"
+          isFolderOpen={openReadme}
+          toggleFolder={() => {
+            setOpenReadme(!openReadme);
+          }}
+          folderObj={{ folderName: "README" }}
+          showActions={["addFile"]}
+        />
 
         {openReadme &&
-          showApiFiles([
-            { method: "INFO", fileName: "Success response format" },
-            { method: "INFO", fileName: "Error response format" },
-          ])}
+          [
+            { fileName: "Success response format" },
+            { fileName: "Error response format" },
+          ].map((fileMapObj) => {
+            return (
+              <FolderOrFileComponent
+                type="file"
+                fileObj={fileMapObj}
+                showActions={["delete"]}
+              />
+            );
+          })}
       </section>
-      <section className={appStyles["api-folder-wrapper-1"]}>
-        {showApiFolder({ folder: "Models" })}
+      {/* ************************************************************************************************* */}
+
+      {/* ************************************** MODELS starts here **************************************** */}
+      <section className={appStyles["folder-wrapper"]}>
+        <FolderOrFileComponent
+          type="folder"
+          isFolderOpen={openModels}
+          toggleFolder={() => {
+            setOpenModels(!openModels);
+          }}
+          folderObj={{ folderName: "Models" }}
+          showActions={["addFile"]}
+          addFileText="Add Model"
+        />
 
         {openModels &&
-          showApiFiles([
-            { method: "INFO", fileName: "User" },
-            { method: "INFO", fileName: "Endpoint" },
-          ])}
+          [{ fileName: "User" }, { fileName: "Endpoint" }].map((fileMapObj) => {
+            return (
+              <FolderOrFileComponent
+                type="file"
+                fileObj={fileMapObj}
+                showActions={["delete"]}
+              />
+            );
+          })}
       </section>
+      {/* ************************************************************************************************* */}
+
       <div className={appStyles["sub-header"]}>
         <span>APIs</span>
         <Tooltip title="Add Folder">
@@ -260,31 +135,68 @@ const tableOfContents = () => {
         {sortedApiFolders?.map((apiFolder, folderIndex) => {
           return (
             <section
-              key={apiFolder?.folder}
-              className={appStyles["api-folder-wrapper-1"]}
+              className={appStyles["folder-wrapper"]}
+              key={apiFolder?.folderName}
             >
-              {showApiFolder(apiFolder, null, folderIndex)}
+              <FolderOrFileComponent
+                type="folder"
+                isFolderOpen={apiFolder?.opened}
+                toggleFolder={() => {
+                  openCloseFolder(apiFolder?.folderName, null, folderIndex);
+                }}
+                folderObj={apiFolder}
+                showActions={["addFile", "addFolder", "delete"]}
+                addFileText="Add Request"
+              />
 
               {apiFolder?.opened &&
                 apiFolder?.subfolders?.map((subFolder, subFolderIndex) => {
                   return (
                     <section
                       key={subFolder?.folder}
-                      className={appStyles["api-folder-wrapper-2"]}
+                      className={appStyles["subfolder-wrapper"]}
                     >
-                      {showApiFolder(
-                        apiFolder,
-                        subFolder,
-                        folderIndex,
-                        subFolderIndex
-                      )}
+                      <FolderOrFileComponent
+                        type="folder"
+                        isFolderOpen={subFolder?.opened}
+                        toggleFolder={() => {
+                          openCloseFolder(
+                            apiFolder?.folderName,
+                            subFolder?.folderName,
+                            folderIndex
+                          );
+                        }}
+                        folderObj={subFolder}
+                        showActions={["addFile", "delete"]}
+                        addFileText="Add Request"
+                      />
 
-                      {subFolder?.opened && showApiFiles(subFolder?.files)}
+                      {subFolder?.opened &&
+                        subFolder?.files?.map((aFileObj) => {
+                          return (
+                            <FolderOrFileComponent
+                              key={aFileObj?.folderName}
+                              type="file"
+                              fileObj={aFileObj}
+                              showActions={["delete"]}
+                            />
+                          );
+                        })}
                     </section>
                   );
                 })}
 
-              {apiFolder?.opened && showApiFiles(apiFolder?.files)}
+              {apiFolder?.opened &&
+                apiFolder?.files?.map((aFileObj) => {
+                  return (
+                    <FolderOrFileComponent
+                      key={aFileObj?.folderName}
+                      type="file"
+                      fileObj={aFileObj}
+                      showActions={["delete"]}
+                    />
+                  );
+                })}
             </section>
           );
         })}

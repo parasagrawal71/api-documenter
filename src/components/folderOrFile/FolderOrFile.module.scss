@@ -1,0 +1,45 @@
+@import "utils/commonStyles/flex.scss";
+
+.folder-file-cnt {
+  @include flex-row-b-sb-cen;
+  margin: 5px 0;
+  position: relative;
+
+  .folder-file-cnt--left {
+    @include flex-row-v-cen;
+    .arrowIcon {
+      cursor: pointer;
+    }
+
+    .folderIcon {
+      width: 18px;
+      height: 18px;
+      margin-right: 5px;
+    }
+
+    .request-type {
+      font-size: 8px;
+      width: 22px;
+      color: green;
+      margin-right: 5px;
+      padding-top: 2px;
+    }
+
+    .folder-file-name {
+    }
+  }
+
+  .folder-file-cnt--right {
+    @include flex-row-v-cen;
+
+    .actionIcons {
+      cursor: pointer;
+      width: 16px;
+      height: 16px;
+
+      &:not(:first-child) {
+        margin-left: 3px;
+      }
+    }
+  }
+}

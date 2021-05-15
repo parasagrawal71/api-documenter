@@ -28,68 +28,13 @@
     height: 23px;
   }
 
-  .actionIcons {
-    cursor: pointer;
-    width: 20px;
-    height: 20px;
-
-    &:not(:first-child) {
-      margin-left: 3px;
-    }
-  }
-
   .api-folders {
   }
 
-  .api-folder-wrapper-1 {
+  .folder-wrapper {
   }
 
-  .api-folder-wrapper-2 {
+  .subfolder-wrapper {
     padding-left: 20px;
-  }
-
-  .api-folder {
-    @include flex-row-b-sb-cen;
-    margin: 5px 0;
-    position: relative;
-
-    .api-folder--left {
-      @include flex-row-v-cen;
-      .arrowIcon {
-        cursor: pointer;
-      }
-
-      .api-folder-name {
-        padding-left: 10px;
-      }
-    }
-
-    .api-folder--right {
-      @include flex-row-v-cen;
-    }
-  }
-
-  .api-file {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin: 5px 0;
-    padding-left: 58px;
-    height: 20px;
-    position: relative;
-
-    .api-file--left {
-      .api-file-method {
-        font-size: 8px;
-        width: 28px;
-        color: green;
-        margin-right: 5px;
-      }
-
-      .api-file-name {
-      }
-    }
-    .api-file--right {
-    }
   }
 }

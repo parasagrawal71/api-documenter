@@ -1,6 +1,6 @@
 [
   {
-    "folder": "user",
+    "folderName": "user",
     "files": [
       { "method": "GET", "fileName": "Add a user" },
       { "method": "PUT", "fileName": "Edit a user" },
@@ -8,21 +8,21 @@
     ]
   },
   {
-    "folder": "auth",
+    "folderName": "auth",
     "files": [
       { "method": "POST", "fileName": "login" },
       { "method": "POST", "fileName": "logout" }
     ]
   },
   {
-    "folder": "orders",
+    "folderName": "orders",
     "subfolders": [
       {
-        "folder": "pastOrders",
+        "folderName": "pastOrders",
         "files": [{ "method": "GET", "fileName": "Get all my orders" }]
       },
       {
-        "folder": "currentOrders",
+        "folderName": "currentOrders",
         "files": [
           { "method": "GET", "fileName": "Get my current orders" },
           { "method": "PATCH", "fileName": "Return order" }
