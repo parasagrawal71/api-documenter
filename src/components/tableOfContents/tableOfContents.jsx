@@ -15,7 +15,15 @@ import appStyles from "./tableOfContents.module.scss";
 const tableOfContents = () => {
   // HOOKS HERE
   const [sortedApisTree, setSortedApisTree] = useState([]);
+  const [readmeFiles, setReadmeFiles] = useState([
+    { fileName: "Success response format" },
+    { fileName: "Error response format" },
+  ]);
   const [openReadme, setOpenReadme] = useState(false);
+  const [models, setModels] = useState([
+    { fileName: "User" },
+    { fileName: "Endpoint" },
+  ]);
   const [openModels, setOpenModels] = useState(false);
   const [openTextfieldPopup, setOpenTextfieldPopup] = useState({
     open: false,
@@ -158,6 +166,34 @@ const tableOfContents = () => {
         setSortedApisTree(updatedTreeAfterSubFileDeletionInFolder);
         break;
 
+      case "add-readme-file":
+        const updatedReadmeFiles = [...readmeFiles];
+        updatedReadmeFiles?.push({
+          fileName,
+        });
+        setReadmeFiles(updatedReadmeFiles);
+        break;
+
+      case "delete-readme-file":
+        const updatedReadmeFilesAfterDeletion = [...readmeFiles];
+        updatedReadmeFilesAfterDeletion?.splice(fileIndex, 1);
+        setReadmeFiles(updatedReadmeFilesAfterDeletion);
+        break;
+
+      case "add-model":
+        const updatedModels = [...models];
+        updatedModels?.push({
+          fileName,
+        });
+        setModels(updatedModels);
+        break;
+
+      case "delete-model":
+        const updatedModelsAfterDeletion = [...models];
+        updatedModelsAfterDeletion?.splice(fileIndex, 1);
+        setModels(updatedModelsAfterDeletion);
+        break;
+
       default:
         return new Error("Invalid action");
     }
@@ -179,18 +215,29 @@ const tableOfContents = () => {
           }}
           folderObj={{ folderName: "README" }}
           showActions={["addFile"]}
+          addFileCallback={() => {
+            setOpenTextfieldPopup({
+              actionType: "add-readme-file",
+              open: true,
+              placeholder1: "Enter File Name",
+            });
+          }}
         />
 
         {openReadme &&
-          [
-            { fileName: "Success response format" },
-            { fileName: "Error response format" },
-          ].map((aFileObj) => {
+          readmeFiles?.map((aFileObj, aFileIndex) => {
             return (
               <FolderOrFileComponent
                 type="file"
                 fileObj={aFileObj}
                 showActions={["delete"]}
+                deleteCallback={() => {
+                  setOpenConfirmPopup({
+                    actionType: "delete-readme-file",
+                    open: true,
+                    fileIndex: aFileIndex,
+                  });
+                }}
               />
             );
           })}
@@ -208,15 +255,29 @@ const tableOfContents = () => {
           folderObj={{ folderName: "Models" }}
           showActions={["addFile"]}
           addFileText="Add Model"
+          addFileCallback={() => {
+            setOpenTextfieldPopup({
+              actionType: "add-model",
+              open: true,
+              placeholder1: "Enter File Name",
+            });
+          }}
         />
 
         {openModels &&
-          [{ fileName: "User" }, { fileName: "Endpoint" }].map((aFileObj) => {
+          models?.map((aFileObj, aFileIndex) => {
             return (
               <FolderOrFileComponent
                 type="file"
                 fileObj={aFileObj}
                 showActions={["delete"]}
+                deleteCallback={() => {
+                  setOpenConfirmPopup({
+                    actionType: "delete-model",
+                    open: true,
+                    fileIndex: aFileIndex,
+                  });
+                }}
               />
             );
           })}
