@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Tooltip } from "@material-ui/core";
 import { CreateNewFolderOutlined as AddFolderIcon } from "@material-ui/icons";
-import cx from "classnames";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
 import TextfieldPopupComponent from "components/textfieldPopup/TextfieldPopup";
