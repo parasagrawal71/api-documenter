@@ -35,6 +35,9 @@ const tableOfContents = () => {
     folderIndex: null,
     subFolderIndex: null,
     fileIndex: null,
+    folderObj: {},
+    subFolderObj: {},
+    fileObj: {},
   });
 
   useEffect(() => {
@@ -66,10 +69,11 @@ const tableOfContents = () => {
     setSortedApisTree(updatedFolders);
   };
 
-  const updateApisTree = (actionType, folder, subFolder, file) => {
+  const updateApisTree = async (actionType, folder, subFolder, file) => {
     const [folderName, folderIndex] = folder || [];
     const [subFolderName, subFolderIndex] = subFolder || [];
     const [fileName, method, fileIndex] = file || [];
+    let response = null;
 
     switch (actionType) {
       case "add-folder":
@@ -166,42 +170,68 @@ const tableOfContents = () => {
         break;
 
       case "add-readme-file":
-        const updatedReadmeFiles = [...readmeFiles];
-        updatedReadmeFiles?.push({
+        response = await apiService(readme().post, {
           fileName,
         });
-        setReadmeFiles(updatedReadmeFiles);
+        if (response?.success) {
+          const updatedReadmeFiles = [...readmeFiles];
+          updatedReadmeFiles?.push(response?.data);
+          setReadmeFiles(updatedReadmeFiles);
+        } else {
+          //
+        }
         break;
 
       case "delete-readme-file":
-        const updatedReadmeFilesAfterDeletion = [...readmeFiles];
-        updatedReadmeFilesAfterDeletion?.splice(fileIndex, 1);
-        setReadmeFiles(updatedReadmeFilesAfterDeletion);
+        response = await apiService(
+          readme(openConfirmPopup?.fileObj?._id).delete
+        );
+        if (response?.success) {
+          const updatedReadmeFilesAfterDeletion = [...readmeFiles];
+          updatedReadmeFilesAfterDeletion?.splice(fileIndex, 1);
+          setReadmeFiles(updatedReadmeFilesAfterDeletion);
+        } else {
+          //
+        }
         break;
 
       case "add-model":
-        const updatedModels = [...models];
-        updatedModels?.push({
+        response = await apiService(schema().post, {
           fileName,
         });
-        setModels(updatedModels);
+
+        if (response?.success) {
+          const updatedModels = [...models];
+          updatedModels?.push(response?.data);
+          setModels(updatedModels);
+        } else {
+          //
+        }
         break;
 
       case "delete-model":
-        const updatedModelsAfterDeletion = [...models];
-        updatedModelsAfterDeletion?.splice(fileIndex, 1);
-        setModels(updatedModelsAfterDeletion);
+        response = await apiService(
+          schema(openConfirmPopup?.fileObj?._id).delete
+        );
+        if (response?.success) {
+          const updatedModelsAfterDeletion = [...models];
+          updatedModelsAfterDeletion?.splice(fileIndex, 1);
+          setModels(updatedModelsAfterDeletion);
+        } else {
+          //
+        }
         break;
 
       default:
         return new Error("Invalid action");
     }
+    response = null;
   };
 
   const fetchReadmeFiles = async () => {
-    const readmeFilesRes = await apiService(readme().getAll);
-    if (readmeFilesRes?.success) {
-      setReadmeFiles(readmeFilesRes?.data);
+    const response = await apiService(readme().getAll);
+    if (response?.success) {
+      setReadmeFiles(response?.data);
       // setReadmeFiles([
       //   { fileName: "Success response format" },
       //   { fileName: "Error response format" },
@@ -210,9 +240,9 @@ const tableOfContents = () => {
   };
 
   const fetchModels = async () => {
-    const schemaRes = await apiService(schema().getAll);
-    if (schemaRes?.success) {
-      setModels(schemaRes?.data);
+    const response = await apiService(schema().getAll);
+    if (response?.success) {
+      setModels(response?.data);
       // setModels([
       //   { fileName: "User" },
       //   { fileName: "Endpoint" },
@@ -258,6 +288,7 @@ const tableOfContents = () => {
                       actionType: "delete-readme-file",
                       open: true,
                       fileIndex: aFileIndex,
+                      fileObj: aFileObj,
                     });
                   }}
                 />
@@ -302,6 +333,7 @@ const tableOfContents = () => {
                       actionType: "delete-model",
                       open: true,
                       fileIndex: aFileIndex,
+                      fileObj: aFileObj,
                     });
                   }}
                 />
@@ -369,6 +401,7 @@ const tableOfContents = () => {
                     actionType: "delete-folder",
                     open: true,
                     folderIndex,
+                    folderObj: apiFolder,
                   });
                 }}
               />
@@ -409,6 +442,7 @@ const tableOfContents = () => {
                             open: true,
                             folderIndex,
                             subFolderIndex,
+                            subFolderObj: subFolder,
                           });
                         }}
                       />
@@ -428,6 +462,7 @@ const tableOfContents = () => {
                                   folderIndex,
                                   subFolderIndex,
                                   fileIndex,
+                                  fileObj: aFileObj,
                                 });
                               }}
                             />
@@ -451,6 +486,7 @@ const tableOfContents = () => {
                           open: true,
                           folderIndex,
                           fileIndex,
+                          fileObj: aFileObj,
                         });
                       }}
                     />
