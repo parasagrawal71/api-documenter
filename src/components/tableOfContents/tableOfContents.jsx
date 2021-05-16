@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Tooltip } from "@material-ui/core";
 import { CreateNewFolderOutlined as AddFolderIcon } from "@material-ui/icons";
+import cx from "classnames";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
 import TextfieldPopupComponent from "components/textfieldPopup/TextfieldPopup";
 import FolderOrFileComponent from "components/folderOrFile/FolderOrFile";
 import ConfirmPopupComponent from "components/confirmPopup/ConfirmPopup";
 import { sortArrayOfObjs } from "utils/functions";
+import apiService from "apis/apiService";
+import { readme, schema } from "apis/urls";
 
 // IMPORT ASSETS HERE
 import apisTree from "assets/apisTree.json";
@@ -15,15 +18,9 @@ import appStyles from "./tableOfContents.module.scss";
 const tableOfContents = () => {
   // HOOKS HERE
   const [sortedApisTree, setSortedApisTree] = useState([]);
-  const [readmeFiles, setReadmeFiles] = useState([
-    { fileName: "Success response format" },
-    { fileName: "Error response format" },
-  ]);
+  const [readmeFiles, setReadmeFiles] = useState([]);
   const [openReadme, setOpenReadme] = useState(false);
-  const [models, setModels] = useState([
-    { fileName: "User" },
-    { fileName: "Endpoint" },
-  ]);
+  const [models, setModels] = useState([]);
   const [openModels, setOpenModels] = useState(false);
   const [openTextfieldPopup, setOpenTextfieldPopup] = useState({
     open: false,
@@ -44,6 +41,9 @@ const tableOfContents = () => {
   useEffect(() => {
     const sortedApisTreeTemp = sortArrayOfObjs(apisTree, "folderName");
     setSortedApisTree(sortedApisTreeTemp);
+
+    fetchReadmeFiles();
+    fetchModels();
   }, []);
 
   const openCloseFolder = (folderName, subFolderName, folderIndex) => {
@@ -199,6 +199,28 @@ const tableOfContents = () => {
     }
   };
 
+  const fetchReadmeFiles = async () => {
+    const readmeFilesRes = await apiService(readme().getAll);
+    if (readmeFilesRes?.success) {
+      setReadmeFiles(readmeFilesRes?.data);
+      // setReadmeFiles([
+      //   { fileName: "Success response format" },
+      //   { fileName: "Error response format" },
+      // ]);
+    }
+  };
+
+  const fetchModels = async () => {
+    const schemaRes = await apiService(schema().getAll);
+    if (schemaRes?.success) {
+      setModels(schemaRes?.data);
+      // setModels([
+      //   { fileName: "User" },
+      //   { fileName: "Endpoint" },
+      // ]);
+    }
+  };
+
   return (
     <section className={appStyles["main-container"]}>
       <div className={appStyles["main-header"]}>
@@ -225,22 +247,26 @@ const tableOfContents = () => {
         />
 
         {openReadme &&
-          readmeFiles?.map((aFileObj, aFileIndex) => {
-            return (
-              <FolderOrFileComponent
-                type="file"
-                fileObj={aFileObj}
-                showActions={["delete"]}
-                deleteCallback={() => {
-                  setOpenConfirmPopup({
-                    actionType: "delete-readme-file",
-                    open: true,
-                    fileIndex: aFileIndex,
-                  });
-                }}
-              />
-            );
-          })}
+          (readmeFiles?.length ? (
+            readmeFiles?.map((aFileObj, aFileIndex) => {
+              return (
+                <FolderOrFileComponent
+                  type="file"
+                  fileObj={aFileObj}
+                  showActions={["delete"]}
+                  deleteCallback={() => {
+                    setOpenConfirmPopup({
+                      actionType: "delete-readme-file",
+                      open: true,
+                      fileIndex: aFileIndex,
+                    });
+                  }}
+                />
+              );
+            })
+          ) : (
+            <div className="zero-state-msg">No files added</div>
+          ))}
       </section>
       {/* ************************************************************************************************* */}
 
@@ -265,22 +291,26 @@ const tableOfContents = () => {
         />
 
         {openModels &&
-          models?.map((aFileObj, aFileIndex) => {
-            return (
-              <FolderOrFileComponent
-                type="file"
-                fileObj={aFileObj}
-                showActions={["delete"]}
-                deleteCallback={() => {
-                  setOpenConfirmPopup({
-                    actionType: "delete-model",
-                    open: true,
-                    fileIndex: aFileIndex,
-                  });
-                }}
-              />
-            );
-          })}
+          (models?.length ? (
+            models?.map((aFileObj, aFileIndex) => {
+              return (
+                <FolderOrFileComponent
+                  type="file"
+                  fileObj={aFileObj}
+                  showActions={["delete"]}
+                  deleteCallback={() => {
+                    setOpenConfirmPopup({
+                      actionType: "delete-model",
+                      open: true,
+                      fileIndex: aFileIndex,
+                    });
+                  }}
+                />
+              );
+            })
+          ) : (
+            <div className="zero-state-msg">No model added</div>
+          ))}
       </section>
       {/* ************************************************************************************************* */}
 
