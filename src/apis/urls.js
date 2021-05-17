@@ -39,3 +39,24 @@ export const schema = (mongoId) => ({
   },
 });
 // ****************************************************************************************** //
+
+// ********************************** 'API TREE' endpoints ********************************** //
+export const apisTree = (mongoId) => ({
+  getAll: {
+    method: "GET",
+    endpoint: "/apisTree",
+  },
+  post: {
+    method: "POST",
+    endpoint: "/apisTree",
+  },
+  put: {
+    method: "PUT",
+    endpoint: `/apisTree/${mongoId}`,
+  },
+  delete: {
+    method: "DELETE",
+    endpoint: `/apisTree/${mongoId}`,
+  },
+});
+// ****************************************************************************************** //

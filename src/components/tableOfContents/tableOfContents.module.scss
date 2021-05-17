@@ -3,6 +3,9 @@
 .main-container {
   font-size: 12px;
   padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 
   .main-header {
     font-size: 14px;
@@ -30,6 +33,7 @@
   }
 
   .api-folders {
+    flex: 1;
   }
 
   .folder-wrapper {

@@ -8,10 +8,10 @@ import FolderOrFileComponent from "components/folderOrFile/FolderOrFile";
 import ConfirmPopupComponent from "components/confirmPopup/ConfirmPopup";
 import { sortArrayOfObjs } from "utils/functions";
 import apiService from "apis/apiService";
-import { readme, schema } from "apis/urls";
+import { readme, schema, apisTree } from "apis/urls";
 
 // IMPORT ASSETS HERE
-import apisTree from "assets/apisTree.json";
+// import apisTree from "assets/apisTree.json";
 import appStyles from "./tableOfContents.module.scss";
 
 const tableOfContents = () => {
@@ -46,6 +46,7 @@ const tableOfContents = () => {
 
     fetchReadmeFiles();
     fetchModels();
+    fetchApisTree();
   }, []);
 
   const openCloseFolder = (folderName, subFolderName, folderIndex) => {
@@ -77,11 +78,18 @@ const tableOfContents = () => {
 
     switch (actionType) {
       case "add-folder":
-        const updatedTreeAfterAddingFolder = [...sortedApisTree];
-        updatedTreeAfterAddingFolder.push({ folderName });
-        setSortedApisTree(
-          sortArrayOfObjs(updatedTreeAfterAddingFolder, "folderName")
-        );
+        response = await apiService(apisTree().post, {
+          folderName,
+        });
+        if (response?.success) {
+          const updatedTreeAfterAddingFolder = [...sortedApisTree];
+          updatedTreeAfterAddingFolder.push(response?.data);
+          setSortedApisTree(
+            sortArrayOfObjs(updatedTreeAfterAddingFolder, "folderName")
+          );
+        } else {
+          //
+        }
         break;
 
       case "add-subfolder":
@@ -96,7 +104,10 @@ const tableOfContents = () => {
             folderName: subFolderName,
           });
         }
-        setSortedApisTree(updatedTreeAfterAddingSubFolder);
+        await updateFolderInApisTree(
+          updatedTreeAfterAddingSubFolder,
+          folderIndex
+        );
         break;
 
       case "add-file-in-folder":
@@ -113,7 +124,10 @@ const tableOfContents = () => {
             fileName,
           });
         }
-        setSortedApisTree(updatedTreeAfterAddingFileInFolder);
+        await updateFolderInApisTree(
+          updatedTreeAfterAddingFileInFolder,
+          folderIndex
+        );
         break;
 
       case "add-file-in-subfolder":
@@ -134,13 +148,24 @@ const tableOfContents = () => {
             subFolderIndex
           ]?.files?.push({ method: method.toUpperCase(), fileName });
         }
-        setSortedApisTree(updatedTreeAfterAddingFileInSubFolder);
+        await updateFolderInApisTree(
+          updatedTreeAfterAddingFileInSubFolder,
+          folderIndex
+        );
         break;
 
       case "delete-folder":
         const updatedTreeAfterFolderDeletion = [...sortedApisTree];
-        updatedTreeAfterFolderDeletion.splice(folderIndex, 1);
-        setSortedApisTree(updatedTreeAfterFolderDeletion);
+        response = await apiService(
+          apisTree(updatedTreeAfterFolderDeletion?.[folderIndex]?._id).delete
+        );
+        if (response?.success) {
+          updatedTreeAfterFolderDeletion.splice(folderIndex, 1);
+          setSortedApisTree(updatedTreeAfterFolderDeletion);
+        } else {
+          //
+        }
+
         break;
 
       case "delete-subfolder":
@@ -149,7 +174,10 @@ const tableOfContents = () => {
           subFolderIndex,
           1
         );
-        setSortedApisTree(updatedTreeAfterSubFolderDeletion);
+        await updateFolderInApisTree(
+          updatedTreeAfterSubFolderDeletion,
+          folderIndex
+        );
         break;
 
       case "delete-file-from-folder":
@@ -158,7 +186,10 @@ const tableOfContents = () => {
           fileIndex,
           1
         );
-        setSortedApisTree(updatedTreeAfterFileDeletionInFolder);
+        await updateFolderInApisTree(
+          updatedTreeAfterFileDeletionInFolder,
+          folderIndex
+        );
         break;
 
       case "delete-file-from-subfolder":
@@ -166,7 +197,10 @@ const tableOfContents = () => {
         updatedTreeAfterSubFileDeletionInFolder?.[folderIndex]?.subfolders?.[
           subFolderIndex
         ]?.files?.splice(fileIndex, 1);
-        setSortedApisTree(updatedTreeAfterSubFileDeletionInFolder);
+        await updateFolderInApisTree(
+          updatedTreeAfterSubFileDeletionInFolder,
+          folderIndex
+        );
         break;
 
       case "add-readme-file":
@@ -232,10 +266,6 @@ const tableOfContents = () => {
     const response = await apiService(readme().getAll);
     if (response?.success) {
       setReadmeFiles(response?.data);
-      // setReadmeFiles([
-      //   { fileName: "Success response format" },
-      //   { fileName: "Error response format" },
-      // ]);
     }
   };
 
@@ -243,10 +273,27 @@ const tableOfContents = () => {
     const response = await apiService(schema().getAll);
     if (response?.success) {
       setModels(response?.data);
-      // setModels([
-      //   { fileName: "User" },
-      //   { fileName: "Endpoint" },
-      // ]);
+    }
+  };
+
+  const fetchApisTree = async () => {
+    const response = await apiService(apisTree().getAll);
+    if (response?.success) {
+      const sortedApisTreeTemp = sortArrayOfObjs(response?.data, "folderName");
+      setSortedApisTree(sortedApisTreeTemp);
+    }
+  };
+
+  const updateFolderInApisTree = async (updatedApisTree, folderIndex) => {
+    const updatedFolderObj = updatedApisTree?.[folderIndex];
+    const response = await apiService(
+      apisTree(updatedFolderObj?._id).put,
+      updatedFolderObj
+    );
+    if (response?.success) {
+      setSortedApisTree(updatedApisTree);
+    } else {
+      //
     }
   };
 
@@ -363,139 +410,143 @@ const tableOfContents = () => {
       </div>
 
       {/* *********************************** API FOLDERS starts here ************************************* */}
-      <section className={appStyles["api-folders"]}>
-        {sortedApisTree?.map((apiFolder, folderIndex) => {
-          return (
-            <section
-              className={appStyles["folder-wrapper"]}
-              key={apiFolder?.folderName}
-            >
-              <FolderOrFileComponent
-                type="folder"
-                isFolderOpen={apiFolder?.opened}
-                toggleFolder={() => {
-                  openCloseFolder(apiFolder?.folderName, null, folderIndex);
-                }}
-                folderObj={apiFolder}
-                showActions={["addFile", "addFolder", "delete"]}
-                addFileText="Add Request"
-                addFolderCallback={() => {
-                  setOpenTextfieldPopup({
-                    actionType: "add-subfolder",
-                    open: true,
-                    placeholder1: "Enter Folder Name",
-                    folderIndex,
-                  });
-                }}
-                addFileCallback={() => {
-                  setOpenTextfieldPopup({
-                    actionType: "add-file-in-folder",
-                    open: true,
-                    placeholder1: "Enter File Name",
-                    placeholder2: "Enter Method",
-                    folderIndex,
-                  });
-                }}
-                deleteCallback={() => {
-                  setOpenConfirmPopup({
-                    actionType: "delete-folder",
-                    open: true,
-                    folderIndex,
-                    folderObj: apiFolder,
-                  });
-                }}
-              />
+      {sortedApisTree?.length ? (
+        <section className={appStyles["api-folders"]}>
+          {sortedApisTree?.map((apiFolder, folderIndex) => {
+            return (
+              <section
+                className={appStyles["folder-wrapper"]}
+                key={apiFolder?.folderName}
+              >
+                <FolderOrFileComponent
+                  type="folder"
+                  isFolderOpen={apiFolder?.opened}
+                  toggleFolder={() => {
+                    openCloseFolder(apiFolder?.folderName, null, folderIndex);
+                  }}
+                  folderObj={apiFolder}
+                  showActions={["addFile", "addFolder", "delete"]}
+                  addFileText="Add Request"
+                  addFolderCallback={() => {
+                    setOpenTextfieldPopup({
+                      actionType: "add-subfolder",
+                      open: true,
+                      placeholder1: "Enter Folder Name",
+                      folderIndex,
+                    });
+                  }}
+                  addFileCallback={() => {
+                    setOpenTextfieldPopup({
+                      actionType: "add-file-in-folder",
+                      open: true,
+                      placeholder1: "Enter File Name",
+                      placeholder2: "Enter Method",
+                      folderIndex,
+                    });
+                  }}
+                  deleteCallback={() => {
+                    setOpenConfirmPopup({
+                      actionType: "delete-folder",
+                      open: true,
+                      folderIndex,
+                      folderObj: apiFolder,
+                    });
+                  }}
+                />
 
-              {apiFolder?.opened &&
-                apiFolder?.subfolders?.map((subFolder, subFolderIndex) => {
-                  return (
-                    <section
-                      key={subFolder?.folder}
-                      className={appStyles["subfolder-wrapper"]}
-                    >
+                {apiFolder?.opened &&
+                  apiFolder?.subfolders?.map((subFolder, subFolderIndex) => {
+                    return (
+                      <section
+                        key={subFolder?.folder}
+                        className={appStyles["subfolder-wrapper"]}
+                      >
+                        <FolderOrFileComponent
+                          type="folder"
+                          isFolderOpen={subFolder?.opened}
+                          toggleFolder={() => {
+                            openCloseFolder(
+                              apiFolder?.folderName,
+                              subFolder?.folderName,
+                              folderIndex
+                            );
+                          }}
+                          folderObj={subFolder}
+                          showActions={["addFile", "delete"]}
+                          addFileText="Add Request"
+                          addFileCallback={() => {
+                            setOpenTextfieldPopup({
+                              actionType: "add-file-in-subfolder",
+                              open: true,
+                              placeholder1: "Enter File Name",
+                              placeholder2: "Enter Method",
+                              folderIndex,
+                              subFolderIndex,
+                            });
+                          }}
+                          deleteCallback={() => {
+                            setOpenConfirmPopup({
+                              actionType: "delete-subfolder",
+                              open: true,
+                              folderIndex,
+                              subFolderIndex,
+                              subFolderObj: subFolder,
+                            });
+                          }}
+                        />
+
+                        {subFolder?.opened &&
+                          subFolder?.files?.map((aFileObj, fileIndex) => {
+                            return (
+                              <FolderOrFileComponent
+                                key={aFileObj?.folderName}
+                                type="file"
+                                fileObj={aFileObj}
+                                showActions={["delete"]}
+                                deleteCallback={() => {
+                                  setOpenConfirmPopup({
+                                    actionType: "delete-file-from-subfolder",
+                                    open: true,
+                                    folderIndex,
+                                    subFolderIndex,
+                                    fileIndex,
+                                    fileObj: aFileObj,
+                                  });
+                                }}
+                              />
+                            );
+                          })}
+                      </section>
+                    );
+                  })}
+
+                {apiFolder?.opened &&
+                  apiFolder?.files?.map((aFileObj, fileIndex) => {
+                    return (
                       <FolderOrFileComponent
-                        type="folder"
-                        isFolderOpen={subFolder?.opened}
-                        toggleFolder={() => {
-                          openCloseFolder(
-                            apiFolder?.folderName,
-                            subFolder?.folderName,
-                            folderIndex
-                          );
-                        }}
-                        folderObj={subFolder}
-                        showActions={["addFile", "delete"]}
-                        addFileText="Add Request"
-                        addFileCallback={() => {
-                          setOpenTextfieldPopup({
-                            actionType: "add-file-in-subfolder",
-                            open: true,
-                            placeholder1: "Enter File Name",
-                            placeholder2: "Enter Method",
-                            folderIndex,
-                            subFolderIndex,
-                          });
-                        }}
+                        key={aFileObj?.folderName}
+                        type="file"
+                        fileObj={aFileObj}
+                        showActions={["delete"]}
                         deleteCallback={() => {
                           setOpenConfirmPopup({
-                            actionType: "delete-subfolder",
+                            actionType: "delete-file-from-folder",
                             open: true,
                             folderIndex,
-                            subFolderIndex,
-                            subFolderObj: subFolder,
+                            fileIndex,
+                            fileObj: aFileObj,
                           });
                         }}
                       />
-
-                      {subFolder?.opened &&
-                        subFolder?.files?.map((aFileObj, fileIndex) => {
-                          return (
-                            <FolderOrFileComponent
-                              key={aFileObj?.folderName}
-                              type="file"
-                              fileObj={aFileObj}
-                              showActions={["delete"]}
-                              deleteCallback={() => {
-                                setOpenConfirmPopup({
-                                  actionType: "delete-file-from-subfolder",
-                                  open: true,
-                                  folderIndex,
-                                  subFolderIndex,
-                                  fileIndex,
-                                  fileObj: aFileObj,
-                                });
-                              }}
-                            />
-                          );
-                        })}
-                    </section>
-                  );
-                })}
-
-              {apiFolder?.opened &&
-                apiFolder?.files?.map((aFileObj, fileIndex) => {
-                  return (
-                    <FolderOrFileComponent
-                      key={aFileObj?.folderName}
-                      type="file"
-                      fileObj={aFileObj}
-                      showActions={["delete"]}
-                      deleteCallback={() => {
-                        setOpenConfirmPopup({
-                          actionType: "delete-file-from-folder",
-                          open: true,
-                          folderIndex,
-                          fileIndex,
-                          fileObj: aFileObj,
-                        });
-                      }}
-                    />
-                  );
-                })}
-            </section>
-          );
-        })}
-      </section>
+                    );
+                  })}
+              </section>
+            );
+          })}
+        </section>
+      ) : (
+        <div className="zero-state-msg">No apis added</div>
+      )}
       {/* ************************************************************************************************* */}
 
       {/* ************************************** POPUPs starts here **************************************** */}

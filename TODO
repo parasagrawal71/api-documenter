@@ -2,11 +2,8 @@
 - Make "read env variable" dynamic for any number of variables
 - "Add new env" option
 - Table of contents:-
-    - Add request/Add folder functionality
-    - Add request with method field
+    - Add request with method field UI (dropdown)
     - Search box
-    - Models folder
-    - Rename/Delete request/folder option
 - Comment box whenever updated
 - Testcases functionality
 - Bug: Two actions popup opening at same time on clicking two more icons
