@@ -20,3 +20,7 @@ code {
   align-items: center;
   flex: 1;
 }
+
+html {
+  scroll-behavior: smooth;
+}

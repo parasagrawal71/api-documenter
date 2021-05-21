@@ -28,6 +28,7 @@ const FolderOrFile = (props) => {
     addFolderCallback,
     deleteText,
     deleteCallback,
+    href,
   } = props;
 
   // HOOKS HERE
@@ -77,9 +78,12 @@ const FolderOrFile = (props) => {
         {type === "file" && fileObj?.method && (
           <span className={appStyles["request-type"]}>{fileObj?.method}</span>
         )}
-        <span className={appStyles["folder-file-name"]}>
+        <a
+          href={href ? `#${href}` : null}
+          className={appStyles["folder-file-name"]}
+        >
           {type === "folder" ? folderObj?.folderName : fileObj?.fileName}
-        </span>
+        </a>
       </section>
       {showActionsBtn && (
         <section className={appStyles["folder-file-cnt--right"]}>

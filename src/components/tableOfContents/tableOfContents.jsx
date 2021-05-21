@@ -14,12 +14,14 @@ import { readme, schema, apisTree } from "apis/urls";
 // import apisTree from "assets/apisTree.json";
 import appStyles from "./tableOfContents.module.scss";
 
-const tableOfContents = () => {
+const tableOfContents = (props) => {
+  // PROPS HERE
+  const { models, setModels } = props;
+
   // HOOKS HERE
   const [sortedApisTree, setSortedApisTree] = useState([]);
   const [readmeFiles, setReadmeFiles] = useState([]);
   const [openReadme, setOpenReadme] = useState(false);
-  const [models, setModels] = useState([]);
   const [openModels, setOpenModels] = useState(false);
   const [openTextfieldPopup, setOpenTextfieldPopup] = useState({
     open: false,
@@ -45,7 +47,6 @@ const tableOfContents = () => {
     setSortedApisTree(sortedApisTreeTemp);
 
     fetchReadmeFiles();
-    fetchModels();
     fetchApisTree();
   }, []);
 
@@ -269,13 +270,6 @@ const tableOfContents = () => {
     }
   };
 
-  const fetchModels = async () => {
-    const response = await apiService(schema().getAll);
-    if (response?.success) {
-      setModels(response?.data);
-    }
-  };
-
   const fetchApisTree = async () => {
     const response = await apiService(apisTree().getAll);
     if (response?.success) {
@@ -365,6 +359,7 @@ const tableOfContents = () => {
               placeholder1: "Enter File Name",
             });
           }}
+          href="models"
         />
 
         {openModels &&
@@ -383,6 +378,7 @@ const tableOfContents = () => {
                       fileObj: aFileObj,
                     });
                   }}
+                  href={aFileObj?.fileName}
                 />
               );
             })

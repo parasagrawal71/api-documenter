@@ -31,6 +31,7 @@ const AppTable = (props) => {
     arrayKey,
     disableValueTextbox,
     cellPadding,
+    dispatchModel,
   } = props;
 
   const useStyles = makeStyles({
@@ -46,26 +47,39 @@ const AppTable = (props) => {
     fieldValue,
     isMultiline
   ) => {
-    if (headerKey === "required") {
+    if (["required", "unique"].includes(headerKey)) {
       return addMode || editMode ? (
         <ThemeCheckbox
           color="primary"
           checked={Boolean(fieldValue)}
           onClick={(e) => {
-            dispatchEndpoint({
-              type: arrayKey,
-              payload: {
-                headerKey,
-                rowIndex,
-                value: e?.target?.checked,
-              },
-            });
+            if (dispatchEndpoint) {
+              dispatchEndpoint({
+                type: arrayKey,
+                payload: {
+                  headerKey,
+                  rowIndex,
+                  value: e?.target?.checked,
+                },
+              });
+            }
+
+            if (dispatchModel) {
+              dispatchModel({
+                type: "update-modelField",
+                payload: {
+                  headerKey,
+                  rowIndex,
+                  value: e?.target?.checked,
+                },
+              });
+            }
           }}
         />
       ) : fieldValue ? (
-        "required"
+        "true"
       ) : (
-        "optional"
+        "false"
       );
     } else if (
       (headerKey === "value" && !disableValueTextbox) ||
@@ -87,14 +101,27 @@ const AppTable = (props) => {
           }
           multiline={isMultiline === "multiline"}
           onChange={(e) => {
-            dispatchEndpoint({
-              type: arrayKey,
-              payload: {
-                headerKey,
-                rowIndex,
-                value: e?.target?.value,
-              },
-            });
+            if (dispatchEndpoint) {
+              dispatchEndpoint({
+                type: arrayKey,
+                payload: {
+                  headerKey,
+                  rowIndex,
+                  value: e?.target?.value,
+                },
+              });
+            }
+
+            if (dispatchModel) {
+              dispatchModel({
+                type: "update-modelField",
+                payload: {
+                  headerKey,
+                  rowIndex,
+                  value: e?.target?.value,
+                },
+              });
+            }
           }}
           rows={2}
         />
@@ -111,6 +138,9 @@ const AppTable = (props) => {
 
       case "requestHeaders":
         return "remove-requestHeader";
+
+      case "modelFields":
+        return "remove-modelField";
 
       default:
         return null;
@@ -151,10 +181,18 @@ const AppTable = (props) => {
                   <RemoveIcon
                     className={appStyles.removeIcon}
                     onClick={() => {
-                      dispatchEndpoint({
-                        type: decideDispatchRemoveType(),
-                        payload: { rowIndex },
-                      });
+                      if (dispatchEndpoint) {
+                        dispatchEndpoint({
+                          type: decideDispatchRemoveType(),
+                          payload: { rowIndex },
+                        });
+                      }
+                      if (dispatchModel) {
+                        dispatchModel({
+                          type: decideDispatchRemoveType(),
+                          payload: { rowIndex },
+                        });
+                      }
                     }}
                   />
                 </TableCell>
