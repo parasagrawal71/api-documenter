@@ -69,6 +69,10 @@ const Model = (props) => {
       key: "name",
     },
     {
+      displayName: "Type",
+      key: "type",
+    },
+    {
       displayName: "Required",
       key: "required",
     },
@@ -79,6 +83,30 @@ const Model = (props) => {
     {
       displayName: "Description",
       key: "description",
+    },
+  ];
+
+  const modelFieldTypes = [
+    {
+      type: "string",
+    },
+    {
+      type: "number",
+    },
+    {
+      type: "boolean",
+    },
+    {
+      type: "object",
+    },
+    {
+      type: "array of primitives",
+    },
+    {
+      type: "array of objects",
+    },
+    {
+      type: "array of arrays",
     },
   ];
 
@@ -125,6 +153,7 @@ const Model = (props) => {
           arrayKey="modelFields"
           dispatchModel={dispatchModel}
           editMode={editMode}
+          modelFieldTypes={modelFieldTypes}
         />
       </section>
     </section>

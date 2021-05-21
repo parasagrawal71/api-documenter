@@ -15,6 +15,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import {
   ThemeTextField,
   ThemeCheckbox,
+  ThemeAutocomplete,
 } from "utils/commonStyles/styledComponents";
 
 // IMPORT ASSETS HERE
@@ -32,11 +33,20 @@ const AppTable = (props) => {
     disableValueTextbox,
     cellPadding,
     dispatchModel,
+    modelFieldTypes,
   } = props;
 
   const useStyles = makeStyles({
     table: {
       minWidth: 650,
+    },
+    tableHeaderCell: {
+      padding: "5px 16px",
+      height: "40px",
+    },
+    tableBodyCell: {
+      padding: "5px 16px",
+      height: "45px",
     },
   });
   const classes = useStyles();
@@ -80,6 +90,37 @@ const AppTable = (props) => {
         "true"
       ) : (
         "false"
+      );
+    } else if (["type"].includes(headerKey) && (addMode || editMode)) {
+      return (
+        <ThemeAutocomplete
+          options={modelFieldTypes}
+          getOptionLabel={(option) => option?.type || ""}
+          width="250px"
+          renderInput={(params) => (
+            <ThemeTextField
+              {...params}
+              variant="outlined"
+              size="small"
+              InputLabelProps={{
+                focused: false,
+              }}
+            />
+          )}
+          onChange={(e, selectedOption) => {
+            if (dispatchModel) {
+              dispatchModel({
+                type: "update-modelField",
+                payload: {
+                  headerKey,
+                  rowIndex,
+                  value: selectedOption?.type,
+                },
+              });
+            }
+          }}
+          value={{ type: fieldValue } || ""}
+        />
       );
     } else if (
       (headerKey === "value" && !disableValueTextbox) ||
@@ -154,7 +195,11 @@ const AppTable = (props) => {
           <TableRow>
             {tableHeaders?.map((header, headerIndex) => {
               return (
-                <TableCell key={headerIndex} style={{ padding: cellPadding }}>
+                <TableCell
+                  key={headerIndex}
+                  className={classes.tableHeaderCell}
+                  style={{ padding: cellPadding }}
+                >
                   {header?.displayName}
                 </TableCell>
               );
@@ -167,7 +212,11 @@ const AppTable = (props) => {
             <TableRow key={rowIndex}>
               {tableHeaders?.map((header, headerIndex) => {
                 return (
-                  <TableCell key={headerIndex} style={{ padding: cellPadding }}>
+                  <TableCell
+                    key={headerIndex}
+                    className={classes.tableBodyCell}
+                    style={{ padding: cellPadding }}
+                  >
                     {TextFieldBoxOrValue(
                       header?.key,
                       rowIndex,
@@ -177,7 +226,10 @@ const AppTable = (props) => {
                 );
               })}
               {(addMode || editMode) && (
-                <TableCell>
+                <TableCell
+                  className={classes.tableBodyCell}
+                  style={{ padding: cellPadding }}
+                >
                   <RemoveIcon
                     className={appStyles.removeIcon}
                     onClick={() => {
