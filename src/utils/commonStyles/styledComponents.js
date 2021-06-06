@@ -13,13 +13,23 @@ export const ThemeTextField = styled(TextField)({
     color: (props) => (props?.color ? props.color : "#000000"),
     "& fieldset": {
       borderWidth: 0,
-      border: (props) => (props.isError ? "1px solid red" : ""),
+      border: (props) => (props.iserror ? "1px solid red" : ""),
     },
     "&:hover fieldset": {
-      border: (props) => (props.disabled ? "" : "1px solid lightgrey"),
+      border: (props) =>
+        props.disabled
+          ? ""
+          : props.iserror
+          ? "1px solid red"
+          : "1px solid lightgrey",
     },
     "&.Mui-focused fieldset": {
-      border: (props) => (props.disabled ? "" : "1px solid lightgrey"),
+      border: (props) =>
+        props.disabled
+          ? ""
+          : props.iserror
+          ? "1px solid red"
+          : "1px solid lightgrey",
     },
     input: {
       padding: 8,
@@ -40,6 +50,9 @@ export const ThemeTextField = styled(TextField)({
 
 export const ThemeCheckbox = styled(Checkbox)({
   padding: 0,
+  ".MuiSvgIcon-root": {
+    fill: (props) => (!props.checked && props.iserror ? "red !important" : ""),
+  },
 });
 
 export const ThemeAutocomplete = styled(Autocomplete)({

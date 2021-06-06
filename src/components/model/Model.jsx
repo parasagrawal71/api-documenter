@@ -14,63 +14,17 @@ const Model = (props) => {
   // PROPS HERE
   // const {} = props;
 
-  // REDUCERS HERE
-  const modelReducers = (state, action) => {
-    let payload = null;
-
-    switch (action?.type) {
-      case "add-modelField":
-        const updatedFieldsAfterAddition = [...state?.fields];
-        updatedFieldsAfterAddition?.push({
-          name: "",
-        });
-        return { ...state, fields: updatedFieldsAfterAddition };
-
-      case "update-modelField":
-        payload = action?.payload;
-        const updatedFields = state?.fields?.map((field, index) => {
-          if (index === payload?.rowIndex) {
-            field[payload?.headerKey] = payload?.value;
-            return field;
-          }
-          return field;
-        });
-        payload = null;
-        return { ...state, fields: updatedFields };
-
-      case "remove-modelField":
-        payload = action?.payload;
-        const updatedModelAfterRemoval = state?.fields?.filter(
-          (field, index) => index !== payload?.rowIndex
-        );
-        return { ...state, fields: updatedModelAfterRemoval };
-
-      default:
-        throw new Error("Unknown type");
-    }
-  };
-
-  // HOOKS HERE
-  const [editMode, setEditMode] = useState(false);
-  const [model, dispatchModel] = useReducer(modelReducers, props?.model);
-
-  useEffect(() => {
-    if (!props?.model?.fields?.length) {
-      dispatchModel({
-        type: "add-modelField",
-      });
-    }
-  }, [props?.model]);
-
   /* ########################### VARIABLES HERE ########################### */
   const tableHeaders = [
     {
       displayName: "Name",
       key: "name",
+      required: true,
     },
     {
       displayName: "Type",
       key: "type",
+      required: true,
     },
     {
       displayName: "Required",
@@ -79,6 +33,7 @@ const Model = (props) => {
     {
       displayName: "Unique",
       key: "unique",
+      required: true,
     },
     {
       displayName: "Description",
@@ -110,11 +65,99 @@ const Model = (props) => {
     },
   ];
 
+  // REDUCERS HERE
+  const modelReducers = (state, action) => {
+    let payload = null;
+
+    switch (action?.type) {
+      case "add-modelField":
+        const updatedFieldsAfterAddition = [...state?.fields];
+        updatedFieldsAfterAddition?.push({
+          name: "",
+        });
+        return { ...state, fields: updatedFieldsAfterAddition };
+
+      case "update-modelField":
+        payload = action?.payload;
+        const updatedFields = state?.fields?.map((field, index) => {
+          if (index === payload?.rowIndex) {
+            field[payload?.headerKey] = payload?.value;
+            if (field?.error) {
+              field.error[payload?.headerKey] = undefined;
+            }
+            return field;
+          }
+          return field;
+        });
+        payload = null;
+        return { ...state, fields: updatedFields };
+
+      case "remove-modelField":
+        payload = action?.payload;
+        const updatedModelAfterRemoval = state?.fields?.filter(
+          (field, index) => index !== payload?.rowIndex
+        );
+        return { ...state, fields: updatedModelAfterRemoval };
+
+      default:
+        throw new Error("Unknown type");
+    }
+  };
+
+  // HOOKS HERE
+  const [editMode, setEditMode] = useState(false);
+  const [model, dispatchModel] = useReducer(modelReducers, props?.model);
+
   /* ########################### FUNCTIONS HERE ########################### */
   const handleEditSaveBtn = async () => {
     if (!editMode) {
+      if (!model?.fields?.length) {
+        dispatchModel({
+          type: "add-modelField",
+        });
+      }
       setEditMode(true);
     } else {
+      const requiredFields = [];
+      tableHeaders?.filter((h) => {
+        if (h.required) {
+          requiredFields.push(h.key);
+        }
+        return h;
+      });
+
+      let isError = false;
+      model?.fields?.map((fieldObj, index) => {
+        const isErrorObj = {};
+
+        requiredFields?.map((reqFieldName) => {
+          if (!fieldObj?.[reqFieldName]) {
+            isErrorObj.rowIndex = index;
+            isErrorObj.value = {
+              ...isErrorObj?.value,
+              [reqFieldName]: true,
+            };
+            isError = true;
+          }
+          return reqFieldName;
+        });
+
+        dispatchModel({
+          type: "update-modelField",
+          payload: {
+            headerKey: "error",
+            rowIndex: isErrorObj?.rowIndex,
+            value: isErrorObj?.value,
+          },
+        });
+
+        return fieldObj;
+      });
+
+      if (isError) {
+        return;
+      }
+
       const response = await apiService(schema(model?._id).put, model);
       if (response?.success) {
         //
@@ -154,6 +197,7 @@ const Model = (props) => {
           dispatchModel={dispatchModel}
           editMode={editMode}
           modelFieldTypes={modelFieldTypes}
+          zeroStateText="No Fields added yet"
         />
       </section>
     </section>

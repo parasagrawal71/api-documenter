@@ -34,6 +34,7 @@ const AppTable = (props) => {
     cellPadding,
     dispatchModel,
     modelFieldTypes,
+    zeroStateText,
   } = props;
 
   const useStyles = makeStyles({
@@ -48,15 +49,21 @@ const AppTable = (props) => {
       padding: "5px 16px",
       height: "45px",
     },
+    zeroStateMsg: {
+      textAlign: "center",
+    },
   });
   const classes = useStyles();
 
   const TextFieldBoxOrValue = (
-    headerKey,
+    tableRowData,
+    headerObj,
     rowIndex,
     fieldValue,
     isMultiline
   ) => {
+    const headerKey = headerObj?.key;
+
     if (["required", "unique"].includes(headerKey)) {
       return addMode || editMode ? (
         <ThemeCheckbox
@@ -85,6 +92,22 @@ const AppTable = (props) => {
               });
             }
           }}
+          iserror={tableRowData?.error?.[headerObj?.key]?.toString()}
+          onBlur={() => {
+            if (dispatchModel) {
+              dispatchModel({
+                type: "update-modelField",
+                payload: {
+                  headerKey: "error",
+                  rowIndex,
+                  value: {
+                    ...(tableRowData?.error || {}),
+                    [headerKey]: headerObj?.required ? true : undefined,
+                  },
+                },
+              });
+            }
+          }}
         />
       ) : fieldValue ? (
         "true"
@@ -104,6 +127,22 @@ const AppTable = (props) => {
               size="small"
               InputLabelProps={{
                 focused: false,
+              }}
+              iserror={tableRowData?.error?.[headerObj?.key]?.toString()}
+              onBlur={() => {
+                if (dispatchModel) {
+                  dispatchModel({
+                    type: "update-modelField",
+                    payload: {
+                      headerKey: "error",
+                      rowIndex,
+                      value: {
+                        ...(tableRowData?.error || {}),
+                        [headerKey]: headerObj?.required ? true : undefined,
+                      },
+                    },
+                  });
+                }
               }}
             />
           )}
@@ -165,6 +204,22 @@ const AppTable = (props) => {
             }
           }}
           rows={2}
+          iserror={tableRowData?.error?.[headerObj?.key]?.toString()}
+          onBlur={() => {
+            if (dispatchModel) {
+              dispatchModel({
+                type: "update-modelField",
+                payload: {
+                  headerKey: "error",
+                  rowIndex,
+                  value: {
+                    ...(tableRowData?.error || {}),
+                    [headerKey]: headerObj?.required ? true : undefined,
+                  },
+                },
+              });
+            }
+          }}
         />
       );
     } else {
@@ -201,6 +256,11 @@ const AppTable = (props) => {
                   style={{ padding: cellPadding }}
                 >
                   {header?.displayName}
+                  {header?.required ? (
+                    <span className={appStyles["required-asterisk"]}>*</span>
+                  ) : (
+                    ""
+                  )}
                 </TableCell>
               );
             })}
@@ -208,49 +268,61 @@ const AppTable = (props) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {tableRows?.map((tableRow, rowIndex) => (
-            <TableRow key={rowIndex}>
-              {tableHeaders?.map((header, headerIndex) => {
-                return (
+          {tableRows?.length ? (
+            tableRows?.map((tableRow, rowIndex) => (
+              <TableRow key={rowIndex}>
+                {tableHeaders?.map((header, headerIndex) => {
+                  return (
+                    <TableCell
+                      key={headerIndex}
+                      className={classes.tableBodyCell}
+                      style={{ padding: cellPadding }}
+                    >
+                      {TextFieldBoxOrValue(
+                        tableRow,
+                        header,
+                        rowIndex,
+                        tableRow[header?.key]
+                      )}
+                    </TableCell>
+                  );
+                })}
+                {(addMode || editMode) && (
                   <TableCell
-                    key={headerIndex}
                     className={classes.tableBodyCell}
                     style={{ padding: cellPadding }}
                   >
-                    {TextFieldBoxOrValue(
-                      header?.key,
-                      rowIndex,
-                      tableRow[header?.key]
-                    )}
+                    <RemoveIcon
+                      className={appStyles.removeIcon}
+                      onClick={() => {
+                        if (dispatchEndpoint) {
+                          dispatchEndpoint({
+                            type: decideDispatchRemoveType(),
+                            payload: { rowIndex },
+                          });
+                        }
+                        if (dispatchModel) {
+                          dispatchModel({
+                            type: decideDispatchRemoveType(),
+                            payload: { rowIndex },
+                          });
+                        }
+                      }}
+                    />
                   </TableCell>
-                );
-              })}
-              {(addMode || editMode) && (
-                <TableCell
-                  className={classes.tableBodyCell}
-                  style={{ padding: cellPadding }}
-                >
-                  <RemoveIcon
-                    className={appStyles.removeIcon}
-                    onClick={() => {
-                      if (dispatchEndpoint) {
-                        dispatchEndpoint({
-                          type: decideDispatchRemoveType(),
-                          payload: { rowIndex },
-                        });
-                      }
-                      if (dispatchModel) {
-                        dispatchModel({
-                          type: decideDispatchRemoveType(),
-                          payload: { rowIndex },
-                        });
-                      }
-                    }}
-                  />
-                </TableCell>
-              )}
+                )}
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell
+                className={classes.zeroStateMsg}
+                colSpan={tableHeaders?.length}
+              >
+                {zeroStateText || "No data"}
+              </TableCell>
             </TableRow>
-          ))}
+          )}
         </TableBody>
       </Table>
     </TableContainer>

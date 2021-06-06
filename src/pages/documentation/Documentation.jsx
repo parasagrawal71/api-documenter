@@ -5,8 +5,9 @@ import EndpointComponent from "components/endpoint/Endpoint";
 import HeaderComponent from "components/header/Header";
 import TableOfContentsComponent from "components/tableOfContents/tableOfContents";
 import ModelComponent from "components/model/Model";
+import ReadmeComponent from "components/readme/Readme";
 import apiService from "apis/apiService";
-import { readme, schema, apisTree } from "apis/urls";
+import { readme, schema } from "apis/urls";
 
 // IMPORT ASSETS HERE
 // import endpoints from "assets/endpoints.json"; // TODO: REMOVE LATER
@@ -18,17 +19,26 @@ const Documentation = () => {
   const [selectedEnv, setSelectedEnv] = useState({});
   const [endpoints, setEndpoints] = useState([]);
   const [models, setModels] = useState([]);
+  const [readmeFiles, setReadmeFiles] = useState([]);
 
   useEffect(() => {
     setSelectedEnv(environments[0]);
 
     fetchModels();
+    fetchReadmeFiles();
   }, []);
 
   const fetchModels = async () => {
     const response = await apiService(schema().getAll);
     if (response?.success) {
       setModels(response?.data);
+    }
+  };
+
+  const fetchReadmeFiles = async () => {
+    const response = await apiService(readme().getAll);
+    if (response?.success) {
+      setReadmeFiles(response?.data);
     }
   };
 
@@ -40,9 +50,25 @@ const Documentation = () => {
       />
       <section className={appStyles["content-cnt"]}>
         <section className={appStyles["table-of-contents"]}>
-          <TableOfContentsComponent models={models} setModels={setModels} />
+          <TableOfContentsComponent
+            models={models}
+            setModels={setModels}
+            readmeFiles={readmeFiles}
+            setReadmeFiles={setReadmeFiles}
+          />
         </section>
         <section className={appStyles["content-cnt--right"]}>
+          {readmeFiles?.length ? (
+            <section className={appStyles["readme-cnt"]}>
+              <div id="readme" className={appStyles.title}>
+                Readme
+              </div>
+              {readmeFiles?.map((readmeFile, index) => {
+                return <ReadmeComponent key={index} readmeFile={readmeFile} />;
+              })}
+            </section>
+          ) : null}
+
           {models?.length ? (
             <section className={appStyles["models-cnt"]}>
               <div id="models" className={appStyles.title}>

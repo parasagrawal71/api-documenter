@@ -16,11 +16,10 @@ import appStyles from "./tableOfContents.module.scss";
 
 const tableOfContents = (props) => {
   // PROPS HERE
-  const { models, setModels } = props;
+  const { models, setModels, readmeFiles, setReadmeFiles } = props;
 
   // HOOKS HERE
   const [sortedApisTree, setSortedApisTree] = useState([]);
-  const [readmeFiles, setReadmeFiles] = useState([]);
   const [openReadme, setOpenReadme] = useState(false);
   const [openModels, setOpenModels] = useState(false);
   const [openTextfieldPopup, setOpenTextfieldPopup] = useState({
@@ -46,7 +45,6 @@ const tableOfContents = (props) => {
     const sortedApisTreeTemp = sortArrayOfObjs(apisTree, "folderName");
     setSortedApisTree(sortedApisTreeTemp);
 
-    fetchReadmeFiles();
     fetchApisTree();
   }, []);
 
@@ -263,13 +261,6 @@ const tableOfContents = (props) => {
     response = null;
   };
 
-  const fetchReadmeFiles = async () => {
-    const response = await apiService(readme().getAll);
-    if (response?.success) {
-      setReadmeFiles(response?.data);
-    }
-  };
-
   const fetchApisTree = async () => {
     const response = await apiService(apisTree().getAll);
     if (response?.success) {
@@ -314,6 +305,7 @@ const tableOfContents = (props) => {
               placeholder1: "Enter File Name",
             });
           }}
+          href="readme"
         />
 
         {openReadme &&
@@ -332,6 +324,7 @@ const tableOfContents = (props) => {
                       fileObj: aFileObj,
                     });
                   }}
+                  href={aFileObj?.fileName}
                 />
               );
             })
