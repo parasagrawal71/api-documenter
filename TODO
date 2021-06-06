@@ -7,3 +7,4 @@
 - Comment box whenever updated
 - Testcases functionality
 - Bug: Two actions popup opening at same time on clicking two more icons
+- Nested fields support in model component

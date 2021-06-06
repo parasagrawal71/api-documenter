@@ -23,7 +23,7 @@ const Readme = (props) => {
     enableTabIndentationInTextArea();
 
     // eslint-disable-next-line
-  }, []);
+  }, [editMode]);
 
   const enableTabIndentationInTextArea = () => {
     const textAreaEle = document.getElementById("readme-textarea");
@@ -99,7 +99,7 @@ const Readme = (props) => {
           // disabled={}
         />
       ) : (
-        <div>{readmeFile?.content}</div>
+        <pre className={appStyles["readme-value"]}>{readmeFile?.content}</pre>
       )}
     </section>
   );

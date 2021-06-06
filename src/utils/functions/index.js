@@ -9,7 +9,7 @@ export const capitalizeFirstLetter = (string) => {
 };
 
 export const prettyPrintJson = (jsonData) => {
-  if (jsonData) {
+  if (jsonData && typeof jsonData === "object" && !Array.isArray(jsonData)) {
     const prettyJson = JSON.stringify(
       typeof jsonData === "string" ? JSON.parse(jsonData) : jsonData,
       undefined,
@@ -17,6 +17,8 @@ export const prettyPrintJson = (jsonData) => {
     );
     return prettyJson;
   }
+
+  return jsonData;
 };
 
 export const sortObjectKeys = (obj) => {
