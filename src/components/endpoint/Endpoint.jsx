@@ -9,6 +9,7 @@ import {
 } from "@material-ui/icons";
 import axios from "axios";
 import moment from "moment";
+import cx from "classnames";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
 import {
@@ -77,7 +78,7 @@ const Endpoint = (props) => {
         return { ...state, parameters: updatedParameters };
 
       case "add-parameter":
-        const updatedParametersAfterAddingNew = [...state?.parameters];
+        const updatedParametersAfterAddingNew = [...(state?.parameters || [])];
         updatedParametersAfterAddingNew?.push({
           name: "",
           required: false,
@@ -108,7 +109,9 @@ const Endpoint = (props) => {
         return { ...state, requestHeaders: updatedReqHeaders };
 
       case "add-requestHeader":
-        const updatedRequestHeadersAfterAddingNew = [...state?.requestHeaders];
+        const updatedRequestHeadersAfterAddingNew = [
+          ...(state?.requestHeaders || []),
+        ];
         updatedRequestHeadersAfterAddingNew?.push({
           name: "",
           required: false,
@@ -394,7 +397,11 @@ const Endpoint = (props) => {
 
   return (
     <section className={appStyles["main-container"]}>
-      <section className={appStyles["main-header"]}>
+      <section
+        className={cx(appStyles["main-header"], {
+          [appStyles.padding0]: editMode || addMode,
+        })}
+      >
         <div className={appStyles["main-header--left"]}>
           <span className={appStyles.title}>
             {TextFieldBoxOrValue("title", endpoint?.title)}
