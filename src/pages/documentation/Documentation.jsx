@@ -11,7 +11,7 @@ import { readme, schema } from "apis/urls";
 
 // IMPORT ASSETS HERE
 // import endpoints from "assets/endpoints.json"; // TODO: REMOVE LATER
-import environments from "assets/environments";
+import environments from "assets/environments.json";
 import appStyles from "./Documentation.module.scss";
 
 const Documentation = () => {

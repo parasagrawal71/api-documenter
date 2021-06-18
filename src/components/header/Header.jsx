@@ -7,7 +7,7 @@ import { ThemeAutocomplete, ThemeTextField } from "utils/commonStyles/styledComp
 import EnvPopoverComponent from "components/envPopover/EnvPopover";
 
 // IMPORT ASSETS HERE
-import environments from "assets/environments";
+import environments from "assets/environments.json";
 import appStyles from "./Header.module.scss";
 
 const Header = (props) => {
