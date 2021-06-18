@@ -3,10 +3,7 @@ import { ClickAwayListener } from "@material-ui/core";
 import { ListAlt as ListAltIcon } from "@material-ui/icons";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
-import {
-  ThemeAutocomplete,
-  ThemeTextField,
-} from "utils/commonStyles/styledComponents";
+import { ThemeAutocomplete, ThemeTextField } from "utils/commonStyles/styledComponents";
 import EnvPopoverComponent from "components/envPopover/EnvPopover";
 
 // IMPORT ASSETS HERE
@@ -58,10 +55,7 @@ const Header = (props) => {
         </div>
         <ClickAwayListener onClickAway={handleCloseEnvPopover}>
           <div className={appStyles["app-header__edit-env"]}>
-            <ListAltIcon
-              className={appStyles["app-header__edit-env__icon"]}
-              onClick={toggleOpenEnvPopover}
-            />
+            <ListAltIcon className={appStyles["app-header__edit-env__icon"]} onClick={toggleOpenEnvPopover} />
             <EnvPopoverComponent
               openEnvPopover={openEnvPopover}
               handleCloseEnvPopover={handleCloseEnvPopover}

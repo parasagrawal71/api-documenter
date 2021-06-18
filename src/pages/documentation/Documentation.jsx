@@ -44,10 +44,7 @@ const Documentation = () => {
 
   return (
     <section className={appStyles["main-container"]}>
-      <HeaderComponent
-        selectedEnv={selectedEnv}
-        setSelectedEnv={setSelectedEnv}
-      />
+      <HeaderComponent selectedEnv={selectedEnv} setSelectedEnv={setSelectedEnv} />
       <section className={appStyles["content-cnt"]}>
         <section className={appStyles["table-of-contents"]}>
           <TableOfContentsComponent
@@ -86,13 +83,7 @@ const Documentation = () => {
                 Endpoints
               </div>
               {endpoints?.map((endpoint) => {
-                return (
-                  <EndpointComponent
-                    endpoint={endpoint}
-                    key={endpoint?.title}
-                    selectedEnv={selectedEnv}
-                  />
-                );
+                return <EndpointComponent endpoint={endpoint} key={endpoint?.title} selectedEnv={selectedEnv} />;
               })}
             </section>
           ) : null}

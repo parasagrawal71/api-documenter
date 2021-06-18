@@ -37,8 +37,7 @@ const FolderOrFile = (props) => {
 
   const inlineStyles = {
     folderFileCnt: {
-      paddingLeft:
-        (type === "file" && fileObj?.method && 27) || (type === "file" && 47),
+      paddingLeft: (type === "file" && fileObj?.method && 27) || (type === "file" && 47),
       height: type === "file" && 20,
     },
   };
@@ -60,28 +59,17 @@ const FolderOrFile = (props) => {
         {type === "folder" &&
           (isFolderOpen ? (
             <>
-              <ArrowDownIcon
-                className={appStyles.arrowIcon}
-                onClick={toggleFolder}
-              />
+              <ArrowDownIcon className={appStyles.arrowIcon} onClick={toggleFolder} />
               <FolderOpenIcon className={appStyles.folderIcon} />
             </>
           ) : (
             <>
-              <ArrowRightIcon
-                className={appStyles.arrowIcon}
-                onClick={toggleFolder}
-              />
+              <ArrowRightIcon className={appStyles.arrowIcon} onClick={toggleFolder} />
               <FolderIcon className={appStyles.folderIcon} />
             </>
           ))}
-        {type === "file" && fileObj?.method && (
-          <span className={appStyles["request-type"]}>{fileObj?.method}</span>
-        )}
-        <a
-          href={href ? `#${href}` : null}
-          className={appStyles["folder-file-name"]}
-        >
+        {type === "file" && fileObj?.method && <span className={appStyles["request-type"]}>{fileObj?.method}</span>}
+        <a href={href ? `#${href}` : null} className={appStyles["folder-file-name"]}>
           {type === "folder" ? folderObj?.folderName : fileObj?.fileName}
         </a>
       </section>

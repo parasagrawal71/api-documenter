@@ -43,16 +43,12 @@ const Readme = (props) => {
         const currentValue = e.target.value;
         setReadmeFile({
           ...readmeFile,
-          content: `${currentValue.substring(
-            0,
-            selectionStart
-          )}${"\t"}${currentValue.substring(selectionEnd)}`,
+          content: `${currentValue.substring(0, selectionStart)}${"\t"}${currentValue.substring(selectionEnd)}`,
         });
 
         // update the cursor position after the state is updated
         // eslint-disable-next-line
-        readmeTextareaRef.current.selectionStart = readmeTextareaRef.current.selectionEnd =
-          selectionStart + 1;
+        readmeTextareaRef.current.selectionStart = readmeTextareaRef.current.selectionEnd = selectionStart + 1;
       }
     });
   };

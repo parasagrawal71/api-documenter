@@ -94,9 +94,7 @@ const Model = (props) => {
 
       case "remove-modelField":
         payload = action?.payload;
-        const updatedModelAfterRemoval = state?.fields?.filter(
-          (field, index) => index !== payload?.rowIndex
-        );
+        const updatedModelAfterRemoval = state?.fields?.filter((field, index) => index !== payload?.rowIndex);
         return { ...state, fields: updatedModelAfterRemoval };
 
       default:

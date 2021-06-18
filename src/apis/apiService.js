@@ -6,9 +6,7 @@ import { GET, POST, PUT, DELETE } from "./httpConstants";
 import handleError from "./handleError";
 
 const request = axios.create({
-  baseURL: window.location.origin?.includes("localhost")
-    ? SERVER_URL_LOCAL
-    : SERVER_URL_HEROKU,
+  baseURL: window.location.origin?.includes("localhost") ? SERVER_URL_LOCAL : SERVER_URL_HEROKU,
 });
 
 const apiService = (apiResource, body, config) => {

@@ -1,19 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Popover,
-} from "@material-ui/core";
-import {
-  AddCircleOutlined as AddIcon,
-  RemoveCircleOutlined as RemoveIcon,
-} from "@material-ui/icons";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Popover } from "@material-ui/core";
+import { AddCircleOutlined as AddIcon, RemoveCircleOutlined as RemoveIcon } from "@material-ui/icons";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
 import { ThemeTextField } from "utils/commonStyles/styledComponents";
@@ -31,12 +19,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function EnvPopover(props) {
   // PROPS HERE
-  const {
-    openEnvPopover,
-    handleCloseEnvPopover,
-    selectedEnv,
-    setSelectedEnv,
-  } = props;
+  const { openEnvPopover, handleCloseEnvPopover, selectedEnv, setSelectedEnv } = props;
 
   const classes = useStyles();
 

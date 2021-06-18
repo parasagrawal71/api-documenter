@@ -12,16 +12,8 @@ import moment from "moment";
 import cx from "classnames";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
-import {
-  ThemeTextField,
-  ThemeAutocomplete,
-} from "utils/commonStyles/styledComponents";
-import {
-  capitalizeFirstLetter,
-  getStatusText,
-  prettyPrintJson,
-  validateJSON,
-} from "utils/functions";
+import { ThemeTextField, ThemeAutocomplete } from "utils/commonStyles/styledComponents";
+import { capitalizeFirstLetter, getStatusText, prettyPrintJson, validateJSON } from "utils/functions";
 import AppTableComponent from "components/appTable/AppTable";
 import ViewMorePopupComponent from "components/viewMorePopup/ViewMorePopup";
 import TextfieldPopupComponent from "components/textfieldPopup/TextfieldPopup";
@@ -89,29 +81,23 @@ const Endpoint = (props) => {
 
       case "remove-parameter":
         payload = action?.payload;
-        const updatedParametersAfterRemoval = state?.parameters?.filter(
-          (param, index) => index !== payload?.rowIndex
-        );
+        const updatedParametersAfterRemoval = state?.parameters?.filter((param, index) => index !== payload?.rowIndex);
         return { ...state, parameters: updatedParametersAfterRemoval };
 
       case "requestHeaders":
         payload = action?.payload;
-        const updatedReqHeaders = state?.requestHeaders?.map(
-          (reqHeader, index) => {
-            if (index === payload?.rowIndex) {
-              reqHeader[payload?.headerKey] = payload?.value;
-              return reqHeader;
-            }
+        const updatedReqHeaders = state?.requestHeaders?.map((reqHeader, index) => {
+          if (index === payload?.rowIndex) {
+            reqHeader[payload?.headerKey] = payload?.value;
             return reqHeader;
           }
-        );
+          return reqHeader;
+        });
         payload = null;
         return { ...state, requestHeaders: updatedReqHeaders };
 
       case "add-requestHeader":
-        const updatedRequestHeadersAfterAddingNew = [
-          ...(state?.requestHeaders || []),
-        ];
+        const updatedRequestHeadersAfterAddingNew = [...(state?.requestHeaders || [])];
         updatedRequestHeadersAfterAddingNew?.push({
           name: "",
           required: false,
@@ -159,19 +145,14 @@ const Endpoint = (props) => {
 
       case "remove-example":
         payload = action?.payload;
-        const updatedExamplesAfterRemoval = state?.examples?.filter(
-          (example, index) => index !== payload?.rowIndex
-        );
+        const updatedExamplesAfterRemoval = state?.examples?.filter((example, index) => index !== payload?.rowIndex);
         return { ...state, examples: updatedExamplesAfterRemoval };
 
       default:
         throw new Error("Unknown type");
     }
   };
-  const [endpoint, dispatchEndpoint] = useReducer(
-    endpointReducers,
-    props?.endpoint
-  );
+  const [endpoint, dispatchEndpoint] = useReducer(endpointReducers, props?.endpoint);
 
   useEffect(() => {
     enableTabIndentationInTextArea();
@@ -224,12 +205,7 @@ const Endpoint = (props) => {
   ];
 
   /* ########################### FUNCTIONS HERE ########################### */
-  const TextFieldBoxOrValue = (
-    fieldName,
-    fieldValue,
-    isMultiline,
-    arrayIndex
-  ) => {
+  const TextFieldBoxOrValue = (fieldName, fieldValue, isMultiline, arrayIndex) => {
     if (addMode || editMode) {
       if (fieldName === "method") {
         return (
@@ -263,11 +239,7 @@ const Endpoint = (props) => {
         <ThemeTextField
           variant="outlined"
           value={editMode ? fieldValue : ""}
-          placeholder={
-            fieldName === "examples"
-              ? "Example title"
-              : capitalizeFirstLetter(fieldName)
-          }
+          placeholder={fieldName === "examples" ? "Example title" : capitalizeFirstLetter(fieldName)}
           multiline={isMultiline === "multiline"}
           onClick={(e) => e.stopPropagation()}
           onChange={(e) => {
@@ -320,10 +292,7 @@ const Endpoint = (props) => {
     let modifiedPath = "";
     if (endpoint?.path?.includes("{{")) {
       const url = endpoint?.path;
-      const variableName = url?.substring(
-        url.indexOf("{") + 2,
-        url.indexOf("}")
-      );
+      const variableName = url?.substring(url.indexOf("{") + 2, url.indexOf("}"));
       let variableValue = "";
       selectedEnv?.variables?.map((variable) => {
         if (variableName === variable?.key) {
@@ -360,30 +329,22 @@ const Endpoint = (props) => {
   };
 
   const enableTabIndentationInTextArea = () => {
-    document
-      .getElementById("json-textarea")
-      .addEventListener("keydown", (e) => {
-        if (e.key === "Tab") {
-          e.preventDefault();
+    document.getElementById("json-textarea").addEventListener("keydown", (e) => {
+      if (e.key === "Tab") {
+        e.preventDefault();
 
-          // Get the cursor position
-          const { selectionStart, selectionEnd } = e.target;
+        // Get the cursor position
+        const { selectionStart, selectionEnd } = e.target;
 
-          // update the state
-          const currentValue = e.target.value;
-          setRequestBody(
-            `${currentValue.substring(
-              0,
-              selectionStart
-            )}${"\t"}${currentValue.substring(selectionEnd)}`
-          );
+        // update the state
+        const currentValue = e.target.value;
+        setRequestBody(`${currentValue.substring(0, selectionStart)}${"\t"}${currentValue.substring(selectionEnd)}`);
 
-          // update the cursor position after the state is updated
-          // eslint-disable-next-line
-          jsonTextareaRef.current.selectionStart = jsonTextareaRef.current.selectionEnd =
-            selectionStart + 1;
-        }
-      });
+        // update the cursor position after the state is updated
+        // eslint-disable-next-line
+        jsonTextareaRef.current.selectionStart = jsonTextareaRef.current.selectionEnd = selectionStart + 1;
+      }
+    });
   };
 
   const prettifyRequestBody = () => {
@@ -403,12 +364,9 @@ const Endpoint = (props) => {
         })}
       >
         <div className={appStyles["main-header--left"]}>
-          <span className={appStyles.title}>
-            {TextFieldBoxOrValue("title", endpoint?.title)}
-          </span>
+          <span className={appStyles.title}>{TextFieldBoxOrValue("title", endpoint?.title)}</span>
           <span className={appStyles.updatedAt}>
-            Updated At:{" "}
-            {moment(endpoint?.updatedAt).format("DD-MM-YYYY hh:mm A")}
+            Updated At: {moment(endpoint?.updatedAt).format("DD-MM-YYYY hh:mm A")}
           </span>
         </div>
         <div className={appStyles["action-btns"]}>
@@ -433,12 +391,8 @@ const Endpoint = (props) => {
         </div>
       </section>
       <div className={appStyles["method-path"]}>
-        <div className={appStyles.method}>
-          {TextFieldBoxOrValue("method", endpoint?.method)}
-        </div>
-        <div className={appStyles.path}>
-          {TextFieldBoxOrValue("path", endpoint?.path)}
-        </div>
+        <div className={appStyles.method}>{TextFieldBoxOrValue("method", endpoint?.method)}</div>
+        <div className={appStyles.path}>{TextFieldBoxOrValue("path", endpoint?.path)}</div>
       </div>
       <div className={appStyles.description}>
         {TextFieldBoxOrValue("description", endpoint?.description, "multiline")}
@@ -519,26 +473,14 @@ const Endpoint = (props) => {
             }}
             disabled={addMode || editMode}
           />
-          <span className={appStyles.invalidJSONErr}>
-            {invalidReqBody ? "Invalid JSON" : ""}
-          </span>
+          <span className={appStyles.invalidJSONErr}>{invalidReqBody ? "Invalid JSON" : ""}</span>
         </section>
 
         <section className={appStyles["response-body"]}>
           <div className={appStyles["response-body__title"]}>
             <span>Response Body</span>
-            <span
-              className={
-                String(apiResponse?.statusCode)?.startsWith("2")
-                  ? appStyles.green
-                  : appStyles.red
-              }
-            >
-              {apiResponse
-                ? `${apiResponse?.statusCode} ${getStatusText(
-                    apiResponse?.statusCode
-                  )}`
-                : null}
+            <span className={String(apiResponse?.statusCode)?.startsWith("2") ? appStyles.green : appStyles.red}>
+              {apiResponse ? `${apiResponse?.statusCode} ${getStatusText(apiResponse?.statusCode)}` : null}
             </span>
           </div>
           <div className={appStyles["response-body__json"]}>
@@ -589,12 +531,7 @@ const Endpoint = (props) => {
                 </span>
                 <span>Example {exampleIndex + 1}:&nbsp;&nbsp;</span>
                 <span className={appStyles.flex1}>
-                  {TextFieldBoxOrValue(
-                    "examples",
-                    example?.title,
-                    "",
-                    exampleIndex
-                  )}
+                  {TextFieldBoxOrValue("examples", example?.title, "", exampleIndex)}
                 </span>
                 {(editMode || addMode) && (
                   <span>
@@ -613,13 +550,9 @@ const Endpoint = (props) => {
 
               {openExamples?.[exampleIndex] && (
                 <section className={appStyles["example-all-cnt"]}>
-                  <section
-                    className={appStyles["example-paramters-reqHeaders"]}
-                  >
+                  <section className={appStyles["example-paramters-reqHeaders"]}>
                     <div className={appStyles["example-paramters"]}>
-                      <div className={appStyles["example-paramters__title"]}>
-                        Query Parameters
-                      </div>
+                      <div className={appStyles["example-paramters__title"]}>Query Parameters</div>
                       <AppTableComponent
                         tableHeaders={exampleTableHeaders}
                         tableRows={example?.parameters}
@@ -628,9 +561,7 @@ const Endpoint = (props) => {
                       />
                     </div>
                     <div className={appStyles["example-reqHeaders"]}>
-                      <div className={appStyles["example-reqHeaders__title"]}>
-                        Headers
-                      </div>
+                      <div className={appStyles["example-reqHeaders__title"]}>Headers</div>
                       <AppTableComponent
                         tableHeaders={exampleTableHeaders}
                         tableRows={example?.requestHeaders}
@@ -640,13 +571,9 @@ const Endpoint = (props) => {
                     </div>
                   </section>
 
-                  <section
-                    className={appStyles["example-request-response-bodies"]}
-                  >
+                  <section className={appStyles["example-request-response-bodies"]}>
                     <section className={appStyles["example-request-body"]}>
-                      <div className={appStyles["example-request-body__title"]}>
-                        Request Body
-                      </div>
+                      <div className={appStyles["example-request-body__title"]}>Request Body</div>
                       <div className={appStyles["example-request-body__json"]}>
                         <pre>{prettyPrintJson(example?.requestBody)}</pre>
                       </div>
@@ -656,9 +583,7 @@ const Endpoint = (props) => {
                         onClick={() => {
                           setOpenViewMorePopup(true);
                           setPopupContent({
-                            title: `Example ${exampleIndex + 1}: ${
-                              example?.title
-                            }`,
+                            title: `Example ${exampleIndex + 1}: ${example?.title}`,
                             json: example?.requestBody,
                           });
                         }}
@@ -668,23 +593,15 @@ const Endpoint = (props) => {
                     </section>
 
                     <section className={appStyles["example-response-body"]}>
-                      <div
-                        className={appStyles["example-response-body__title"]}
-                      >
+                      <div className={appStyles["example-response-body__title"]}>
                         <span>Response Body</span>
                         <span
                           className={
-                            String(example?.response?.statusCode)?.startsWith(
-                              "2"
-                            )
-                              ? appStyles.green
-                              : appStyles.red
+                            String(example?.response?.statusCode)?.startsWith("2") ? appStyles.green : appStyles.red
                           }
                         >
                           {example?.response
-                            ? `${example?.response?.statusCode} ${getStatusText(
-                                example?.response?.statusCode
-                              )}`
+                            ? `${example?.response?.statusCode} ${getStatusText(example?.response?.statusCode)}`
                             : null}
                         </span>
                       </div>
@@ -697,9 +614,7 @@ const Endpoint = (props) => {
                         onClick={() => {
                           setOpenViewMorePopup(true);
                           setPopupContent({
-                            title: `Example ${exampleIndex + 1}: ${
-                              example?.title
-                            }`,
+                            title: `Example ${exampleIndex + 1}: ${example?.title}`,
                             statusCode: example?.response?.statusCode,
                             json: example?.response?.data,
                           });

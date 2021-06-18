@@ -38,10 +38,7 @@ export default function ActionsPopover(props) {
 
   useEffect(() => {
     const clickAwayEventListener = (e) => {
-      if (
-        !actionsPopupRef?.current ||
-        !actionsPopupRef?.current?.contains(e?.target)
-      ) {
+      if (!actionsPopupRef?.current || !actionsPopupRef?.current?.contains(e?.target)) {
         setOpenPopover(false);
       }
     };

@@ -9,14 +9,7 @@ import appStyles from "./TextfieldPopup.module.scss";
 
 const TextfieldPopup = (props) => {
   // PROPS HERE
-  const {
-    openPopup,
-    setOpenPopup,
-    handleSave,
-    placeholder1,
-    placeholder2,
-    endpoint,
-  } = props;
+  const { openPopup, setOpenPopup, handleSave, placeholder1, placeholder2, endpoint } = props;
 
   // HOOKS HERE
   const [fieldOne, setFieldOne] = useState("");

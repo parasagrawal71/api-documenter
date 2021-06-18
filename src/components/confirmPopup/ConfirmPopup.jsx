@@ -8,14 +8,7 @@ import appStyles from "./ConfirmPopup.module.scss";
 
 const ConfirmPopup = (props) => {
   // PROPS HERE
-  const {
-    openPopup,
-    setOpenPopup,
-    message,
-    cancelCallback,
-    confirmCallback,
-    confirmText,
-  } = props;
+  const { openPopup, setOpenPopup, message, cancelCallback, confirmCallback, confirmText } = props;
 
   // HOOKS HERE
 

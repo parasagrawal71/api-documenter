@@ -15,7 +15,7 @@
   .app-header--right {
     @include flex-row-v-cen;
     .app-header__envs-dropdown {
-        margin-right: 10px;
+      margin-right: 10px;
     }
     .app-header__edit-env {
       .app-header__edit-env__icon {

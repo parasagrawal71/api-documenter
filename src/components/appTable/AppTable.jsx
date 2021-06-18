@@ -1,22 +1,10 @@
 import React from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-} from "@material-ui/core";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@material-ui/core";
 import { RemoveCircleOutlined as RemoveIcon } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
-import {
-  ThemeTextField,
-  ThemeCheckbox,
-  ThemeAutocomplete,
-} from "utils/commonStyles/styledComponents";
+import { ThemeTextField, ThemeCheckbox, ThemeAutocomplete } from "utils/commonStyles/styledComponents";
 
 // IMPORT ASSETS HERE
 import appStyles from "./AppTable.module.scss";
@@ -55,13 +43,7 @@ const AppTable = (props) => {
   });
   const classes = useStyles();
 
-  const TextFieldBoxOrValue = (
-    tableRowData,
-    headerObj,
-    rowIndex,
-    fieldValue,
-    isMultiline
-  ) => {
+  const TextFieldBoxOrValue = (tableRowData, headerObj, rowIndex, fieldValue, isMultiline) => {
     const headerKey = headerObj?.key;
 
     if (["required", "unique"].includes(headerKey)) {
@@ -161,24 +143,12 @@ const AppTable = (props) => {
           value={{ type: fieldValue } || ""}
         />
       );
-    } else if (
-      (headerKey === "value" && !disableValueTextbox) ||
-      addMode ||
-      editMode
-    ) {
+    } else if ((headerKey === "value" && !disableValueTextbox) || addMode || editMode) {
       return (
         <ThemeTextField
           variant="outlined"
-          disabled={
-            headerKey === "value" &&
-            !disableValueTextbox &&
-            (editMode || addMode)
-          }
-          value={
-            (headerKey === "value" && !disableValueTextbox) || editMode
-              ? fieldValue
-              : ""
-          }
+          disabled={headerKey === "value" && !disableValueTextbox && (editMode || addMode)}
+          value={(headerKey === "value" && !disableValueTextbox) || editMode ? fieldValue : ""}
           multiline={isMultiline === "multiline"}
           onChange={(e) => {
             if (dispatchEndpoint) {
@@ -250,17 +220,9 @@ const AppTable = (props) => {
           <TableRow>
             {tableHeaders?.map((header, headerIndex) => {
               return (
-                <TableCell
-                  key={headerIndex}
-                  className={classes.tableHeaderCell}
-                  style={{ padding: cellPadding }}
-                >
+                <TableCell key={headerIndex} className={classes.tableHeaderCell} style={{ padding: cellPadding }}>
                   {header?.displayName}
-                  {header?.required ? (
-                    <span className={appStyles["required-asterisk"]}>*</span>
-                  ) : (
-                    ""
-                  )}
+                  {header?.required ? <span className={appStyles["required-asterisk"]}>*</span> : ""}
                 </TableCell>
               );
             })}
@@ -273,25 +235,13 @@ const AppTable = (props) => {
               <TableRow key={rowIndex}>
                 {tableHeaders?.map((header, headerIndex) => {
                   return (
-                    <TableCell
-                      key={headerIndex}
-                      className={classes.tableBodyCell}
-                      style={{ padding: cellPadding }}
-                    >
-                      {TextFieldBoxOrValue(
-                        tableRow,
-                        header,
-                        rowIndex,
-                        tableRow[header?.key]
-                      )}
+                    <TableCell key={headerIndex} className={classes.tableBodyCell} style={{ padding: cellPadding }}>
+                      {TextFieldBoxOrValue(tableRow, header, rowIndex, tableRow[header?.key])}
                     </TableCell>
                   );
                 })}
                 {(addMode || editMode) && (
-                  <TableCell
-                    className={classes.tableBodyCell}
-                    style={{ padding: cellPadding }}
-                  >
+                  <TableCell className={classes.tableBodyCell} style={{ padding: cellPadding }}>
                     <RemoveIcon
                       className={appStyles.removeIcon}
                       onClick={() => {
@@ -315,10 +265,7 @@ const AppTable = (props) => {
             ))
           ) : (
             <TableRow>
-              <TableCell
-                className={classes.zeroStateMsg}
-                colSpan={tableHeaders?.length}
-              >
+              <TableCell className={classes.zeroStateMsg} colSpan={tableHeaders?.length}>
                 {zeroStateText || "No data"}
               </TableCell>
             </TableRow>

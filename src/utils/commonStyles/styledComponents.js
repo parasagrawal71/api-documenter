@@ -7,8 +7,7 @@ export const ThemeTextField = styled(TextField)({
   maxWidth: (props) => (props?.maxWidth ? props.maxWidth : "100%"),
   ".MuiOutlinedInput-root": {
     fontSize: "0.9em",
-    backgroundColor: (props) =>
-      props?.disabled ? "lightgrey" : "rgb(178, 190, 181, 0.15)",
+    backgroundColor: (props) => (props?.disabled ? "lightgrey" : "rgb(178, 190, 181, 0.15)"),
     borderRadius: (props) => (props?.borderRadius ? props.borderRadius : "5px"),
     color: (props) => (props?.color ? props.color : "#000000"),
     "& fieldset": {
@@ -16,20 +15,10 @@ export const ThemeTextField = styled(TextField)({
       border: (props) => (props.iserror ? "1px solid red" : ""),
     },
     "&:hover fieldset": {
-      border: (props) =>
-        props.disabled
-          ? ""
-          : props.iserror
-          ? "1px solid red"
-          : "1px solid lightgrey",
+      border: (props) => (props.disabled ? "" : props.iserror ? "1px solid red" : "1px solid lightgrey"),
     },
     "&.Mui-focused fieldset": {
-      border: (props) =>
-        props.disabled
-          ? ""
-          : props.iserror
-          ? "1px solid red"
-          : "1px solid lightgrey",
+      border: (props) => (props.disabled ? "" : props.iserror ? "1px solid red" : "1px solid lightgrey"),
     },
     input: {
       padding: 8,

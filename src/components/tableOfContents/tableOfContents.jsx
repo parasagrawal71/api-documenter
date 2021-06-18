@@ -83,9 +83,7 @@ const tableOfContents = (props) => {
         if (response?.success) {
           const updatedTreeAfterAddingFolder = [...sortedApisTree];
           updatedTreeAfterAddingFolder.push(response?.data);
-          setSortedApisTree(
-            sortArrayOfObjs(updatedTreeAfterAddingFolder, "folderName")
-          );
+          setSortedApisTree(sortArrayOfObjs(updatedTreeAfterAddingFolder, "folderName"));
         } else {
           //
         }
@@ -103,10 +101,7 @@ const tableOfContents = (props) => {
             folderName: subFolderName,
           });
         }
-        await updateFolderInApisTree(
-          updatedTreeAfterAddingSubFolder,
-          folderIndex
-        );
+        await updateFolderInApisTree(updatedTreeAfterAddingSubFolder, folderIndex);
         break;
 
       case "add-file-in-folder":
@@ -123,41 +118,29 @@ const tableOfContents = (props) => {
             fileName,
           });
         }
-        await updateFolderInApisTree(
-          updatedTreeAfterAddingFileInFolder,
-          folderIndex
-        );
+        await updateFolderInApisTree(updatedTreeAfterAddingFileInFolder, folderIndex);
         break;
 
       case "add-file-in-subfolder":
         const updatedTreeAfterAddingFileInSubFolder = [...sortedApisTree];
-        if (
-          updatedTreeAfterAddingFileInSubFolder?.[folderIndex]?.subfolders?.[
-            subFolderIndex
-          ]?.files
-        ) {
-          updatedTreeAfterAddingFileInSubFolder?.[folderIndex]?.subfolders?.[
-            subFolderIndex
-          ]?.files?.push({ method: method.toUpperCase(), fileName });
+        if (updatedTreeAfterAddingFileInSubFolder?.[folderIndex]?.subfolders?.[subFolderIndex]?.files) {
+          updatedTreeAfterAddingFileInSubFolder?.[folderIndex]?.subfolders?.[subFolderIndex]?.files?.push({
+            method: method.toUpperCase(),
+            fileName,
+          });
         } else {
-          updatedTreeAfterAddingFileInSubFolder[folderIndex].subfolders[
-            subFolderIndex
-          ].files = [];
-          updatedTreeAfterAddingFileInSubFolder?.[folderIndex]?.subfolders?.[
-            subFolderIndex
-          ]?.files?.push({ method: method.toUpperCase(), fileName });
+          updatedTreeAfterAddingFileInSubFolder[folderIndex].subfolders[subFolderIndex].files = [];
+          updatedTreeAfterAddingFileInSubFolder?.[folderIndex]?.subfolders?.[subFolderIndex]?.files?.push({
+            method: method.toUpperCase(),
+            fileName,
+          });
         }
-        await updateFolderInApisTree(
-          updatedTreeAfterAddingFileInSubFolder,
-          folderIndex
-        );
+        await updateFolderInApisTree(updatedTreeAfterAddingFileInSubFolder, folderIndex);
         break;
 
       case "delete-folder":
         const updatedTreeAfterFolderDeletion = [...sortedApisTree];
-        response = await apiService(
-          apisTree(updatedTreeAfterFolderDeletion?.[folderIndex]?._id).delete
-        );
+        response = await apiService(apisTree(updatedTreeAfterFolderDeletion?.[folderIndex]?._id).delete);
         if (response?.success) {
           updatedTreeAfterFolderDeletion.splice(folderIndex, 1);
           setSortedApisTree(updatedTreeAfterFolderDeletion);
@@ -169,37 +152,23 @@ const tableOfContents = (props) => {
 
       case "delete-subfolder":
         const updatedTreeAfterSubFolderDeletion = [...sortedApisTree];
-        updatedTreeAfterSubFolderDeletion?.[folderIndex]?.subfolders?.splice(
-          subFolderIndex,
-          1
-        );
-        await updateFolderInApisTree(
-          updatedTreeAfterSubFolderDeletion,
-          folderIndex
-        );
+        updatedTreeAfterSubFolderDeletion?.[folderIndex]?.subfolders?.splice(subFolderIndex, 1);
+        await updateFolderInApisTree(updatedTreeAfterSubFolderDeletion, folderIndex);
         break;
 
       case "delete-file-from-folder":
         const updatedTreeAfterFileDeletionInFolder = [...sortedApisTree];
-        updatedTreeAfterFileDeletionInFolder?.[folderIndex]?.files?.splice(
-          fileIndex,
-          1
-        );
-        await updateFolderInApisTree(
-          updatedTreeAfterFileDeletionInFolder,
-          folderIndex
-        );
+        updatedTreeAfterFileDeletionInFolder?.[folderIndex]?.files?.splice(fileIndex, 1);
+        await updateFolderInApisTree(updatedTreeAfterFileDeletionInFolder, folderIndex);
         break;
 
       case "delete-file-from-subfolder":
         const updatedTreeAfterSubFileDeletionInFolder = [...sortedApisTree];
-        updatedTreeAfterSubFileDeletionInFolder?.[folderIndex]?.subfolders?.[
-          subFolderIndex
-        ]?.files?.splice(fileIndex, 1);
-        await updateFolderInApisTree(
-          updatedTreeAfterSubFileDeletionInFolder,
-          folderIndex
+        updatedTreeAfterSubFileDeletionInFolder?.[folderIndex]?.subfolders?.[subFolderIndex]?.files?.splice(
+          fileIndex,
+          1
         );
+        await updateFolderInApisTree(updatedTreeAfterSubFileDeletionInFolder, folderIndex);
         break;
 
       case "add-readme-file":
@@ -216,9 +185,7 @@ const tableOfContents = (props) => {
         break;
 
       case "delete-readme-file":
-        response = await apiService(
-          readme(openConfirmPopup?.fileObj?._id).delete
-        );
+        response = await apiService(readme(openConfirmPopup?.fileObj?._id).delete);
         if (response?.success) {
           const updatedReadmeFilesAfterDeletion = [...readmeFiles];
           updatedReadmeFilesAfterDeletion?.splice(fileIndex, 1);
@@ -243,9 +210,7 @@ const tableOfContents = (props) => {
         break;
 
       case "delete-model":
-        response = await apiService(
-          schema(openConfirmPopup?.fileObj?._id).delete
-        );
+        response = await apiService(schema(openConfirmPopup?.fileObj?._id).delete);
         if (response?.success) {
           const updatedModelsAfterDeletion = [...models];
           updatedModelsAfterDeletion?.splice(fileIndex, 1);
@@ -271,10 +236,7 @@ const tableOfContents = (props) => {
 
   const updateFolderInApisTree = async (updatedApisTree, folderIndex) => {
     const updatedFolderObj = updatedApisTree?.[folderIndex];
-    const response = await apiService(
-      apisTree(updatedFolderObj?._id).put,
-      updatedFolderObj
-    );
+    const response = await apiService(apisTree(updatedFolderObj?._id).put, updatedFolderObj);
     if (response?.success) {
       setSortedApisTree(updatedApisTree);
     } else {
@@ -403,10 +365,7 @@ const tableOfContents = (props) => {
         <section className={appStyles["api-folders"]}>
           {sortedApisTree?.map((apiFolder, folderIndex) => {
             return (
-              <section
-                className={appStyles["folder-wrapper"]}
-                key={apiFolder?.folderName}
-              >
+              <section className={appStyles["folder-wrapper"]} key={apiFolder?.folderName}>
                 <FolderOrFileComponent
                   type="folder"
                   isFolderOpen={apiFolder?.opened}
@@ -446,19 +405,12 @@ const tableOfContents = (props) => {
                 {apiFolder?.opened &&
                   apiFolder?.subfolders?.map((subFolder, subFolderIndex) => {
                     return (
-                      <section
-                        key={subFolder?.folder}
-                        className={appStyles["subfolder-wrapper"]}
-                      >
+                      <section key={subFolder?.folder} className={appStyles["subfolder-wrapper"]}>
                         <FolderOrFileComponent
                           type="folder"
                           isFolderOpen={subFolder?.opened}
                           toggleFolder={() => {
-                            openCloseFolder(
-                              apiFolder?.folderName,
-                              subFolder?.folderName,
-                              folderIndex
-                            );
+                            openCloseFolder(apiFolder?.folderName, subFolder?.folderName, folderIndex);
                           }}
                           folderObj={subFolder}
                           showActions={["addFile", "delete"]}

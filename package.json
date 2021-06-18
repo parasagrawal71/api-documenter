@@ -25,7 +25,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint ./ --fix"
+    "lint": "eslint ./ --fix",
+    "prettier": "prettier -w ./src"
   },
   "eslintConfig": {
     "extends": [
@@ -52,6 +53,7 @@
     }
   },
   "devDependencies": {
+    "babel-eslint": "^10.1.0",
     "eslint": "7.24.0",
     "eslint-config-airbnb": "18.2.1",
     "eslint-config-prettier": "^8.1.0",

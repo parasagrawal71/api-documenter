@@ -25,13 +25,7 @@ const ViewMorePopup = (props) => {
       <section className={appStyles["view-more-popup"]}>
         <div className={appStyles["view-more-popup__title"]}>
           <span>{title}</span>
-          <span
-            className={
-              String(statusCode)?.startsWith("2")
-                ? appStyles.green
-                : appStyles.red
-            }
-          >
+          <span className={String(statusCode)?.startsWith("2") ? appStyles.green : appStyles.red}>
             {statusCode ? `${statusCode} ${getStatusText(statusCode)}` : null}
           </span>
         </div>
