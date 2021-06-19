@@ -60,3 +60,24 @@ export const apisTree = (mongoId) => ({
   },
 });
 // ****************************************************************************************** //
+
+// ********************************** 'Endpoint' endpoints ********************************** //
+export const endpointUrl = (mongoId) => ({
+  getAll: {
+    method: "GET",
+    endpoint: "/endpoint",
+  },
+  post: {
+    method: "POST",
+    endpoint: "/endpoint",
+  },
+  put: {
+    method: "PUT",
+    endpoint: `/endpoint/${mongoId}`,
+  },
+  delete: {
+    method: "DELETE",
+    endpoint: `/endpoint/${mongoId}`,
+  },
+});
+// ****************************************************************************************** //

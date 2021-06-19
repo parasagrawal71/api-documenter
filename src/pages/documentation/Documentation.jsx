@@ -7,7 +7,8 @@ import TableOfContentsComponent from "components/tableOfContents/tableOfContents
 import ModelComponent from "components/model/Model";
 import ReadmeComponent from "components/readme/Readme";
 import apiService from "apis/apiService";
-import { readme, schema } from "apis/urls";
+import { readme, schema, apisTree } from "apis/urls";
+import { sortArrayOfObjs } from "utils/functions";
 
 // IMPORT ASSETS HERE
 // import endpoints from "assets/endpoints.json"; // TODO: REMOVE LATER
@@ -17,15 +18,17 @@ import appStyles from "./Documentation.module.scss";
 const Documentation = () => {
   // HOOKS HERE
   const [selectedEnv, setSelectedEnv] = useState({});
-  const [endpoints, setEndpoints] = useState([]);
   const [models, setModels] = useState([]);
   const [readmeFiles, setReadmeFiles] = useState([]);
+  const [sortedApisTree, setSortedApisTree] = useState([]);
+  const [endpoints, setEndpoints] = useState([]);
 
   useEffect(() => {
     setSelectedEnv(environments[0]);
 
     fetchModels();
     fetchReadmeFiles();
+    fetchApisTree();
   }, []);
 
   const fetchModels = async () => {
@@ -42,6 +45,14 @@ const Documentation = () => {
     }
   };
 
+  const fetchApisTree = async () => {
+    const response = await apiService(apisTree().getAll);
+    if (response?.success) {
+      const sortedApisTreeTemp = sortArrayOfObjs(response?.data, "folderName");
+      setSortedApisTree(sortedApisTreeTemp);
+    }
+  };
+
   return (
     <section className={appStyles["main-container"]}>
       <HeaderComponent selectedEnv={selectedEnv} setSelectedEnv={setSelectedEnv} />
@@ -52,6 +63,8 @@ const Documentation = () => {
             setModels={setModels}
             readmeFiles={readmeFiles}
             setReadmeFiles={setReadmeFiles}
+            sortedApisTree={sortedApisTree}
+            setSortedApisTree={setSortedApisTree}
           />
         </section>
         <section className={appStyles["content-cnt--right"]}>

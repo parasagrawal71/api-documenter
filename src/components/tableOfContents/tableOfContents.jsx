@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Tooltip } from "@material-ui/core";
 import { CreateNewFolderOutlined as AddFolderIcon } from "@material-ui/icons";
 import cx from "classnames";
@@ -12,15 +12,13 @@ import apiService from "apis/apiService";
 import { readme, schema, apisTree } from "apis/urls";
 
 // IMPORT ASSETS HERE
-// import apisTree from "assets/apisTree.json";
 import appStyles from "./tableOfContents.module.scss";
 
 const tableOfContents = (props) => {
   // PROPS HERE
-  const { models, setModels, readmeFiles, setReadmeFiles } = props;
+  const { models, setModels, readmeFiles, setReadmeFiles, sortedApisTree, setSortedApisTree } = props;
 
   // HOOKS HERE
-  const [sortedApisTree, setSortedApisTree] = useState([]);
   const [openReadme, setOpenReadme] = useState(false);
   const [openModels, setOpenModels] = useState(false);
   const [openTextfieldPopup, setOpenTextfieldPopup] = useState({
@@ -41,13 +39,6 @@ const tableOfContents = (props) => {
     subFolderObj: {},
     fileObj: {},
   });
-
-  useEffect(() => {
-    const sortedApisTreeTemp = sortArrayOfObjs(apisTree, "folderName");
-    setSortedApisTree(sortedApisTreeTemp);
-
-    fetchApisTree();
-  }, []);
 
   const openCloseFolder = (folderName, subFolderName, folderIndex) => {
     const updatedFolders = sortedApisTree?.map((folderObj, index) => {
@@ -148,7 +139,6 @@ const tableOfContents = (props) => {
         } else {
           //
         }
-
         break;
 
       case "delete-subfolder":
@@ -225,14 +215,6 @@ const tableOfContents = (props) => {
         return new Error("Invalid action");
     }
     response = null;
-  };
-
-  const fetchApisTree = async () => {
-    const response = await apiService(apisTree().getAll);
-    if (response?.success) {
-      const sortedApisTreeTemp = sortArrayOfObjs(response?.data, "folderName");
-      setSortedApisTree(sortedApisTreeTemp);
-    }
   };
 
   const updateFolderInApisTree = async (updatedApisTree, folderIndex) => {
