@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Dialog, Button } from "@material-ui/core";
+import cx from "classnames";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
-import { ThemeTextField } from "utils/commonStyles/styledComponents";
+import { ThemeTextField, ThemeAutocomplete } from "utils/commonStyles/styledComponents";
 
 // IMPORT ASSETS HERE
 import appStyles from "./TextfieldPopup.module.scss";
@@ -31,7 +32,32 @@ const TextfieldPopup = (props) => {
         setOpenPopup({});
       }}
     >
-      <section>
+      <section className={appStyles["fields-wrapper"]}>
+        {placeholder2 && (
+          <div className={cx(appStyles["field-cnt"], appStyles["method-cnt"])}>
+            <ThemeAutocomplete
+              options={["GET", "POST", "PUT", "DELETE", "PATCH"]}
+              getOptionLabel={(option) => option || ""}
+              width="200px"
+              renderInput={(params) => (
+                <ThemeTextField
+                  {...params}
+                  variant="outlined"
+                  size="small"
+                  InputLabelProps={{
+                    focused: false,
+                  }}
+                  placeholder={placeholder2}
+                />
+              )}
+              onChange={(e, selectedOption) => {
+                setFieldTwo(selectedOption);
+              }}
+              value={fieldTwo || ""}
+            />
+          </div>
+        )}
+
         <div className={appStyles["field-cnt"]}>
           <ThemeTextField
             autoFocus
@@ -45,26 +71,12 @@ const TextfieldPopup = (props) => {
             onChange={(e) => setFieldOne(e?.target?.value)}
           />
         </div>
-
-        {placeholder2 && (
-          <div className={appStyles["field-cnt"]}>
-            <ThemeTextField
-              variant="outlined"
-              size="small"
-              InputLabelProps={{
-                focused: false,
-              }}
-              placeholder={placeholder2}
-              value={fieldTwo}
-              onChange={(e) => setFieldTwo(e?.target?.value)}
-            />
-          </div>
-        )}
       </section>
 
       <section className={appStyles["action-btns"]}>
         <div>
           <Button
+            disabled={!fieldOne || !fieldTwo}
             variant="outlined"
             onClick={() => {
               handleSave(fieldOne, fieldTwo);

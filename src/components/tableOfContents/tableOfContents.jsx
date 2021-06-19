@@ -414,8 +414,8 @@ const tableOfContents = (props) => {
                     setOpenTextfieldPopup({
                       actionType: "add-file-in-folder",
                       open: true,
-                      placeholder1: "Enter File Name",
-                      placeholder2: "Enter Method",
+                      placeholder1: "Enter Request Name",
+                      placeholder2: "Select Method",
                       folderIndex,
                     });
                   }}
@@ -446,8 +446,8 @@ const tableOfContents = (props) => {
                             setOpenTextfieldPopup({
                               actionType: "add-file-in-subfolder",
                               open: true,
-                              placeholder1: "Enter File Name",
-                              placeholder2: "Enter Method",
+                              placeholder1: "Enter Request Name",
+                              placeholder2: "Select Method",
                               folderIndex,
                               subFolderIndex,
                             });
