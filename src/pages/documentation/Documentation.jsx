@@ -55,7 +55,7 @@ const Documentation = () => {
           />
         </section>
         <section className={appStyles["content-cnt--right"]}>
-          {readmeFiles?.length ? (
+          {/* {readmeFiles?.length ? (
             <section className={appStyles["readme-cnt"]}>
               <div id="readme" className={appStyles.title}>
                 Readme
@@ -75,7 +75,7 @@ const Documentation = () => {
                 return <ModelComponent key={index} model={model} />;
               })}
             </section>
-          ) : null}
+          ) : null} */}
 
           {endpoints?.length ? (
             <section className={appStyles["endpoints-cnt"]}>
