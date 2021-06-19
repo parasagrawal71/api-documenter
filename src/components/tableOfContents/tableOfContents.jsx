@@ -432,7 +432,7 @@ const tableOfContents = (props) => {
                 {apiFolder?.opened &&
                   apiFolder?.subfolders?.map((subFolder, subFolderIndex) => {
                     return (
-                      <section key={subFolder?.folder} className={appStyles["subfolder-wrapper"]}>
+                      <section key={subFolder?.folderName} className={appStyles["subfolder-wrapper"]}>
                         <FolderOrFileComponent
                           type="folder"
                           isFolderOpen={subFolder?.opened}

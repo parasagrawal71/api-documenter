@@ -20,7 +20,7 @@ const EndpointsWrapper = (props) => {
             {apiFolder?.subfolders?.map((subFolder, subFolderIndex) => {
               return (
                 <section key={subFolderIndex}>
-                  {subFolder?.folder}
+                  {subFolder?.folderName}
 
                   {subFolder?.files?.map((aFileObj, fileIndex) => {
                     return (
