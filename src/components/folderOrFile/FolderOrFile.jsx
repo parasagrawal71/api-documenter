@@ -69,7 +69,11 @@ const FolderOrFile = (props) => {
             </>
           ))}
         {type === "file" && fileObj?.method && <span className={appStyles["request-type"]}>{fileObj?.method}</span>}
-        <a href={href ? `#${href}` : null} className={appStyles["folder-file-name"]}>
+        <a
+          href={href ? `#${href}` : null}
+          className={appStyles["folder-file-name"]}
+          title={type === "folder" ? folderObj?.folderName : fileObj?.fileName}
+        >
           {type === "folder" ? folderObj?.folderName : fileObj?.fileName}
         </a>
       </section>

@@ -276,6 +276,7 @@ const tableOfContents = (props) => {
             readmeFiles?.map((aFileObj, aFileIndex) => {
               return (
                 <FolderOrFileComponent
+                  key={aFileObj?.fileName}
                   type="file"
                   fileObj={aFileObj}
                   showActions={["delete"]}
@@ -323,6 +324,7 @@ const tableOfContents = (props) => {
             models?.map((aFileObj, aFileIndex) => {
               return (
                 <FolderOrFileComponent
+                  key={aFileObj?.fileName}
                   type="file"
                   fileObj={aFileObj}
                   showActions={["delete"]}
@@ -466,7 +468,7 @@ const tableOfContents = (props) => {
                   apiFolder?.files?.map((aFileObj, fileIndex) => {
                     return (
                       <FolderOrFileComponent
-                        key={aFileObj?.folderName}
+                        key={aFileObj?.fileName}
                         type="file"
                         fileObj={aFileObj}
                         showActions={["delete"]}
