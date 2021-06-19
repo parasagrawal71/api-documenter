@@ -52,6 +52,20 @@
       margin-right: 10px;
       font-weight: bold;
       color: darkolivegreen;
+
+      &.get {
+        color: green;
+      }
+
+      &.post,
+      &.put,
+      &.patch {
+        color: darkgoldenrod;
+      }
+
+      &.delete {
+        color: darkred;
+      }
     }
 
     .path {

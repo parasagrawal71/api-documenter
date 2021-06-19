@@ -6,6 +6,7 @@ import {
   FolderOpenOutlined as FolderOpenIcon,
   MoreVert as MoreIcon,
 } from "@material-ui/icons";
+import cx from "classnames";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
 import ActionsPopoverComponent from "components/actionsPopover/ActionsPopover";
@@ -42,6 +43,28 @@ const FolderOrFile = (props) => {
     },
   };
 
+  const getRequestType = (method) => {
+    switch (method && method.toUpperCase()) {
+      case "GET":
+        return <span className={cx(appStyles["request-type"], appStyles.get)}>{method}</span>;
+
+      case "POST":
+        return <span className={cx(appStyles["request-type"], appStyles.post)}>{method}</span>;
+
+      case "PUT":
+        return <span className={cx(appStyles["request-type"], appStyles.put)}>{method}</span>;
+
+      case "PATCH":
+        return <span className={cx(appStyles["request-type"], appStyles.patch)}>PAT</span>;
+
+      case "DELETE":
+        return <span className={cx(appStyles["request-type"], appStyles.delete)}>DEL</span>;
+
+      default:
+        return "";
+    }
+  };
+
   return (
     <section
       className={appStyles["folder-file-cnt"]}
@@ -68,7 +91,7 @@ const FolderOrFile = (props) => {
               <FolderIcon className={appStyles.folderIcon} />
             </>
           ))}
-        {type === "file" && fileObj?.method && <span className={appStyles["request-type"]}>{fileObj?.method}</span>}
+        {type === "file" && fileObj?.method && getRequestType(fileObj?.method)}
         <a
           href={href ? `#${href}` : null}
           className={appStyles["folder-file-name"]}
@@ -77,7 +100,7 @@ const FolderOrFile = (props) => {
           {type === "folder" ? folderObj?.folderName : fileObj?.fileName}
         </a>
       </section>
-      {showActionsBtn && (
+      {(showActionsBtn || showActionPopup) && (
         <section className={appStyles["folder-file-cnt--right"]}>
           <MoreIcon
             className={appStyles.actionIcons}

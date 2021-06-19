@@ -25,7 +25,7 @@ import appStyles from "./Endpoint.module.scss";
 
 const Endpoint = (props) => {
   /* ########################### PROPS HERE ########################### */
-  const { selectedEnv, setEndpoint, endpointMongoId } = props;
+  const { selectedEnv, endpointMongoId, updateApisTree } = props;
 
   /* ########################### HOOKS HERE ########################### */
   // REFs HERE
@@ -284,7 +284,11 @@ const Endpoint = (props) => {
   const updateEndpoint = async () => {
     const response = await apiService(endpointUrl(endpoint?._id).put, endpoint);
     if (response?.success) {
-      setEndpoint(response?.data);
+      dispatchEndpoint({
+        type: "all",
+        payload: response?.data,
+      });
+      updateApisTree(endpoint?.title, endpoint?.method);
     }
   };
 
@@ -422,7 +426,17 @@ const Endpoint = (props) => {
         </div>
       </section>
       <div className={appStyles["method-path"]}>
-        <div className={appStyles.method}>{TextFieldBoxOrValue("method", endpoint?.method)}</div>
+        <div
+          className={cx(appStyles.method, {
+            [appStyles.get]: endpoint?.method === "GET",
+            [appStyles.post]: endpoint?.method === "POST",
+            [appStyles.put]: endpoint?.method === "PUT",
+            [appStyles.patch]: endpoint?.method === "PATCH",
+            [appStyles.delete]: endpoint?.method === "DELETE",
+          })}
+        >
+          {TextFieldBoxOrValue("method", endpoint?.method)}
+        </div>
         <div className={appStyles.path}>{TextFieldBoxOrValue("path", endpoint?.path)}</div>
       </div>
       <div className={appStyles.description}>

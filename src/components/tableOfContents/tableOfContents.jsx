@@ -300,7 +300,7 @@ const tableOfContents = (props) => {
             readmeFiles?.map((aFileObj, aFileIndex) => {
               return (
                 <FolderOrFileComponent
-                  key={aFileObj?.fileName}
+                  key={aFileIndex}
                   type="file"
                   fileObj={aFileObj}
                   showActions={["delete"]}
@@ -348,7 +348,7 @@ const tableOfContents = (props) => {
             models?.map((aFileObj, aFileIndex) => {
               return (
                 <FolderOrFileComponent
-                  key={aFileObj?.fileName}
+                  key={aFileIndex}
                   type="file"
                   fileObj={aFileObj}
                   showActions={["delete"]}
@@ -392,7 +392,7 @@ const tableOfContents = (props) => {
         <section className={appStyles["api-folders"]}>
           {sortedApisTree?.map((apiFolder, folderIndex) => {
             return (
-              <section className={appStyles["folder-wrapper"]} key={apiFolder?.folderName}>
+              <section className={appStyles["folder-wrapper"]} key={folderIndex}>
                 <FolderOrFileComponent
                   type="folder"
                   isFolderOpen={apiFolder?.opened}
@@ -432,7 +432,7 @@ const tableOfContents = (props) => {
                 {apiFolder?.opened &&
                   apiFolder?.subfolders?.map((subFolder, subFolderIndex) => {
                     return (
-                      <section key={subFolder?.folderName} className={appStyles["subfolder-wrapper"]}>
+                      <section key={subFolderIndex} className={appStyles["subfolder-wrapper"]}>
                         <FolderOrFileComponent
                           type="folder"
                           isFolderOpen={subFolder?.opened}
@@ -467,7 +467,7 @@ const tableOfContents = (props) => {
                           subFolder?.files?.map((aFileObj, fileIndex) => {
                             return (
                               <FolderOrFileComponent
-                                key={aFileObj?.folderName}
+                                key={fileIndex}
                                 type="file"
                                 fileObj={aFileObj}
                                 showActions={["delete"]}
@@ -492,7 +492,7 @@ const tableOfContents = (props) => {
                   apiFolder?.files?.map((aFileObj, fileIndex) => {
                     return (
                       <FolderOrFileComponent
-                        key={aFileObj?.fileName}
+                        key={fileIndex}
                         type="file"
                         fileObj={aFileObj}
                         showActions={["delete"]}

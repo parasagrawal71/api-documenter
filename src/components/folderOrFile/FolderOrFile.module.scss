@@ -20,9 +20,22 @@
     .request-type {
       font-size: 8px;
       width: 22px;
-      color: green;
       margin-right: 5px;
       padding-top: 2px;
+
+      &.get {
+        color: green;
+      }
+
+      &.post,
+      &.put,
+      &.patch {
+        color: darkgoldenrod;
+      }
+
+      &.delete {
+        color: darkred;
+      }
     }
 
     .folder-file-name {

@@ -28,6 +28,13 @@ const EndpointsWrapper = (props) => {
                         key={fileIndex}
                         endpointMongoId={aFileObj?.endpointMID}
                         selectedEnv={selectedEnv}
+                        updateApisTree={(fileName, method) => {
+                          if (sortedApisTree?.[folderIndex]?.subfolders?.[subFolderIndex]?.files?.[fileIndex]) {
+                            sortedApisTree[folderIndex].subfolders[subFolderIndex].files[fileIndex].fileName = fileName;
+                            sortedApisTree[folderIndex].subfolders[subFolderIndex].files[fileIndex].method = method;
+                          }
+                          setSortedApisTree([...sortedApisTree]);
+                        }}
                       />
                     );
                   })}
@@ -37,7 +44,18 @@ const EndpointsWrapper = (props) => {
 
             {apiFolder?.files?.map((aFileObj, fileIndex) => {
               return (
-                <EndpointComponent key={fileIndex} endpointMongoId={aFileObj?.endpointMID} selectedEnv={selectedEnv} />
+                <EndpointComponent
+                  key={fileIndex}
+                  endpointMongoId={aFileObj?.endpointMID}
+                  selectedEnv={selectedEnv}
+                  updateApisTree={(fileName, method) => {
+                    if (sortedApisTree?.[folderIndex].files?.[fileIndex]) {
+                      sortedApisTree[folderIndex].files[fileIndex].fileName = fileName;
+                      sortedApisTree[folderIndex].files[fileIndex].method = method;
+                    }
+                    setSortedApisTree([...sortedApisTree]);
+                  }}
+                />
               );
             })}
           </section>

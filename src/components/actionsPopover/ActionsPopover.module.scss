@@ -5,21 +5,20 @@
   top: 20px;
   right: 12px;
   z-index: 100;
-  padding: 5px;
   background: #f8f8f8;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
 
   .actions-icons-cnt {
+    padding: 3px 10px;
     @include flex-row-v-cen;
     cursor: pointer;
-
-    &:not(:last-child) {
-      padding-bottom: 5px;
-    }
-
     .actionIcons {
       width: 20px;
       height: 20px;
+    }
+
+    &:hover {
+      background-color: lightgrey;
     }
 
     span {
