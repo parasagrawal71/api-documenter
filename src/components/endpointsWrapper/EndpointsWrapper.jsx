@@ -1,4 +1,5 @@
 import React from "react";
+import cx from "classnames";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
 import EndpointComponent from "components/endpoint/Endpoint";
@@ -10,8 +11,8 @@ const EndpointsWrapper = (props) => {
   // PROPS HERE
   const { selectedEnv, sortedApisTree, setSortedApisTree } = props;
 
-  return (
-    <section className={appStyles["endpoint-inner-cnt"]}>
+  return sortedApisTree?.length ? (
+    <section className={appStyles["endpoints-inner-cnt"]}>
       {sortedApisTree?.map((apiFolder, folderIndex) => {
         return (
           <section key={folderIndex}>
@@ -62,6 +63,8 @@ const EndpointsWrapper = (props) => {
         );
       })}
     </section>
+  ) : (
+    <div className={cx("zero-state-msg", appStyles["endpoints-zero-state"])}>No APIs added yet</div>
   );
 };
 

@@ -28,7 +28,7 @@ const Header = (props) => {
   return (
     <header className={appStyles["app-header"]}>
       <section className={appStyles["app-header--left"]}>
-        <div className={appStyles["app-header__appName"]}>APIs</div>
+        <div className={appStyles["app-header__appName"]}>Documentation</div>
       </section>
       <section className={appStyles["app-header--right"]}>
         <div className={appStyles["app-header__envs-dropdown"]}>

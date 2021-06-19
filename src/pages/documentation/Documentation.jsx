@@ -90,7 +90,7 @@ const Documentation = () => {
 
           <section className={appStyles["endpoints-cnt"]}>
             <div id="endpoints" className={appStyles.title}>
-              Endpoints
+              APIs
             </div>
             <EndpointsWrapperComponent
               selectedEnv={selectedEnv}
