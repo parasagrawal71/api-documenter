@@ -427,6 +427,7 @@ const tableOfContents = (props) => {
                       folderObj: apiFolder,
                     });
                   }}
+                  href={apiFolder?.folderName}
                 />
 
                 {apiFolder?.opened &&
@@ -461,6 +462,7 @@ const tableOfContents = (props) => {
                               subFolderObj: subFolder,
                             });
                           }}
+                          href={subFolder?.folderName}
                         />
 
                         {subFolder?.opened &&
@@ -481,6 +483,7 @@ const tableOfContents = (props) => {
                                     fileObj: aFileObj,
                                   });
                                 }}
+                                href={aFileObj?.fileName}
                               />
                             );
                           })}
@@ -505,6 +508,7 @@ const tableOfContents = (props) => {
                             fileObj: aFileObj,
                           });
                         }}
+                        href={aFileObj?.fileName}
                       />
                     );
                   })}

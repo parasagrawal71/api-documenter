@@ -3,6 +3,8 @@ import cx from "classnames";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
 import EndpointComponent from "components/endpoint/Endpoint";
+import apiService from "apis/apiService";
+import { apisTree } from "apis/urls";
 
 // IMPORT ASSETS HERE
 import appStyles from "./EndpointsWrapper.module.scss";
@@ -11,17 +13,31 @@ const EndpointsWrapper = (props) => {
   // PROPS HERE
   const { selectedEnv, sortedApisTree, setSortedApisTree } = props;
 
+  const updateFolderInApisTree = async (updatedApisTree, folderIndex) => {
+    const updatedFolderObj = updatedApisTree?.[folderIndex];
+    const response = await apiService(apisTree(updatedFolderObj?._id).put, updatedFolderObj);
+    if (response?.success) {
+      setSortedApisTree(updatedApisTree);
+    } else {
+      //
+    }
+  };
+
   return sortedApisTree?.length ? (
     <section className={appStyles["endpoints-inner-cnt"]}>
       {sortedApisTree?.map((apiFolder, folderIndex) => {
         return (
           <section key={folderIndex}>
-            {apiFolder?.folderName}
+            <span id={apiFolder?.folderName} className="scroll-target">
+              {apiFolder?.folderName}
+            </span>
 
             {apiFolder?.subfolders?.map((subFolder, subFolderIndex) => {
               return (
                 <section key={subFolderIndex}>
-                  {subFolder?.folderName}
+                  <span id={subFolder?.folderName} className="scroll-target">
+                    {subFolder?.folderName}
+                  </span>
 
                   {subFolder?.files?.map((aFileObj, fileIndex) => {
                     return (
@@ -35,6 +51,7 @@ const EndpointsWrapper = (props) => {
                             sortedApisTree[folderIndex].subfolders[subFolderIndex].files[fileIndex].method = method;
                           }
                           setSortedApisTree([...sortedApisTree]);
+                          updateFolderInApisTree(sortedApisTree, folderIndex);
                         }}
                       />
                     );
@@ -55,6 +72,7 @@ const EndpointsWrapper = (props) => {
                       sortedApisTree[folderIndex].files[fileIndex].method = method;
                     }
                     setSortedApisTree([...sortedApisTree]);
+                    updateFolderInApisTree(sortedApisTree, folderIndex);
                   }}
                 />
               );

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useReducer } from "react";
 import { Button, Tooltip } from "@material-ui/core";
 import { AddCircleOutlined as AddIcon } from "@material-ui/icons";
+import cx from "classnames";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
 import AppTableComponent from "components/appTable/AppTable";
@@ -167,7 +168,7 @@ const Model = (props) => {
   };
 
   return (
-    <section id={model?.fileName} className={appStyles["main-cnt"]}>
+    <section id={model?.fileName} className={cx(appStyles["main-cnt"], "scroll-target")}>
       <section className={appStyles["main-header"]}>
         <div className={appStyles["main-header--left"]}>
           <span className={appStyles.title}>{model?.fileName}</span>

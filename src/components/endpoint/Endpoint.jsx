@@ -399,7 +399,9 @@ const Endpoint = (props) => {
         })}
       >
         <div className={appStyles["main-header--left"]}>
-          <span className={appStyles.title}>{TextFieldBoxOrValue("title", endpoint?.title)}</span>
+          <span id={endpoint?.title} className={cx(appStyles.title, "scroll-target")}>
+            {TextFieldBoxOrValue("title", endpoint?.title)}
+          </span>
           <span className={appStyles.updatedAt}>
             Updated At: {moment(endpoint?.updatedAt).format("DD-MM-YYYY hh:mm A")}
           </span>
