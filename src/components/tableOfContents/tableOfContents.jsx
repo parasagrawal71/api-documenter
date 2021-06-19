@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Tooltip } from "@material-ui/core";
 import { CreateNewFolderOutlined as AddFolderIcon } from "@material-ui/icons";
+import cx from "classnames";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
 import TextfieldPopupComponent from "components/textfieldPopup/TextfieldPopup";
@@ -246,12 +247,12 @@ const tableOfContents = (props) => {
 
   return (
     <section className={appStyles["main-container"]}>
-      <div className={appStyles["main-header"]}>
+      {/* <div className={appStyles["main-header"]}>
         <span>Table of contents</span>
-      </div>
+      </div> */}
 
       {/* ************************************** README starts here **************************************** */}
-      <section className={appStyles["folder-wrapper"]}>
+      {/* <section className={appStyles["folder-wrapper"]}>
         <FolderOrFileComponent
           type="folder"
           isFolderOpen={openReadme}
@@ -293,11 +294,11 @@ const tableOfContents = (props) => {
           ) : (
             <div className="zero-state-msg">No files added</div>
           ))}
-      </section>
+      </section> */}
       {/* ************************************************************************************************* */}
 
       {/* ************************************** MODELS starts here **************************************** */}
-      <section className={appStyles["folder-wrapper"]}>
+      {/* <section className={cx(appStyles["folder-wrapper"], appStyles["model-wrapper"])}>
         <FolderOrFileComponent
           type="folder"
           isFolderOpen={openModels}
@@ -340,7 +341,7 @@ const tableOfContents = (props) => {
           ) : (
             <div className="zero-state-msg">No model added</div>
           ))}
-      </section>
+      </section> */}
       {/* ************************************************************************************************* */}
 
       <div className={appStyles["sub-header"]}>
