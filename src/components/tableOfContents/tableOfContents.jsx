@@ -9,7 +9,7 @@ import FolderOrFileComponent from "components/folderOrFile/FolderOrFile";
 import ConfirmPopupComponent from "components/confirmPopup/ConfirmPopup";
 import { sortArrayOfObjs } from "utils/functions";
 import apiService from "apis/apiService";
-import { readme, schema, apisTree } from "apis/urls";
+import { readme, schema, apisTree, endpointUrl } from "apis/urls";
 
 // IMPORT ASSETS HERE
 import appStyles from "./tableOfContents.module.scss";
@@ -66,6 +66,7 @@ const tableOfContents = (props) => {
     const [subFolderName, subFolderIndex] = subFolder || [];
     const [fileName, method, fileIndex] = file || [];
     let response = null;
+    let newEndpoint = null;
 
     switch (actionType) {
       case "add-folder":
@@ -97,34 +98,40 @@ const tableOfContents = (props) => {
         break;
 
       case "add-file-in-folder":
+        newEndpoint = await createEndpoint(fileName, method);
         const updatedTreeAfterAddingFileInFolder = [...sortedApisTree];
         if (updatedTreeAfterAddingFileInFolder?.[folderIndex]?.files) {
           updatedTreeAfterAddingFileInFolder?.[folderIndex]?.files?.push({
             method: method.toUpperCase(),
             fileName,
+            endpointMID: newEndpoint?._id,
           });
         } else {
           updatedTreeAfterAddingFileInFolder[folderIndex].files = [];
           updatedTreeAfterAddingFileInFolder?.[folderIndex]?.files?.push({
             method: method.toUpperCase(),
             fileName,
+            endpointMID: newEndpoint?._id,
           });
         }
         await updateFolderInApisTree(updatedTreeAfterAddingFileInFolder, folderIndex);
         break;
 
       case "add-file-in-subfolder":
+        newEndpoint = await createEndpoint(fileName, method);
         const updatedTreeAfterAddingFileInSubFolder = [...sortedApisTree];
         if (updatedTreeAfterAddingFileInSubFolder?.[folderIndex]?.subfolders?.[subFolderIndex]?.files) {
           updatedTreeAfterAddingFileInSubFolder?.[folderIndex]?.subfolders?.[subFolderIndex]?.files?.push({
             method: method.toUpperCase(),
             fileName,
+            endpointMID: newEndpoint?._id,
           });
         } else {
           updatedTreeAfterAddingFileInSubFolder[folderIndex].subfolders[subFolderIndex].files = [];
           updatedTreeAfterAddingFileInSubFolder?.[folderIndex]?.subfolders?.[subFolderIndex]?.files?.push({
             method: method.toUpperCase(),
             fileName,
+            endpointMID: newEndpoint?._id,
           });
         }
         await updateFolderInApisTree(updatedTreeAfterAddingFileInSubFolder, folderIndex);
@@ -132,6 +139,7 @@ const tableOfContents = (props) => {
 
       case "delete-folder":
         const updatedTreeAfterFolderDeletion = [...sortedApisTree];
+        deleteMultipleEndpoints(updatedTreeAfterFolderDeletion?.[folderIndex]?.files?.map((f) => f?.endpointMID));
         response = await apiService(apisTree(updatedTreeAfterFolderDeletion?.[folderIndex]?._id).delete);
         if (response?.success) {
           updatedTreeAfterFolderDeletion.splice(folderIndex, 1);
@@ -143,18 +151,28 @@ const tableOfContents = (props) => {
 
       case "delete-subfolder":
         const updatedTreeAfterSubFolderDeletion = [...sortedApisTree];
+        deleteMultipleEndpoints(
+          updatedTreeAfterSubFolderDeletion?.[folderIndex]?.subfolders?.[subFolderIndex]?.files?.map(
+            (f) => f?.endpointMID
+          )
+        );
         updatedTreeAfterSubFolderDeletion?.[folderIndex]?.subfolders?.splice(subFolderIndex, 1);
         await updateFolderInApisTree(updatedTreeAfterSubFolderDeletion, folderIndex);
         break;
 
       case "delete-file-from-folder":
         const updatedTreeAfterFileDeletionInFolder = [...sortedApisTree];
+        deleteEndpoint(updatedTreeAfterFileDeletionInFolder?.[folderIndex]?.files?.[fileIndex]?.endpointMID);
         updatedTreeAfterFileDeletionInFolder?.[folderIndex]?.files?.splice(fileIndex, 1);
         await updateFolderInApisTree(updatedTreeAfterFileDeletionInFolder, folderIndex);
         break;
 
       case "delete-file-from-subfolder":
         const updatedTreeAfterSubFileDeletionInFolder = [...sortedApisTree];
+        deleteEndpoint(
+          updatedTreeAfterSubFileDeletionInFolder?.[folderIndex]?.subfolders?.[subFolderIndex]?.files?.[fileIndex]
+            ?.endpointMID
+        );
         updatedTreeAfterSubFileDeletionInFolder?.[folderIndex]?.subfolders?.[subFolderIndex]?.files?.splice(
           fileIndex,
           1
@@ -224,6 +242,30 @@ const tableOfContents = (props) => {
       setSortedApisTree(updatedApisTree);
     } else {
       //
+    }
+  };
+
+  const createEndpoint = async (fileName, method) => {
+    const response = await apiService(endpointUrl().post, {
+      title: fileName,
+      method,
+    });
+    if (response?.success) {
+      return response?.data;
+    }
+  };
+
+  const deleteEndpoint = async (mongoId) => {
+    const response = await apiService(endpointUrl(mongoId).delete);
+    if (response?.success) {
+      return response?.data;
+    }
+  };
+
+  const deleteMultipleEndpoints = async (mongoIds) => {
+    const response = await apiService(endpointUrl().deleteMultiple, null, { params: { mongoIds } });
+    if (response?.success) {
+      return response?.data;
     }
   };
 

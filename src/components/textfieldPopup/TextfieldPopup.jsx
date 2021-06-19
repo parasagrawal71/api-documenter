@@ -24,7 +24,7 @@ const TextfieldPopup = (props) => {
 
   return (
     <Dialog
-      open={openPopup}
+      open={Boolean(openPopup)}
       classes={{ paper: appStyles["dialog-cnt"] }}
       className={appStyles["main-cnt"]}
       onClose={() => {
@@ -34,6 +34,7 @@ const TextfieldPopup = (props) => {
       <section>
         <div className={appStyles["field-cnt"]}>
           <ThemeTextField
+            autoFocus
             variant="outlined"
             size="small"
             InputLabelProps={{

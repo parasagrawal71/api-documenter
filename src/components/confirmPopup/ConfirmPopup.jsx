@@ -14,7 +14,7 @@ const ConfirmPopup = (props) => {
 
   return (
     <Dialog
-      open={openPopup}
+      open={Boolean(openPopup)}
       classes={{ paper: appStyles["dialog-cnt"] }}
       className={appStyles["main-cnt"]}
       onClose={() => {

@@ -67,6 +67,10 @@ export const endpointUrl = (mongoId) => ({
     method: "GET",
     endpoint: "/endpoint",
   },
+  getById: {
+    method: "GET",
+    endpoint: `/endpoint/${mongoId}`,
+  },
   post: {
     method: "POST",
     endpoint: "/endpoint",
@@ -78,6 +82,10 @@ export const endpointUrl = (mongoId) => ({
   delete: {
     method: "DELETE",
     endpoint: `/endpoint/${mongoId}`,
+  },
+  deleteMultiple: {
+    method: "DELETE",
+    endpoint: `/endpoint/multiple`,
   },
 });
 // ****************************************************************************************** //

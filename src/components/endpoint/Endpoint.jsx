@@ -17,13 +17,15 @@ import { capitalizeFirstLetter, getStatusText, prettyPrintJson, validateJSON } f
 import AppTableComponent from "components/appTable/AppTable";
 import ViewMorePopupComponent from "components/viewMorePopup/ViewMorePopup";
 import TextfieldPopupComponent from "components/textfieldPopup/TextfieldPopup";
+import apiService from "apis/apiService";
+import { endpointUrl } from "apis/urls";
 
 // IMPORT ASSETS HERE
 import appStyles from "./Endpoint.module.scss";
 
 const Endpoint = (props) => {
   /* ########################### PROPS HERE ########################### */
-  const { selectedEnv } = props;
+  const { selectedEnv, setEndpoint, endpointMongoId } = props;
 
   /* ########################### HOOKS HERE ########################### */
   // REFs HERE
@@ -45,6 +47,9 @@ const Endpoint = (props) => {
     let payload = null;
 
     switch (action?.type) {
+      case "all":
+        return { ...action?.payload };
+
       case "method":
         return { ...state, method: action?.payload };
 
@@ -158,6 +163,10 @@ const Endpoint = (props) => {
     enableTabIndentationInTextArea();
   }, []);
 
+  useEffect(() => {
+    fetchEndpoint(endpointMongoId);
+  }, [endpointMongoId]);
+
   /* ########################### VARIABLES HERE ########################### */
   const parameterTableHeaders = [
     {
@@ -267,7 +276,29 @@ const Endpoint = (props) => {
     if (!editMode) {
       setEditMode(true);
     } else {
+      updateEndpoint();
       setEditMode(false);
+    }
+  };
+
+  const updateEndpoint = async () => {
+    const response = await apiService(endpointUrl(endpoint?._id).put, endpoint);
+    if (response?.success) {
+      setEndpoint(response?.data);
+    }
+  };
+
+  const fetchEndpoint = async (mongoId) => {
+    if (!mongoId) {
+      return;
+    }
+
+    const response = await apiService(endpointUrl(mongoId).getById);
+    if (response?.success) {
+      dispatchEndpoint({
+        type: "all",
+        payload: response?.data,
+      });
     }
   };
 

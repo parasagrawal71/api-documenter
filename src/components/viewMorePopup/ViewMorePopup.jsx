@@ -13,7 +13,7 @@ const ViewMorePopup = (props) => {
 
   return (
     <Dialog
-      open={openPopup}
+      open={Boolean(openPopup)}
       fullWidth
       maxWidth="lg"
       classes={{ paper: appStyles["dialog-cnt"] }}

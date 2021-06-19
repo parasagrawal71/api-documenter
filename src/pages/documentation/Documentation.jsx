@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from "react";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
-import EndpointComponent from "components/endpoint/Endpoint";
 import HeaderComponent from "components/header/Header";
 import TableOfContentsComponent from "components/tableOfContents/tableOfContents";
 import ModelComponent from "components/model/Model";
 import ReadmeComponent from "components/readme/Readme";
+import EndpointsWrapperComponent from "components/endpointsWrapper/EndpointsWrapper";
 import apiService from "apis/apiService";
 import { readme, schema, apisTree } from "apis/urls";
 import { sortArrayOfObjs } from "utils/functions";
 
 // IMPORT ASSETS HERE
-// import endpoints from "assets/endpoints.json"; // TODO: REMOVE LATER
 import environments from "assets/environments.json";
 import appStyles from "./Documentation.module.scss";
 
@@ -21,13 +20,12 @@ const Documentation = () => {
   const [models, setModels] = useState([]);
   const [readmeFiles, setReadmeFiles] = useState([]);
   const [sortedApisTree, setSortedApisTree] = useState([]);
-  const [endpoints, setEndpoints] = useState([]);
 
   useEffect(() => {
     setSelectedEnv(environments[0]);
 
-    fetchModels();
-    fetchReadmeFiles();
+    // fetchModels();
+    // fetchReadmeFiles();
     fetchApisTree();
   }, []);
 
@@ -68,7 +66,7 @@ const Documentation = () => {
           />
         </section>
         <section className={appStyles["content-cnt--right"]}>
-          {/* {readmeFiles?.length ? (
+          {readmeFiles?.length ? (
             <section className={appStyles["readme-cnt"]}>
               <div id="readme" className={appStyles.title}>
                 Readme
@@ -88,18 +86,18 @@ const Documentation = () => {
                 return <ModelComponent key={index} model={model} />;
               })}
             </section>
-          ) : null} */}
-
-          {endpoints?.length ? (
-            <section className={appStyles["endpoints-cnt"]}>
-              <div id="endpoints" className={appStyles.title}>
-                Endpoints
-              </div>
-              {endpoints?.map((endpoint) => {
-                return <EndpointComponent endpoint={endpoint} key={endpoint?.title} selectedEnv={selectedEnv} />;
-              })}
-            </section>
           ) : null}
+
+          <section className={appStyles["endpoints-cnt"]}>
+            <div id="endpoints" className={appStyles.title}>
+              Endpoints
+            </div>
+            <EndpointsWrapperComponent
+              selectedEnv={selectedEnv}
+              sortedApisTree={sortedApisTree}
+              setSortedApisTree={setSortedApisTree}
+            />
+          </section>
         </section>
       </section>
     </section>
