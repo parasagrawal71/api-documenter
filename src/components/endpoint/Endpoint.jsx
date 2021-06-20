@@ -553,7 +553,9 @@ const Endpoint = (props) => {
           <textarea
             ref={jsonTextareaRef}
             id="json-textarea"
-            className={appStyles["request-body__json"]}
+            className={cx(appStyles["request-body__json"], {
+              [appStyles.disabled]: addMode || editMode,
+            })}
             rows="15"
             value={requestBody}
             onChange={(e) => {

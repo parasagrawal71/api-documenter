@@ -27,7 +27,9 @@ const AppTable = (props) => {
   } = props;
 
   const useStyles = makeStyles({
-    tableCnt: {},
+    tableCnt: {
+      boxShadow: "0 0 2px darkgrey",
+    },
     table: {
       minWidth: 650,
     },
