@@ -23,12 +23,12 @@
       display: flex;
       justify-content: space-between;
 
-      .green {
-        color: green;
+      .success {
+        color: var(--si-success);
       }
 
-      .red {
-        color: red;
+      .error {
+        color: var(--error);
       }
     }
 

@@ -568,7 +568,7 @@ const Endpoint = (props) => {
         <section className={appStyles["response-body"]}>
           <div className={appStyles["response-body__title"]}>
             <span>Response Body</span>
-            <span className={String(apiResponse?.statusCode)?.startsWith("2") ? appStyles.green : appStyles.red}>
+            <span className={String(apiResponse?.statusCode)?.startsWith("2") ? appStyles.success : appStyles.error}>
               {apiResponse ? `${apiResponse?.statusCode} ${getStatusText(apiResponse?.statusCode)}` : null}
             </span>
           </div>
@@ -689,7 +689,7 @@ const Endpoint = (props) => {
                         <span>Response Body</span>
                         <span
                           className={
-                            String(example?.response?.statusCode)?.startsWith("2") ? appStyles.green : appStyles.red
+                            String(example?.response?.statusCode)?.startsWith("2") ? appStyles.success : appStyles.error
                           }
                         >
                           {example?.response

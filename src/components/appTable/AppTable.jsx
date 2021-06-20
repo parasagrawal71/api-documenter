@@ -2,6 +2,7 @@ import React from "react";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@material-ui/core";
 import { RemoveCircleOutlined as RemoveIcon } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
+import cx from "classnames";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
 import { ThemeTextField, ThemeCheckbox, ThemeAutocomplete } from "utils/commonStyles/styledComponents";
@@ -190,7 +191,7 @@ const AppTable = (props) => {
         />
       );
     } else {
-      return fieldValue;
+      return fieldValue || "-";
     }
   };
 

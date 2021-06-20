@@ -24,7 +24,7 @@
       padding-top: 2px;
 
       &.get {
-        color: green;
+        color: var(--success);
       }
 
       &.post,
@@ -34,7 +34,7 @@
       }
 
       &.delete {
-        color: darkred;
+        color: var(--error);
       }
     }
 

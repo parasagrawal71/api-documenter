@@ -36,7 +36,8 @@
       .updatedAt {
         padding-left: 15px;
         font-size: 12px;
-        color: darkgrey;
+        color: grey;
+        margin-top: 1px
       }
     }
     .action-btns {
@@ -63,7 +64,8 @@
         .sendOptionsCnt {
           top: 35px;
           right: 0;
-          min-width: 150px; 
+          min-width: 115px; 
+          text-transform: capitalize;
         }
 
         .sendOption {
@@ -83,7 +85,7 @@
       color: darkolivegreen;
 
       &.get {
-        color: green;
+        color: var(--success);
       }
 
       &.post,
@@ -93,7 +95,7 @@
       }
 
       &.delete {
-        color: darkred;
+        color: var(--error);
       }
     }
 
@@ -171,7 +173,7 @@
         position: absolute;
         right: 0;
         bottom: -20px;
-        color: red;
+        color: var(--error);
       }
     }
 
@@ -206,12 +208,12 @@
         }
       }
 
-      .green {
-        color: green;
+      .success {
+        color: var(--success);
       }
 
-      .red {
-        color: red;
+      .error {
+        color: var(--error);
       }
     }
 
@@ -347,12 +349,12 @@
               }
             }
 
-            .green {
-              color: green;
+            .success {
+              color: var(--success);
             }
 
-            .red {
-              color: red;
+            .error {
+              color: var(--error);
             }
           }
 
