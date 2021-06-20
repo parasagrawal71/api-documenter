@@ -26,7 +26,7 @@ import appStyles from "./Endpoint.module.scss";
 
 const Endpoint = (props) => {
   /* ########################### PROPS HERE ########################### */
-  const { selectedEnv, endpointMongoId, updateApisTree } = props;
+  const { selectedEnv, endpointMongoId, updateApisTree, enableEditMode, setEnableEditMode } = props;
 
   /* ########################### HOOKS HERE ########################### */
   // REFs HERE
@@ -422,47 +422,57 @@ const Endpoint = (props) => {
         <div className={appStyles["action-btns"]}>
           {!editMode && !addMode && (
             <>
-              <ThemeButton width="85px" className={appStyles["send-request-btn"]} onClick={sendApiCall}>
+              <ThemeButton
+                width="85px"
+                className={cx(appStyles["send-request-btn"], {
+                  [appStyles.viewMode]: !enableEditMode,
+                })}
+                onClick={sendApiCall}
+              >
                 Send
               </ThemeButton>
-              <ThemeButton
-                className={appStyles["dropdown-arrow-btn"]}
-                onClick={() => {
-                  sendOpenSendOptions(!openSendOptions);
-                }}
-              >
-                <div className={cx("dropdown-arrow")} />
-                <GenericActionsPopover
-                  openPopover={openSendOptions}
-                  setOpenPopover={(val) => {
-                    sendOpenSendOptions(val);
+              {enableEditMode && (
+                <ThemeButton
+                  className={appStyles["dropdown-arrow-btn"]}
+                  onClick={() => {
+                    sendOpenSendOptions(!openSendOptions);
                   }}
-                  options={["Save as example"]}
-                  optionsCallbacks={[
-                    () => {
-                      setOpenTextfieldPopup({ open: true });
-                    },
-                  ]}
-                  containerClass={appStyles.sendOptionsCnt}
-                  optionCntClass={appStyles.sendOption}
-                />
-              </ThemeButton>
+                >
+                  <div className={cx("dropdown-arrow")} />
+                  <GenericActionsPopover
+                    openPopover={openSendOptions}
+                    setOpenPopover={(val) => {
+                      sendOpenSendOptions(val);
+                    }}
+                    options={["Save as example"]}
+                    optionsCallbacks={[
+                      () => {
+                        setOpenTextfieldPopup({ open: true });
+                      },
+                    ]}
+                    containerClass={appStyles.sendOptionsCnt}
+                    optionCntClass={appStyles.sendOption}
+                  />
+                </ThemeButton>
+              )}
             </>
           )}
-          {!editMode ? (
-            <ThemeButton width="75px" onClick={handleEditSaveBtn}>
-              Edit
-            </ThemeButton>
-          ) : (
-            <>
-              <ThemeButton width="85px" issecondary="true" onClick={handleCancelBtn}>
-                Cancel
-              </ThemeButton>
+          {enableEditMode ? (
+            !editMode ? (
               <ThemeButton width="75px" onClick={handleEditSaveBtn}>
-                Save
+                Edit
               </ThemeButton>
-            </>
-          )}
+            ) : (
+              <>
+                <ThemeButton width="85px" issecondary="true" onClick={handleCancelBtn}>
+                  Cancel
+                </ThemeButton>
+                <ThemeButton width="75px" onClick={handleEditSaveBtn}>
+                  Save
+                </ThemeButton>
+              </>
+            )
+          ) : null}
         </div>
       </section>
       <div

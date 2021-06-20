@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Tooltip } from "@material-ui/core";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
 import HeaderComponent from "components/header/Header";
@@ -9,6 +10,7 @@ import EndpointsWrapperComponent from "components/endpointsWrapper/EndpointsWrap
 import apiService from "apis/apiService";
 import { readme, schema, apisTree } from "apis/urls";
 import { sortArrayOfObjs } from "utils/functions";
+import { ThemeSwitch } from "utils/commonStyles/styledComponents";
 
 // IMPORT ASSETS HERE
 import environments from "assets/environments.json";
@@ -20,6 +22,7 @@ const Documentation = () => {
   const [models, setModels] = useState([]);
   const [readmeFiles, setReadmeFiles] = useState([]);
   const [sortedApisTree, setSortedApisTree] = useState([]);
+  const [enableEditMode, setEnableEditMode] = useState(false);
 
   useEffect(() => {
     setSelectedEnv(environments[0]);
@@ -90,12 +93,25 @@ const Documentation = () => {
 
           <section className={appStyles["endpoints-cnt"]}>
             <div id="endpoints" className={appStyles.title}>
-              APIs
+              <div>APIs</div>
+              <div className={appStyles["title--right"]}>
+                <Tooltip title={enableEditMode ? "Edit Mode" : "View Mode"}>
+                  <ThemeSwitch
+                    checked={enableEditMode}
+                    onChange={(e) => {
+                      setEnableEditMode(e?.target.checked);
+                    }}
+                    className={appStyles["mode-switch"]}
+                  />
+                </Tooltip>
+              </div>
             </div>
             <EndpointsWrapperComponent
               selectedEnv={selectedEnv}
               sortedApisTree={sortedApisTree}
               setSortedApisTree={setSortedApisTree}
+              enableEditMode={enableEditMode}
+              setEnableEditMode={setEnableEditMode}
             />
           </section>
         </section>

@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { TextField, Checkbox, Button } from "@material-ui/core";
+import { TextField, Checkbox, Button, Switch } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
 export const ThemeTextField = styled((props) => (
@@ -48,6 +48,10 @@ export const ThemeCheckbox = styled((props) => (
     fill: (props) => (!props.checked && props.iserror ? "var(--error) !important" : ""),
   },
 });
+
+export const ThemeSwitch = styled((props) => (
+  <Switch {...props} color={props?.backgroundColor || props?.issecondary ? "secondary" : "primary"} />
+))({});
 
 export const ThemeAutocomplete = styled((props) => <Autocomplete {...props} />)({
   width: (props) => (props?.width ? props.width : "100%"),

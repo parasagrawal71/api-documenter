@@ -37,11 +37,12 @@
         padding-left: 15px;
         font-size: 12px;
         color: grey;
-        margin-top: 1px
+        margin-top: 1px;
       }
     }
     .action-btns {
       @include flex-row-v-cen;
+      align-items: stretch;
 
       & > *:not(:last-child) {
         margin-right: 20px;
@@ -51,6 +52,10 @@
         border-top-right-radius: 0;
         border-bottom-right-radius: 0;
         margin-right: 0;
+
+        &.viewMode {
+          border-radius: 5px;
+        }
       }
 
       .dropdown-arrow-btn {
@@ -58,13 +63,12 @@
         border-bottom-left-radius: 0;
         min-width: 0;
         width: 30px;
-        padding: 15px 0;
         position: relative;
 
         .sendOptionsCnt {
           top: 35px;
           right: 0;
-          min-width: 115px; 
+          min-width: 115px;
           text-transform: capitalize;
         }
 

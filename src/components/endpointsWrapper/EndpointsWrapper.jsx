@@ -12,7 +12,7 @@ import appStyles from "./EndpointsWrapper.module.scss";
 
 const EndpointsWrapper = (props) => {
   // PROPS HERE
-  const { selectedEnv, sortedApisTree, setSortedApisTree } = props;
+  const { selectedEnv, sortedApisTree, setSortedApisTree, enableEditMode, setEnableEditMode } = props;
 
   const updateFolderInApisTree = async (updatedApisTree, folderIndex) => {
     const updatedFolderObj = updatedApisTree?.[folderIndex];
@@ -58,6 +58,8 @@ const EndpointsWrapper = (props) => {
                           setSortedApisTree([...sortedApisTree]);
                           updateFolderInApisTree(sortedApisTree, folderIndex);
                         }}
+                        enableEditMode={enableEditMode}
+                        setEnableEditMode={setEnableEditMode}
                       />
                     );
                   })}
@@ -79,6 +81,8 @@ const EndpointsWrapper = (props) => {
                     setSortedApisTree([...sortedApisTree]);
                     updateFolderInApisTree(sortedApisTree, folderIndex);
                   }}
+                  enableEditMode={enableEditMode}
+                  setEnableEditMode={setEnableEditMode}
                 />
               );
             })}
