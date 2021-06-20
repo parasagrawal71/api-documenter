@@ -1,10 +1,31 @@
 .endpoints-inner-cnt {
-  .main-folder {
-    font-size: 1.3em;
+  .main-folder-cnt {
     background-color: rgba(76, 82, 100, 0.2);
     border-radius: 5px;
     margin-bottom: 10px;
     padding: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .folderIcon {
+      width: 18px;
+      height: 18px;
+      margin-right: 5px;
+    }
+
+    .main-folder-name {
+      font-size: 1.3em;
+      font-weight: 500;
+    }
+  }
+
+  .subfolder-name {
+    font-size: 1.3em;
+    font-weight: 500;
+    margin: 10px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid lightgrey;
   }
 }
 

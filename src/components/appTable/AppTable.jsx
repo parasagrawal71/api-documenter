@@ -26,6 +26,7 @@ const AppTable = (props) => {
   } = props;
 
   const useStyles = makeStyles({
+    tableCnt: {},
     table: {
       minWidth: 650,
     },
@@ -214,7 +215,7 @@ const AppTable = (props) => {
   };
 
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} className={classes.tableCnt}>
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
           <TableRow>

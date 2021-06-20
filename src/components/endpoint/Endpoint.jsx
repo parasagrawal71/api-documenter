@@ -1,5 +1,5 @@
 import React, { useReducer, useState, useEffect, useRef } from "react";
-import { Button, Tooltip } from "@material-ui/core";
+import { Tooltip } from "@material-ui/core";
 import {
   ArrowRight as ArrowRightIcon,
   ArrowDropDown as ArrowDownIcon,
@@ -12,7 +12,7 @@ import moment from "moment";
 import cx from "classnames";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
-import { ThemeTextField, ThemeAutocomplete } from "utils/commonStyles/styledComponents";
+import { ThemeTextField, ThemeAutocomplete, ThemeButton } from "utils/commonStyles/styledComponents";
 import { capitalizeFirstLetter, getStatusText, prettyPrintJson, validateJSON } from "utils/functions";
 import AppTableComponent from "components/appTable/AppTable";
 import ViewMorePopupComponent from "components/viewMorePopup/ViewMorePopup";
@@ -32,10 +32,11 @@ const Endpoint = (props) => {
   const jsonTextareaRef = useRef(null);
 
   // STATE VARIABLES HERE
+  const [endpointOldState, setEndpointOldState] = useState({});
   const [addMode, setAddMode] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [openExamples, setOpenExamples] = useState({});
-  const [openTextfieldPopup, setOpenTextfieldPopup] = useState(false);
+  const [openTextfieldPopup, setOpenTextfieldPopup] = useState({ open: false });
   const [openViewMorePopup, setOpenViewMorePopup] = useState(false);
   const [popupContent, setPopupContent] = useState(false);
   const [requestBody, setRequestBody] = useState("");
@@ -143,6 +144,10 @@ const Endpoint = (props) => {
           response: apiResponse,
         };
         const updatedExamplesAfterAddingNew = [...state?.examples, newExample];
+        updateEndpoint({
+          ...state,
+          examples: updatedExamplesAfterAddingNew,
+        });
         return {
           ...state,
           examples: updatedExamplesAfterAddingNew,
@@ -157,7 +162,7 @@ const Endpoint = (props) => {
         throw new Error("Unknown type");
     }
   };
-  const [endpoint, dispatchEndpoint] = useReducer(endpointReducers, props?.endpoint);
+  const [endpoint, dispatchEndpoint] = useReducer(endpointReducers, {});
 
   useEffect(() => {
     enableTabIndentationInTextArea();
@@ -281,13 +286,20 @@ const Endpoint = (props) => {
     }
   };
 
-  const updateEndpoint = async () => {
-    const response = await apiService(endpointUrl(endpoint?._id).put, endpoint);
+  const handleCancelBtn = () => {
+    dispatchEndpoint({
+      type: "all",
+      payload: endpointOldState,
+    });
+    setEditMode(false);
+  };
+
+  const updateEndpoint = async (updatedEndpoint) => {
+    const requestBodyToPutApi = updatedEndpoint || endpoint;
+
+    const response = await apiService(endpointUrl(endpoint?._id).put, requestBodyToPutApi);
     if (response?.success) {
-      dispatchEndpoint({
-        type: "all",
-        payload: response?.data,
-      });
+      setEndpointOldState(response?.data);
       updateApisTree(endpoint?.title, endpoint?.method);
     }
   };
@@ -303,6 +315,7 @@ const Endpoint = (props) => {
         type: "all",
         payload: response?.data,
       });
+      setEndpointOldState(response?.data);
     }
   };
 
@@ -408,23 +421,34 @@ const Endpoint = (props) => {
           </span>
         </div>
         <div className={appStyles["action-btns"]}>
-          <Button variant="outlined" onClick={handleEditSaveBtn}>
-            {!editMode ? "Edit" : "Save"}
-          </Button>
-          {!editMode && !addMode && (
-            <Button variant="outlined" onClick={sendApiCall}>
-              Send
-            </Button>
-          )}
           {!editMode && !addMode && (
             <Tooltip title="Save as Example">
               <SaveIcon
                 className={appStyles.saveIcon}
                 onClick={() => {
-                  setOpenTextfieldPopup(true);
+                  setOpenTextfieldPopup({ open: true });
                 }}
               />
             </Tooltip>
+          )}
+          {!editMode && !addMode && (
+            <ThemeButton width="75px" onClick={sendApiCall}>
+              Send
+            </ThemeButton>
+          )}
+          {!editMode ? (
+            <ThemeButton width="75px" onClick={handleEditSaveBtn}>
+              Edit
+            </ThemeButton>
+          ) : (
+            <>
+              <ThemeButton width="75px" isSecondary onClick={handleCancelBtn}>
+                Cancel
+              </ThemeButton>
+              <ThemeButton width="75px" onClick={handleEditSaveBtn}>
+                Save
+              </ThemeButton>
+            </>
           )}
         </div>
       </section>
@@ -538,7 +562,7 @@ const Endpoint = (props) => {
           <div className={appStyles["response-body__json"]}>
             <pre>{prettyPrintJson(apiResponse?.data)}</pre>
           </div>
-          <Button
+          <ThemeButton
             variant="outlined"
             disabled={apiResponse === ""}
             className={appStyles["response-view-more-btn"]}
@@ -552,7 +576,7 @@ const Endpoint = (props) => {
             }}
           >
             View More
-          </Button>
+          </ThemeButton>
         </section>
       </section>
       {/* ************************************************************************************************* */}
@@ -629,8 +653,7 @@ const Endpoint = (props) => {
                       <div className={appStyles["example-request-body__json"]}>
                         <pre>{prettyPrintJson(example?.requestBody)}</pre>
                       </div>
-                      <Button
-                        variant="outlined"
+                      <ThemeButton
                         className={appStyles["view-more-btn"]}
                         onClick={() => {
                           setOpenViewMorePopup(true);
@@ -641,7 +664,7 @@ const Endpoint = (props) => {
                         }}
                       >
                         View More
-                      </Button>
+                      </ThemeButton>
                     </section>
 
                     <section className={appStyles["example-response-body"]}>
@@ -660,8 +683,7 @@ const Endpoint = (props) => {
                       <div className={appStyles["example-response-body__json"]}>
                         <pre>{prettyPrintJson(example?.response?.data)}</pre>
                       </div>
-                      <Button
-                        variant="outlined"
+                      <ThemeButton
                         className={appStyles["view-more-btn"]}
                         onClick={() => {
                           setOpenViewMorePopup(true);
@@ -673,7 +695,7 @@ const Endpoint = (props) => {
                         }}
                       >
                         View More
-                      </Button>
+                      </ThemeButton>
                     </section>
                   </section>
                 </section>
@@ -694,14 +716,13 @@ const Endpoint = (props) => {
       />
 
       <TextfieldPopupComponent
-        openPopup={openTextfieldPopup}
+        openPopup={openTextfieldPopup?.open}
         setOpenPopup={setOpenTextfieldPopup}
-        endpoint={endpoint}
-        placeholder="Enter title"
-        handleSave={(titleValue) => {
+        placeholder1="Enter title"
+        handleSave={(value1) => {
           dispatchEndpoint({
             type: "save-example",
-            payload: { endpoint, title: titleValue },
+            payload: { endpoint, title: value1 },
           });
         }}
       />

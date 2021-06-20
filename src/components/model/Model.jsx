@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useReducer } from "react";
-import { Button, Tooltip } from "@material-ui/core";
+import React, { useState, useReducer } from "react";
 import { AddCircleOutlined as AddIcon } from "@material-ui/icons";
 import cx from "classnames";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
+import { ThemeButton } from "utils/commonStyles/styledComponents";
 import AppTableComponent from "components/appTable/AppTable";
 import apiService from "apis/apiService";
 import { schema } from "apis/urls";
@@ -182,9 +182,7 @@ const Model = (props) => {
           )}
         </div>
         <div className={appStyles["main-header--right"]}>
-          <Button variant="outlined" onClick={handleEditSaveBtn}>
-            {!editMode ? "Edit" : "Save"}
-          </Button>
+          <ThemeButton onClick={handleEditSaveBtn}>{!editMode ? "Edit" : "Save"}</ThemeButton>
         </div>
       </section>
 

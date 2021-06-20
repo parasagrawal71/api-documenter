@@ -1,5 +1,6 @@
 import React from "react";
 import cx from "classnames";
+import { FolderOutlined as FolderIcon } from "@material-ui/icons";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
 import EndpointComponent from "components/endpoint/Endpoint";
@@ -31,7 +32,10 @@ const EndpointsWrapper = (props) => {
             <span id={apiFolder?.folderName} className="scroll-target">
               &nbsp;
             </span>
-            <div className={cx(appStyles["main-folder"])}>{apiFolder?.folderName}</div>
+            <div className={cx(appStyles["main-folder-cnt"])}>
+              <FolderIcon className={appStyles.folderIcon} />
+              <span className={cx(appStyles["main-folder-name"])}>{apiFolder?.folderName}</span>
+            </div>
 
             {apiFolder?.subfolders?.map((subFolder, subFolderIndex) => {
               return (
@@ -39,7 +43,7 @@ const EndpointsWrapper = (props) => {
                   <span id={subFolder?.folderName} className="scroll-target">
                     &nbsp;
                   </span>
-                  <span>{subFolder?.folderName}</span>
+                  <div className={cx(appStyles["subfolder-name"])}>{subFolder?.folderName}</div>
                   {subFolder?.files?.map((aFileObj, fileIndex) => {
                     return (
                       <EndpointComponent

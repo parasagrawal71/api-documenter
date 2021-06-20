@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Dialog, Button } from "@material-ui/core";
+import { Dialog } from "@material-ui/core";
 import cx from "classnames";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
-import { ThemeTextField, ThemeAutocomplete } from "utils/commonStyles/styledComponents";
+import { ThemeTextField, ThemeAutocomplete, ThemeButton } from "utils/commonStyles/styledComponents";
 
 // IMPORT ASSETS HERE
 import appStyles from "./TextfieldPopup.module.scss";
@@ -75,9 +75,8 @@ const TextfieldPopup = (props) => {
 
       <section className={appStyles["action-btns"]}>
         <div>
-          <Button
+          <ThemeButton
             disabled={!fieldOne || (placeholder2 && !fieldTwo)}
-            variant="outlined"
             onClick={() => {
               handleSave(fieldOne, fieldTwo);
               setOpenPopup({});
@@ -86,7 +85,7 @@ const TextfieldPopup = (props) => {
             }}
           >
             Save
-          </Button>
+          </ThemeButton>
         </div>
       </section>
     </Dialog>

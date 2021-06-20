@@ -1,5 +1,6 @@
+import React from "react";
 import styled from "styled-components";
-import { TextField, Checkbox } from "@material-ui/core";
+import { TextField, Checkbox, Button } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
 export const ThemeTextField = styled(TextField)({
@@ -56,4 +57,16 @@ export const ThemeAutocomplete = styled(Autocomplete)({
   ".MuiAutocomplete-input": {
     fontSize: 13,
   },
+});
+
+export const ThemeButton = styled((props) => (
+  <Button
+    {...props}
+    variant={props?.variant || "contained"}
+    color={props?.color || props?.isSecondary ? "secondary" : "primary"}
+    disableTouchRipple
+  />
+))({
+  width: (props) => props?.width,
+  boxShadow: "none",
 });

@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import { Dialog, Button } from "@material-ui/core";
+import React from "react";
+import { Dialog } from "@material-ui/core";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
+import { ThemeButton } from "utils/commonStyles/styledComponents";
 
 // IMPORT ASSETS HERE
 import appStyles from "./ConfirmPopup.module.scss";
@@ -24,8 +25,8 @@ const ConfirmPopup = (props) => {
       <section>{message || "Are you sure you want to delete it?"}</section>
 
       <section className={appStyles["action-btns-cnt"]}>
-        <Button
-          variant="outlined"
+        <ThemeButton
+          isSecondary
           onClick={() => {
             if (cancelCallback) {
               cancelCallback();
@@ -35,10 +36,9 @@ const ConfirmPopup = (props) => {
           className={appStyles["action-btn"]}
         >
           Cancel
-        </Button>
+        </ThemeButton>
 
-        <Button
-          variant="outlined"
+        <ThemeButton
           onClick={() => {
             if (confirmCallback) {
               confirmCallback();
@@ -48,7 +48,7 @@ const ConfirmPopup = (props) => {
           className={appStyles["action-btn"]}
         >
           {confirmText || "Confirm"}
-        </Button>
+        </ThemeButton>
       </section>
     </Dialog>
   );
