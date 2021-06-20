@@ -49,7 +49,7 @@ export const ThemeCheckbox = styled((props) => (
   },
 });
 
-export const ThemeAutocomplete = styled(Autocomplete)({
+export const ThemeAutocomplete = styled((props) => <Autocomplete {...props} />)({
   width: (props) => (props?.width ? props.width : "100%"),
   ".MuiInputBase-root": {
     padding: 0,
