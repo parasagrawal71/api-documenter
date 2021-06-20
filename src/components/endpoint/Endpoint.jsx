@@ -10,6 +10,7 @@ import axios from "axios";
 import moment from "moment";
 import cx from "classnames";
 import { toast } from "react-toastify";
+import ReactHtmlParser from "react-html-parser";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
 import { ThemeTextField, ThemeAutocomplete, ThemeButton } from "utils/commonStyles/styledComponents";
@@ -272,8 +273,21 @@ const Endpoint = (props) => {
         />
       );
     } else {
+      if (["path"].includes(fieldName)) {
+        return getColoredEnvVariable(fieldValue);
+      }
+
       return fieldValue;
     }
+  };
+
+  const getColoredEnvVariable = (value) => {
+    const mapObj = {
+      "{{": `<span class="envVariable">{{`,
+      "}}": "}}</span>",
+    };
+    const coloredFieldValue = value && value.replaceAll(/{{|}}/gi, (matched) => mapObj[matched]);
+    return ReactHtmlParser(coloredFieldValue);
   };
 
   const handleEditSaveBtn = () => {

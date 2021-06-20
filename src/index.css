@@ -45,3 +45,8 @@ html {
   --error: darkred;
   --success: green;
 }
+
+.envVariable {
+  font-weight: bold;
+  color: #52696e;
+}

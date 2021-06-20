@@ -3,6 +3,7 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
 import { RemoveCircleOutlined as RemoveIcon } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import cx from "classnames";
+import ReactHtmlParser from "react-html-parser";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
 import { ThemeTextField, ThemeCheckbox, ThemeAutocomplete } from "utils/commonStyles/styledComponents";
@@ -43,6 +44,12 @@ const AppTable = (props) => {
     },
     zeroStateMsg: {
       textAlign: "center",
+    },
+    centerAlign: {
+      textAlign: "center",
+    },
+    widthToNameField: {
+      width: 120,
     },
   });
   const classes = useStyles();
@@ -193,8 +200,21 @@ const AppTable = (props) => {
         />
       );
     } else {
+      if (["value"].includes(headerKey)) {
+        return getColoredEnvVariable(fieldValue);
+      }
+
       return fieldValue || "-";
     }
+  };
+
+  const getColoredEnvVariable = (value) => {
+    const mapObj = {
+      "{{": `<span class="envVariable">{{`,
+      "}}": "}}</span>",
+    };
+    const coloredFieldValue = value && value.replaceAll(/{{|}}/gi, (matched) => mapObj[matched]);
+    return ReactHtmlParser(coloredFieldValue);
   };
 
   const decideDispatchRemoveType = () => {
@@ -220,7 +240,14 @@ const AppTable = (props) => {
           <TableRow>
             {tableHeaders?.map((header, headerIndex) => {
               return (
-                <TableCell key={headerIndex} className={classes.tableHeaderCell} style={{ padding: cellPadding }}>
+                <TableCell
+                  key={headerIndex}
+                  className={cx(classes.tableHeaderCell, {
+                    [classes.centerAlign]: ["required", "unique"].includes(header?.key),
+                    [classes.widthToNameField]: ["name"].includes(header?.key),
+                  })}
+                  style={{ padding: cellPadding }}
+                >
                   {header?.displayName}
                   {header?.required ? <span className={appStyles["required-asterisk"]}>*</span> : ""}
                 </TableCell>
@@ -235,7 +262,14 @@ const AppTable = (props) => {
               <TableRow key={rowIndex}>
                 {tableHeaders?.map((header, headerIndex) => {
                   return (
-                    <TableCell key={headerIndex} className={classes.tableBodyCell} style={{ padding: cellPadding }}>
+                    <TableCell
+                      key={headerIndex}
+                      className={cx(classes.tableBodyCell, {
+                        [classes.centerAlign]: ["required", "unique"].includes(header?.key),
+                        [classes.widthToNameField]: ["name"].includes(header?.key),
+                      })}
+                      style={{ padding: cellPadding }}
+                    >
                       {TextFieldBoxOrValue(tableRow, header, rowIndex, tableRow[header?.key])}
                     </TableCell>
                   );
