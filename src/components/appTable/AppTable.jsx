@@ -95,9 +95,9 @@ const AppTable = (props) => {
           }}
         />
       ) : fieldValue ? (
-        "true"
+        "Yes"
       ) : (
-        "false"
+        "No"
       );
     } else if (["type"].includes(headerKey) && (addMode || editMode)) {
       return (

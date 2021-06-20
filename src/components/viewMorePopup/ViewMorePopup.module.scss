@@ -22,9 +22,11 @@
     .view-more-popup__title {
       display: flex;
       justify-content: space-between;
+      border-bottom: 2px solid lightgrey;
+      padding-bottom: 10px;
 
       .success {
-        color: var(--si-success);
+        color: var(--success);
       }
 
       .error {

@@ -1,5 +1,4 @@
 import React, { useReducer, useState, useEffect, useRef } from "react";
-import { Tooltip } from "@material-ui/core";
 import {
   ArrowRight as ArrowRightIcon,
   ArrowDropDown as ArrowDownIcon,
@@ -10,6 +9,7 @@ import {
 import axios from "axios";
 import moment from "moment";
 import cx from "classnames";
+import { toast } from "react-toastify";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
 import { ThemeTextField, ThemeAutocomplete, ThemeButton } from "utils/commonStyles/styledComponents";
@@ -320,19 +320,53 @@ const Endpoint = (props) => {
 
   const sendApiCall = () => {
     const headersToSend = {};
-    endpoint?.requestHeaders?.map((header) => {
+    let isError = false;
+
+    const requestHeadersTemp = endpoint?.requestHeaders?.map((header) => {
+      if (header?.required && !header?.value) {
+        if (!header.error) {
+          header.error = {};
+        }
+        header.error.value = true;
+        isError = true;
+      } else if (header.error) {
+        header.error.value = undefined;
+      }
+
       headersToSend[header?.name] = header?.value;
       return header;
     });
+    endpoint.requestHeaders = requestHeadersTemp;
 
     const paramsToSend = {};
-    endpoint?.parameters?.map((param) => {
+    const parametersTemp = endpoint?.parameters?.map((param) => {
+      if (param?.required && !param?.value) {
+        if (!param.error) {
+          param.error = {};
+        }
+        param.error.value = true;
+        isError = true;
+      } else if (param.error) {
+        param.error.value = undefined;
+      }
+
       paramsToSend[param?.name] = param?.value;
       return param;
     });
+    endpoint.parameters = parametersTemp;
 
     if (requestBody && !validateJSON(requestBody)) {
       setInvalidReqBody(true);
+      isError = true;
+    }
+
+    dispatchEndpoint({
+      type: "all",
+      payload: endpoint,
+    });
+    if (isError) {
+      toast.error("Couldn't send request!!");
+      toast.clearWaitingQueue();
       return;
     }
 
@@ -363,7 +397,11 @@ const Endpoint = (props) => {
         },
       })
       .then((response) => {
-        console.log("response", response);
+        // console.log("response: ", response);
+        // console.log("response?.data: ", response?.data);
+        // console.log("response?.data?.message: ", response?.data?.message);
+        toast.success(`API Response: ${response?.data?.message || "No message"}`);
+        toast.clearWaitingQueue();
         const apiResponseTemp = {
           statusCode: response?.status,
           data: response?.data,
@@ -371,7 +409,8 @@ const Endpoint = (props) => {
         setApiResponse(apiResponseTemp);
       })
       .catch((apiError) => {
-        console.log("apiError", apiError);
+        toast.error(`API Response: ${apiError?.message}`);
+        toast.clearWaitingQueue();
       });
   };
 

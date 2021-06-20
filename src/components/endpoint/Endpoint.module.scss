@@ -136,7 +136,7 @@
     margin-bottom: 30px;
 
     .request-body {
-      flex: 1;
+      width: calc(50% - 30px);
       margin-right: 60px;
       @include flex-col;
       height: 250px;
@@ -186,7 +186,7 @@
     }
 
     .response-body {
-      flex: 1;
+      width: calc(50% - 30px);
       @include flex-col;
       cursor: default;
       height: 250px;
@@ -295,7 +295,7 @@
           @include flex-row-sb;
 
           .example-request-body {
-            flex: 1;
+            width: calc(50% - 30px);
             margin-right: 60px;
             @include flex-col;
             height: 250px;
@@ -327,7 +327,7 @@
           }
 
           .example-response-body {
-            flex: 1;
+            width: calc(50% - 30px);
             @include flex-col;
             height: 250px;
             position: relative;

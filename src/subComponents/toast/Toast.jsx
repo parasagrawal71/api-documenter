@@ -10,7 +10,7 @@ const Toast = (props) => {
     <div>
       <ToastContainer
         position={position || "top-right"}
-        autoClose={autoCloseTime || 3000}
+        autoClose={autoCloseTime || 2000}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick

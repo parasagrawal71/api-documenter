@@ -1,7 +1,7 @@
 export const INITIAL_STATE = {
   toastState: {
     position: "top-right",
-    autoCloseTime: 3000,
+    autoCloseTime: 2000,
   },
 };
 
