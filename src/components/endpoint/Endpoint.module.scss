@@ -45,6 +45,31 @@
       & > *:not(:last-child) {
         margin-right: 20px;
       }
+
+      .send-request-btn {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        margin-right: 0;
+      }
+
+      .dropdown-arrow-btn {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        min-width: 0;
+        width: 30px;
+        padding: 15px 0;
+        position: relative;
+
+        .sendOptionsCnt {
+          top: 35px;
+          right: 0;
+          min-width: 150px; 
+        }
+
+        .sendOption {
+          padding: 3px 10px;
+        }
+      }
     }
   }
 
@@ -368,12 +393,6 @@
 
     margin-left: 5px;
     color: darkgrey;
-  }
-
-  .saveIcon {
-    &:hover {
-      cursor: pointer;
-    }
   }
 
   .padding0 {

@@ -42,8 +42,6 @@ const TextfieldPopup = (props) => {
               renderInput={(params) => (
                 <ThemeTextField
                   {...params}
-                  variant="outlined"
-                  size="small"
                   InputLabelProps={{
                     focused: false,
                   }}
@@ -61,8 +59,6 @@ const TextfieldPopup = (props) => {
         <div className={appStyles["field-cnt"]}>
           <ThemeTextField
             autoFocus
-            variant="outlined"
-            size="small"
             InputLabelProps={{
               focused: false,
             }}

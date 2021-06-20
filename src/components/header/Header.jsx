@@ -39,9 +39,6 @@ const Header = (props) => {
             renderInput={(params) => (
               <ThemeTextField
                 {...params}
-                variant="outlined"
-                size="small"
-                // color="white"
                 InputLabelProps={{
                   focused: false,
                 }}

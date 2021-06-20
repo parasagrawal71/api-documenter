@@ -50,7 +50,6 @@ const AppTable = (props) => {
     if (["required", "unique"].includes(headerKey)) {
       return addMode || editMode ? (
         <ThemeCheckbox
-          color="primary"
           checked={Boolean(fieldValue)}
           onClick={(e) => {
             if (dispatchEndpoint) {
@@ -106,8 +105,6 @@ const AppTable = (props) => {
           renderInput={(params) => (
             <ThemeTextField
               {...params}
-              variant="outlined"
-              size="small"
               InputLabelProps={{
                 focused: false,
               }}
@@ -147,7 +144,6 @@ const AppTable = (props) => {
     } else if ((headerKey === "value" && !disableValueTextbox) || addMode || editMode) {
       return (
         <ThemeTextField
-          variant="outlined"
           disabled={headerKey === "value" && !disableValueTextbox && (editMode || addMode)}
           value={(headerKey === "value" && !disableValueTextbox) || editMode ? fieldValue : ""}
           multiline={isMultiline === "multiline"}

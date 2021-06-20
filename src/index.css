@@ -29,3 +29,17 @@ html {
   font-size: 1px;
   visibility: hidden;
 }
+
+.dropdown-arrow {
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid white;
+}
+
+:root {
+  --primary: rgba(76, 82, 100, 0.9);
+  --primary-70: rgba(76, 82, 100, 0.7);
+  --secondary: rgba(220, 0, 78, 0.7);
+}

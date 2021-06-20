@@ -22,7 +22,7 @@ const App = () => {
         main: "rgba(76, 82, 100, 0.9)",
       },
       secondary: {
-        main: "rgb(220,0,78, 0.7)",
+        main: "rgba(220, 0, 78, 0.7)",
       },
     },
   });

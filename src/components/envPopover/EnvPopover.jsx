@@ -73,7 +73,6 @@ export default function EnvPopover(props) {
                 <TableRow key={rowIndex}>
                   <TableCell className={appStyles.padding10px}>
                     <ThemeTextField
-                      variant="outlined"
                       value={tableRow?.key}
                       onChange={(e) => {
                         const selectedEnvTemp = { ...selectedEnv };
@@ -87,7 +86,6 @@ export default function EnvPopover(props) {
                   </TableCell>
                   <TableCell className={appStyles.padding10px}>
                     <ThemeTextField
-                      variant="outlined"
                       value={tableRow?.value}
                       onChange={(e) => {
                         const selectedEnvTemp = { ...selectedEnv };

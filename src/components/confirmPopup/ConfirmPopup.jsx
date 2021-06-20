@@ -26,7 +26,6 @@ const ConfirmPopup = (props) => {
 
       <section className={appStyles["action-btns-cnt"]}>
         <ThemeButton
-          isSecondary
           onClick={() => {
             if (cancelCallback) {
               cancelCallback();
@@ -39,6 +38,7 @@ const ConfirmPopup = (props) => {
         </ThemeButton>
 
         <ThemeButton
+          issecondary="true"
           onClick={() => {
             if (confirmCallback) {
               confirmCallback();

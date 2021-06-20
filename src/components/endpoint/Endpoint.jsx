@@ -13,6 +13,7 @@ import cx from "classnames";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
 import { ThemeTextField, ThemeAutocomplete, ThemeButton } from "utils/commonStyles/styledComponents";
+import GenericActionsPopover from "subComponents/genericActionsPopover/GenericActionsPopover";
 import { capitalizeFirstLetter, getStatusText, prettyPrintJson, validateJSON } from "utils/functions";
 import AppTableComponent from "components/appTable/AppTable";
 import ViewMorePopupComponent from "components/viewMorePopup/ViewMorePopup";
@@ -42,6 +43,7 @@ const Endpoint = (props) => {
   const [requestBody, setRequestBody] = useState("");
   const [apiResponse, setApiResponse] = useState("");
   const [invalidReqBody, setInvalidReqBody] = useState(false);
+  const [openSendOptions, sendOpenSendOptions] = useState(false);
 
   // REDUCERS HERE
   const endpointReducers = (state, action) => {
@@ -144,7 +146,7 @@ const Endpoint = (props) => {
           response: apiResponse,
         };
         const updatedExamplesAfterAddingNew = [...state?.examples, newExample];
-        updateEndpoint({
+        payload?.updateEndpointFunc({
           ...state,
           examples: updatedExamplesAfterAddingNew,
         });
@@ -230,8 +232,6 @@ const Endpoint = (props) => {
             renderInput={(params) => (
               <ThemeTextField
                 {...params}
-                variant="outlined"
-                size="small"
                 InputLabelProps={{
                   // shrink: false,
                   focused: false,
@@ -251,7 +251,6 @@ const Endpoint = (props) => {
 
       return (
         <ThemeTextField
-          variant="outlined"
           value={editMode ? fieldValue : ""}
           placeholder={fieldName === "examples" ? "Example title" : capitalizeFirstLetter(fieldName)}
           multiline={isMultiline === "multiline"}
@@ -422,19 +421,33 @@ const Endpoint = (props) => {
         </div>
         <div className={appStyles["action-btns"]}>
           {!editMode && !addMode && (
-            <Tooltip title="Save as Example">
-              <SaveIcon
-                className={appStyles.saveIcon}
+            <>
+              <ThemeButton width="85px" className={appStyles["send-request-btn"]} onClick={sendApiCall}>
+                Send
+              </ThemeButton>
+              <ThemeButton
+                className={appStyles["dropdown-arrow-btn"]}
                 onClick={() => {
-                  setOpenTextfieldPopup({ open: true });
+                  sendOpenSendOptions(!openSendOptions);
                 }}
-              />
-            </Tooltip>
-          )}
-          {!editMode && !addMode && (
-            <ThemeButton width="75px" onClick={sendApiCall}>
-              Send
-            </ThemeButton>
+              >
+                <div className={cx("dropdown-arrow")} />
+                <GenericActionsPopover
+                  openPopover={openSendOptions}
+                  setOpenPopover={(val) => {
+                    sendOpenSendOptions(val);
+                  }}
+                  options={["Save as example"]}
+                  optionsCallbacks={[
+                    () => {
+                      setOpenTextfieldPopup({ open: true });
+                    },
+                  ]}
+                  containerClass={appStyles.sendOptionsCnt}
+                  optionCntClass={appStyles.sendOption}
+                />
+              </ThemeButton>
+            </>
           )}
           {!editMode ? (
             <ThemeButton width="75px" onClick={handleEditSaveBtn}>
@@ -442,7 +455,7 @@ const Endpoint = (props) => {
             </ThemeButton>
           ) : (
             <>
-              <ThemeButton width="75px" isSecondary onClick={handleCancelBtn}>
+              <ThemeButton width="85px" issecondary="true" onClick={handleCancelBtn}>
                 Cancel
               </ThemeButton>
               <ThemeButton width="75px" onClick={handleEditSaveBtn}>
@@ -627,24 +640,28 @@ const Endpoint = (props) => {
               {openExamples?.[exampleIndex] && (
                 <section className={appStyles["example-all-cnt"]}>
                   <section className={appStyles["example-paramters-reqHeaders"]}>
-                    <div className={appStyles["example-paramters"]}>
-                      <div className={appStyles["example-paramters__title"]}>Query Parameters</div>
-                      <AppTableComponent
-                        tableHeaders={exampleTableHeaders}
-                        tableRows={example?.parameters}
-                        disableValueTextbox
-                        cellPadding="5px 10px"
-                      />
-                    </div>
-                    <div className={appStyles["example-reqHeaders"]}>
-                      <div className={appStyles["example-reqHeaders__title"]}>Headers</div>
-                      <AppTableComponent
-                        tableHeaders={exampleTableHeaders}
-                        tableRows={example?.requestHeaders}
-                        disableValueTextbox
-                        cellPadding="5px 10px"
-                      />
-                    </div>
+                    {example?.parameters?.length ? (
+                      <div className={appStyles["example-paramters"]}>
+                        <div className={appStyles["example-paramters__title"]}>Query Parameters</div>
+                        <AppTableComponent
+                          tableHeaders={exampleTableHeaders}
+                          tableRows={example?.parameters}
+                          disableValueTextbox
+                          cellPadding="5px 10px"
+                        />
+                      </div>
+                    ) : null}
+                    {example?.requestHeaders?.length ? (
+                      <div className={appStyles["example-reqHeaders"]}>
+                        <div className={appStyles["example-reqHeaders__title"]}>Headers</div>
+                        <AppTableComponent
+                          tableHeaders={exampleTableHeaders}
+                          tableRows={example?.requestHeaders}
+                          disableValueTextbox
+                          cellPadding="5px 10px"
+                        />
+                      </div>
+                    ) : null}
                   </section>
 
                   <section className={appStyles["example-request-response-bodies"]}>
@@ -722,7 +739,7 @@ const Endpoint = (props) => {
         handleSave={(value1) => {
           dispatchEndpoint({
             type: "save-example",
-            payload: { endpoint, title: value1 },
+            payload: { endpoint, updateEndpointFunc: updateEndpoint, title: value1 },
           });
         }}
       />

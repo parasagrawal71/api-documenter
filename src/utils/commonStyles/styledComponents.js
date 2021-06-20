@@ -3,7 +3,9 @@ import styled from "styled-components";
 import { TextField, Checkbox, Button } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
-export const ThemeTextField = styled(TextField)({
+export const ThemeTextField = styled((props) => (
+  <TextField {...props} variant={props?.variant || "outlined"} size="small" />
+))({
   width: (props) => (props?.width ? props.width : "100%"),
   maxWidth: (props) => (props?.maxWidth ? props.maxWidth : "100%"),
   ".MuiOutlinedInput-root": {
@@ -38,7 +40,9 @@ export const ThemeTextField = styled(TextField)({
   },
 });
 
-export const ThemeCheckbox = styled(Checkbox)({
+export const ThemeCheckbox = styled((props) => (
+  <Checkbox {...props} color={props?.backgroundColor || props?.issecondary ? "secondary" : "primary"} />
+))({
   padding: 0,
   ".MuiSvgIcon-root": {
     fill: (props) => (!props.checked && props.iserror ? "red !important" : ""),
@@ -63,10 +67,11 @@ export const ThemeButton = styled((props) => (
   <Button
     {...props}
     variant={props?.variant || "contained"}
-    color={props?.color || props?.isSecondary ? "secondary" : "primary"}
+    color={props?.backgroundColor || props?.issecondary ? "secondary" : "primary"}
     disableTouchRipple
   />
 ))({
   width: (props) => props?.width,
   boxShadow: "none",
+  color: (props) => props?.color,
 });
