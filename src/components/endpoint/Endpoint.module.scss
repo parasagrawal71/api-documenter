@@ -3,6 +3,7 @@
 
 .main-container {
   font-size: 0.9em;
+  padding: 15px;
 
   & > * {
     // All immediate children irrespective of element
@@ -21,6 +22,10 @@
     border-bottom: 2px solid lightgrey;
     padding: 0 10px;
     padding-bottom: 5px;
+
+    &.editMode {
+      padding: 0 0 5px 0;
+    }
 
     .main-header--left {
       display: flex;
@@ -46,6 +51,7 @@
 
   .method-path {
     @include flex-row-v-cen;
+    padding: 0 10px;
 
     .method {
       text-transform: uppercase;

@@ -29,16 +29,17 @@ const EndpointsWrapper = (props) => {
         return (
           <section key={folderIndex}>
             <span id={apiFolder?.folderName} className="scroll-target">
-              {apiFolder?.folderName}
+              &nbsp;
             </span>
+            <div className={cx(appStyles["main-folder"])}>{apiFolder?.folderName}</div>
 
             {apiFolder?.subfolders?.map((subFolder, subFolderIndex) => {
               return (
                 <section key={subFolderIndex}>
                   <span id={subFolder?.folderName} className="scroll-target">
-                    {subFolder?.folderName}
+                    &nbsp;
                   </span>
-
+                  <span>{subFolder?.folderName}</span>
                   {subFolder?.files?.map((aFileObj, fileIndex) => {
                     return (
                       <EndpointComponent

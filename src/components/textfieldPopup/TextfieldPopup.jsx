@@ -76,7 +76,7 @@ const TextfieldPopup = (props) => {
       <section className={appStyles["action-btns"]}>
         <div>
           <Button
-            disabled={!fieldOne || !fieldTwo}
+            disabled={!fieldOne || (placeholder2 && !fieldTwo)}
             variant="outlined"
             onClick={() => {
               handleSave(fieldOne, fieldTwo);

@@ -395,13 +395,14 @@ const Endpoint = (props) => {
     <section className={appStyles["main-container"]}>
       <section
         className={cx(appStyles["main-header"], {
-          [appStyles.padding0]: editMode || addMode,
+          [appStyles.editMode]: editMode || addMode,
         })}
       >
         <div className={appStyles["main-header--left"]}>
-          <span id={endpoint?.title} className={cx(appStyles.title, "scroll-target")}>
-            {TextFieldBoxOrValue("title", endpoint?.title)}
+          <span id={endpoint?.title} className="scroll-target">
+            &nbsp;
           </span>
+          <span className={appStyles.title}>{TextFieldBoxOrValue("title", endpoint?.title)}</span>
           <span className={appStyles.updatedAt}>
             Updated At: {moment(endpoint?.updatedAt).format("DD-MM-YYYY hh:mm A")}
           </span>
@@ -427,7 +428,11 @@ const Endpoint = (props) => {
           )}
         </div>
       </section>
-      <div className={appStyles["method-path"]}>
+      <div
+        className={cx(appStyles["method-path"], {
+          [appStyles.padding0]: editMode || addMode,
+        })}
+      >
         <div
           className={cx(appStyles.method, {
             [appStyles.get]: endpoint?.method === "GET",
