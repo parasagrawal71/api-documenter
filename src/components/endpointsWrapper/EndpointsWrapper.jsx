@@ -12,13 +12,13 @@ import appStyles from "./EndpointsWrapper.module.scss";
 
 const EndpointsWrapper = (props) => {
   // PROPS HERE
-  const { selectedEnv, sortedApisTree, setSortedApisTree, enableEditMode, setEnableEditMode } = props;
+  const { selectedEnv, sortedApisTree, updateSortedApisTree, enableEditMode, setEnableEditMode } = props;
 
   const updateFolderInApisTree = async (updatedApisTree, folderIndex) => {
     const updatedFolderObj = updatedApisTree?.[folderIndex];
     const response = await apiService(apisTree(updatedFolderObj?._id).put, updatedFolderObj);
     if (response?.success) {
-      setSortedApisTree(updatedApisTree);
+      updateSortedApisTree(updatedApisTree);
     } else {
       //
     }
@@ -55,7 +55,7 @@ const EndpointsWrapper = (props) => {
                             sortedApisTree[folderIndex].subfolders[subFolderIndex].files[fileIndex].fileName = fileName;
                             sortedApisTree[folderIndex].subfolders[subFolderIndex].files[fileIndex].method = method;
                           }
-                          setSortedApisTree([...sortedApisTree]);
+                          updateSortedApisTree([...sortedApisTree]);
                           updateFolderInApisTree(sortedApisTree, folderIndex);
                         }}
                         enableEditMode={enableEditMode}
@@ -78,7 +78,7 @@ const EndpointsWrapper = (props) => {
                       sortedApisTree[folderIndex].files[fileIndex].fileName = fileName;
                       sortedApisTree[folderIndex].files[fileIndex].method = method;
                     }
-                    setSortedApisTree([...sortedApisTree]);
+                    updateSortedApisTree([...sortedApisTree]);
                     updateFolderInApisTree(sortedApisTree, folderIndex);
                   }}
                   enableEditMode={enableEditMode}

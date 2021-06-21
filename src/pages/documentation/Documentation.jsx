@@ -30,6 +30,8 @@ const Documentation = () => {
     // fetchModels();
     // fetchReadmeFiles();
     fetchApisTree();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchModels = async () => {
@@ -49,9 +51,13 @@ const Documentation = () => {
   const fetchApisTree = async () => {
     const response = await apiService(apisTree().getAll);
     if (response?.success) {
-      const sortedApisTreeTemp = sortArrayOfObjs(response?.data, "folderName");
-      setSortedApisTree(sortedApisTreeTemp);
+      updateSortedApisTree(response?.data);
     }
+  };
+
+  const updateSortedApisTree = (updatedValue) => {
+    const sortedApisTreeTemp = sortArrayOfObjs(updatedValue, "folderName");
+    setSortedApisTree(sortedApisTreeTemp);
   };
 
   return (
@@ -65,7 +71,7 @@ const Documentation = () => {
             readmeFiles={readmeFiles}
             setReadmeFiles={setReadmeFiles}
             sortedApisTree={sortedApisTree}
-            setSortedApisTree={setSortedApisTree}
+            updateSortedApisTree={updateSortedApisTree}
           />
         </section>
         <section className={appStyles["content-cnt--right"]}>
@@ -109,7 +115,7 @@ const Documentation = () => {
             <EndpointsWrapperComponent
               selectedEnv={selectedEnv}
               sortedApisTree={sortedApisTree}
-              setSortedApisTree={setSortedApisTree}
+              updateSortedApisTree={updateSortedApisTree}
               enableEditMode={enableEditMode}
               setEnableEditMode={setEnableEditMode}
             />

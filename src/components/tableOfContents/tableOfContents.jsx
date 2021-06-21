@@ -8,7 +8,6 @@ import { toast } from "react-toastify";
 import TextfieldPopupComponent from "components/textfieldPopup/TextfieldPopup";
 import FolderOrFileComponent from "components/folderOrFile/FolderOrFile";
 import ConfirmPopupComponent from "components/confirmPopup/ConfirmPopup";
-import { sortArrayOfObjs } from "utils/functions";
 import apiService from "apis/apiService";
 import { readme, schema, apisTree, endpointUrl } from "apis/urls";
 
@@ -17,7 +16,7 @@ import appStyles from "./tableOfContents.module.scss";
 
 const tableOfContents = (props) => {
   // PROPS HERE
-  const { models, setModels, readmeFiles, setReadmeFiles, sortedApisTree, setSortedApisTree } = props;
+  const { models, setModels, readmeFiles, setReadmeFiles, sortedApisTree, updateSortedApisTree } = props;
 
   // HOOKS HERE
   const [openReadme, setOpenReadme] = useState(false);
@@ -59,7 +58,7 @@ const tableOfContents = (props) => {
 
       return folderObj;
     });
-    setSortedApisTree(updatedFolders);
+    updateSortedApisTree(updatedFolders);
   };
 
   const updateApisTree = async (actionType, folder, subFolder, file) => {
@@ -77,7 +76,7 @@ const tableOfContents = (props) => {
         if (response?.success) {
           const updatedTreeAfterAddingFolder = [...sortedApisTree];
           updatedTreeAfterAddingFolder.push(response?.data);
-          setSortedApisTree(sortArrayOfObjs(updatedTreeAfterAddingFolder, "folderName"));
+          updateSortedApisTree(updatedTreeAfterAddingFolder);
         } else {
           //
         }
@@ -144,7 +143,7 @@ const tableOfContents = (props) => {
         response = await apiService(apisTree(updatedTreeAfterFolderDeletion?.[folderIndex]?._id).delete);
         if (response?.success) {
           updatedTreeAfterFolderDeletion.splice(folderIndex, 1);
-          setSortedApisTree(updatedTreeAfterFolderDeletion);
+          updateSortedApisTree(updatedTreeAfterFolderDeletion);
         } else {
           //
         }
@@ -240,7 +239,7 @@ const tableOfContents = (props) => {
     const updatedFolderObj = updatedApisTree?.[folderIndex];
     const response = await apiService(apisTree(updatedFolderObj?._id).put, updatedFolderObj);
     if (response?.success) {
-      setSortedApisTree(updatedApisTree);
+      updateSortedApisTree(updatedApisTree);
     } else {
       //
     }
