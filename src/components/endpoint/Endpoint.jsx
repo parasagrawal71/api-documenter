@@ -570,6 +570,7 @@ const Endpoint = (props) => {
           dispatchEndpoint={dispatchEndpoint}
           editMode={editMode}
           addMode={addMode}
+          zeroStateText="No parameters"
         />
       </section>
       {/* ************************************************************************************************* */}
@@ -594,6 +595,7 @@ const Endpoint = (props) => {
           dispatchEndpoint={dispatchEndpoint}
           editMode={editMode}
           addMode={addMode}
+          zeroStateText="No headers"
         />
       </section>
       {/* ************************************************************************************************* */}
