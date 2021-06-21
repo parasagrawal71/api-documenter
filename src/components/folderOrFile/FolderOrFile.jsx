@@ -7,6 +7,7 @@ import {
   MoreVert as MoreIcon,
 } from "@material-ui/icons";
 import cx from "classnames";
+import { SortableHandle } from "react-sortable-hoc";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
 import ActionsPopoverComponent from "components/actionsPopover/ActionsPopover";
@@ -65,6 +66,18 @@ const FolderOrFile = (props) => {
     }
   };
 
+  const DragHandlerWhenOpened = SortableHandle(() => {
+    return <FolderOpenIcon className={appStyles.folderIcon} />;
+  });
+
+  const DragHandlerWhenClosed = SortableHandle(() => {
+    return <FolderIcon className={appStyles.folderIcon} />;
+  });
+
+  const DragHandlerWhenFile = SortableHandle(() => {
+    return <>{type === "file" ? fileObj?.method && getRequestType(fileObj?.method) : ""}</>;
+  });
+
   return (
     <section
       className={appStyles["folder-file-cnt"]}
@@ -83,15 +96,15 @@ const FolderOrFile = (props) => {
           (isFolderOpen ? (
             <>
               <ArrowDownIcon className={appStyles.arrowIcon} onClick={toggleFolder} />
-              <FolderOpenIcon className={appStyles.folderIcon} />
+              <DragHandlerWhenOpened />
             </>
           ) : (
             <>
               <ArrowRightIcon className={appStyles.arrowIcon} onClick={toggleFolder} />
-              <FolderIcon className={appStyles.folderIcon} />
+              <DragHandlerWhenClosed />
             </>
           ))}
-        {type === "file" && fileObj?.method && getRequestType(fileObj?.method)}
+        <DragHandlerWhenFile />
         <a
           href={href ? `#${href}` : null}
           className={appStyles["folder-file-name"]}
@@ -100,6 +113,7 @@ const FolderOrFile = (props) => {
           {type === "folder" ? folderObj?.folderName : fileObj?.fileName}
         </a>
       </section>
+
       {(showActionsBtn || showActionPopup) && (
         <section className={appStyles["folder-file-cnt--right"]}>
           <MoreIcon

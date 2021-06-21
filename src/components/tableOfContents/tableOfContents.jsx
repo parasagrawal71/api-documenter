@@ -3,11 +3,13 @@ import { Tooltip } from "@material-ui/core";
 import { CreateNewFolderOutlined as AddFolderIcon } from "@material-ui/icons";
 import cx from "classnames";
 import { toast } from "react-toastify";
+import { SortableContainer, SortableElement } from "react-sortable-hoc";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
 import TextfieldPopupComponent from "components/textfieldPopup/TextfieldPopup";
 import FolderOrFileComponent from "components/folderOrFile/FolderOrFile";
 import ConfirmPopupComponent from "components/confirmPopup/ConfirmPopup";
+import { arrayMove } from "utils/functions";
 import apiService from "apis/apiService";
 import { readme, schema, apisTree, endpointUrl } from "apis/urls";
 
@@ -272,6 +274,149 @@ const tableOfContents = (props) => {
     }
   };
 
+  /*  *************************************************** MAIN FOLDER's DRAGGABLE FILES  ******************************************************* */
+  const handleOnSortMainFolderFilesEnd = (data, event, folderIndex) => {
+    const { oldIndex, newIndex } = data;
+    const currentFiles = sortedApisTree?.[folderIndex]?.files;
+    sortedApisTree[folderIndex].files = arrayMove(currentFiles, oldIndex, newIndex);
+    updateSortedApisTree([...sortedApisTree]);
+    updateFolderInApisTree([...sortedApisTree], folderIndex);
+  };
+
+  const MainFolderFileRow = ({ aFileObj, folderIndex, fileIndex }) => {
+    return (
+      <FolderOrFileComponent
+        key={fileIndex}
+        type="file"
+        fileObj={aFileObj}
+        showActions={["delete"]}
+        deleteCallback={() => {
+          setOpenConfirmPopup({
+            actionType: "delete-file-from-folder",
+            open: true,
+            folderIndex,
+            fileIndex,
+            fileObj: aFileObj,
+          });
+        }}
+        href={aFileObj?.fileName}
+      />
+    );
+  };
+
+  const MainFolderFileSortableItem = SortableElement((subProps) => <MainFolderFileRow {...subProps} />);
+  /*  ****************************************************************************************************************************************** */
+
+  /*  **************************************************** SUB FOLDER's DRAGGABLE FILES  ******************************************************* */
+  const handleOnSortSubFolderFilesEnd = (data, event, folderIndex, subFolderIndex) => {
+    const { oldIndex, newIndex } = data;
+    const currentFiles = sortedApisTree?.[folderIndex]?.subfolders?.[subFolderIndex]?.files;
+    sortedApisTree[folderIndex].subfolders[subFolderIndex].files = arrayMove(currentFiles, oldIndex, newIndex);
+    updateSortedApisTree([...sortedApisTree]);
+    updateFolderInApisTree([...sortedApisTree], folderIndex);
+  };
+
+  const SubFolderFileRow = ({ aFileObj, folderIndex, subFolderIndex, fileIndex }) => {
+    return (
+      <FolderOrFileComponent
+        key={fileIndex}
+        type="file"
+        fileObj={aFileObj}
+        showActions={["delete"]}
+        deleteCallback={() => {
+          setOpenConfirmPopup({
+            actionType: "delete-file-from-subfolder",
+            open: true,
+            folderIndex,
+            subFolderIndex,
+            fileIndex,
+            fileObj: aFileObj,
+          });
+        }}
+        href={aFileObj?.fileName}
+      />
+    );
+  };
+
+  const SubFolderFileSortableItem = SortableElement((subProps) => <SubFolderFileRow {...subProps} />);
+  /*  ****************************************************************************************************************************************** */
+
+  /*  ******************************************************** DRAGGABLE SUB FOLDERS  ********************************************************** */
+  const handleOnSortSubFoldersEnd = (data, event, folderIndex) => {
+    const { oldIndex, newIndex } = data;
+    const currentSubfolders = sortedApisTree?.[folderIndex]?.subfolders;
+    sortedApisTree[folderIndex].subfolders = arrayMove(currentSubfolders, oldIndex, newIndex);
+    updateSortedApisTree([...sortedApisTree]);
+    updateFolderInApisTree([...sortedApisTree], folderIndex);
+  };
+
+  const SubFolderRow = ({ apiFolder, subFolder, folderIndex, subFolderIndex }) => {
+    return (
+      <section key={subFolderIndex} className={appStyles["subfolder-wrapper"]}>
+        <FolderOrFileComponent
+          type="folder"
+          isFolderOpen={subFolder?.opened}
+          toggleFolder={() => {
+            openCloseFolder(apiFolder?.folderName, subFolder?.folderName, folderIndex);
+          }}
+          folderObj={subFolder}
+          showActions={["addFile", "delete"]}
+          addFileText="Add Request"
+          addFileCallback={() => {
+            setOpenTextfieldPopup({
+              actionType: "add-file-in-subfolder",
+              open: true,
+              placeholder1: "Enter Request Name",
+              placeholder2: "Select Method",
+              folderIndex,
+              subFolderIndex,
+            });
+          }}
+          deleteCallback={() => {
+            setOpenConfirmPopup({
+              actionType: "delete-subfolder",
+              open: true,
+              folderIndex,
+              subFolderIndex,
+              subFolderObj: subFolder,
+            });
+          }}
+          href={subFolder?.folderName}
+        />
+
+        <SortableCont
+          onSortEnd={(data, event) => handleOnSortSubFolderFilesEnd(data, event, folderIndex, subFolderIndex)}
+          axis="y"
+          lockAxis="y"
+          lockToContainerEdges
+          lockOffset={["30%", "50%"]}
+          useDragHandle
+        >
+          {subFolder?.opened &&
+            subFolder?.files?.map((aFileObj, fileIndex) => {
+              return (
+                <SubFolderFileSortableItem
+                  key={`item-${fileIndex}`}
+                  index={fileIndex}
+                  aFileObj={aFileObj}
+                  folderIndex={folderIndex}
+                  subFolderIndex={subFolderIndex}
+                  fileIndex={fileIndex}
+                />
+              );
+            })}
+        </SortableCont>
+      </section>
+    );
+  };
+
+  const SubFolderSortableItem = SortableElement((subProps) => <SubFolderRow {...subProps} />);
+  /*  ****************************************************************************************************************************************** */
+
+  const SortableCont = SortableContainer(({ children }) => {
+    return <section>{children}</section>;
+  });
+
   return (
     <section className={appStyles["main-container"]}>
       {/* <div className={appStyles["main-header"]}>
@@ -433,88 +578,50 @@ const tableOfContents = (props) => {
                   href={apiFolder?.folderName}
                 />
 
-                {apiFolder?.opened &&
-                  apiFolder?.subfolders?.map((subFolder, subFolderIndex) => {
-                    return (
-                      <section key={subFolderIndex} className={appStyles["subfolder-wrapper"]}>
-                        <FolderOrFileComponent
-                          type="folder"
-                          isFolderOpen={subFolder?.opened}
-                          toggleFolder={() => {
-                            openCloseFolder(apiFolder?.folderName, subFolder?.folderName, folderIndex);
-                          }}
-                          folderObj={subFolder}
-                          showActions={["addFile", "delete"]}
-                          addFileText="Add Request"
-                          addFileCallback={() => {
-                            setOpenTextfieldPopup({
-                              actionType: "add-file-in-subfolder",
-                              open: true,
-                              placeholder1: "Enter Request Name",
-                              placeholder2: "Select Method",
-                              folderIndex,
-                              subFolderIndex,
-                            });
-                          }}
-                          deleteCallback={() => {
-                            setOpenConfirmPopup({
-                              actionType: "delete-subfolder",
-                              open: true,
-                              folderIndex,
-                              subFolderIndex,
-                              subFolderObj: subFolder,
-                            });
-                          }}
-                          href={subFolder?.folderName}
+                <SortableCont
+                  onSortEnd={(data, event) => handleOnSortSubFoldersEnd(data, event, folderIndex)}
+                  axis="y"
+                  lockAxis="y"
+                  lockToContainerEdges
+                  lockOffset={["30%", "50%"]}
+                  useDragHandle
+                >
+                  {apiFolder?.opened &&
+                    apiFolder?.subfolders?.map((subFolder, subFolderIndex) => {
+                      return (
+                        <SubFolderSortableItem
+                          key={`item-${subFolderIndex}`}
+                          index={subFolderIndex}
+                          apiFolder={apiFolder}
+                          subFolder={subFolder}
+                          folderIndex={folderIndex}
+                          subFolderIndex={subFolderIndex}
                         />
+                      );
+                    })}
+                </SortableCont>
 
-                        {subFolder?.opened &&
-                          subFolder?.files?.map((aFileObj, fileIndex) => {
-                            return (
-                              <FolderOrFileComponent
-                                key={fileIndex}
-                                type="file"
-                                fileObj={aFileObj}
-                                showActions={["delete"]}
-                                deleteCallback={() => {
-                                  setOpenConfirmPopup({
-                                    actionType: "delete-file-from-subfolder",
-                                    open: true,
-                                    folderIndex,
-                                    subFolderIndex,
-                                    fileIndex,
-                                    fileObj: aFileObj,
-                                  });
-                                }}
-                                href={aFileObj?.fileName}
-                              />
-                            );
-                          })}
-                      </section>
-                    );
-                  })}
-
-                {apiFolder?.opened &&
-                  apiFolder?.files?.map((aFileObj, fileIndex) => {
-                    return (
-                      <FolderOrFileComponent
-                        key={fileIndex}
-                        type="file"
-                        fileObj={aFileObj}
-                        showActions={["delete"]}
-                        deleteCallback={() => {
-                          setOpenConfirmPopup({
-                            actionType: "delete-file-from-folder",
-                            open: true,
-                            folderIndex,
-                            fileIndex,
-                            fileObj: aFileObj,
-                          });
-                        }}
-                        href={aFileObj?.fileName}
-                      />
-                    );
-                  })}
+                <SortableCont
+                  onSortEnd={(data, event) => handleOnSortMainFolderFilesEnd(data, event, folderIndex)}
+                  axis="y"
+                  lockAxis="y"
+                  lockToContainerEdges
+                  lockOffset={["30%", "50%"]}
+                  useDragHandle
+                >
+                  {apiFolder?.opened &&
+                    apiFolder?.files?.map((aFileObj, fileIndex) => {
+                      return (
+                        <MainFolderFileSortableItem
+                          key={`item-${fileIndex}`}
+                          index={fileIndex}
+                          aFileObj={aFileObj}
+                          folderIndex={folderIndex}
+                          fileIndex={fileIndex}
+                        />
+                      );
+                    })}
+                </SortableCont>
               </section>
             );
           })}
