@@ -1,10 +1,14 @@
 import React from "react";
+import { Router } from "react-router-dom";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
 import DocumentationPage from "pages/documentation/Documentation";
 import Toast from "subComponents/toast/Toast";
 import useGlobal from "redux/globalHook";
+import history from "routes/history";
+import Routes from "routes/Routes";
+import ScrollToTop from "routes/ScrollToTop";
 
 // IMPORT ASSETS HERE
 import "./App.css";
@@ -30,8 +34,11 @@ const App = () => {
   return (
     <main className="App">
       <MuiThemeProvider theme={materialUiTheme}>
-        <Toast toastState={globalState?.toastState} />
-        <DocumentationPage />
+        <Router history={history}>
+          <Toast toastState={globalState?.toastState} />
+          <ScrollToTop />
+          <Routes />
+        </Router>
       </MuiThemeProvider>
     </main>
   );
