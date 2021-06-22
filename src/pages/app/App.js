@@ -32,15 +32,15 @@ const App = () => {
   });
 
   return (
-    <main className="App">
+    <Router history={history}>
       <MuiThemeProvider theme={materialUiTheme}>
-        <Router history={history}>
+        <main className="App">
           <Toast toastState={globalState?.toastState} />
           <ScrollToTop />
           <Routes />
-        </Router>
+        </main>
       </MuiThemeProvider>
-    </main>
+    </Router>
   );
 };
 

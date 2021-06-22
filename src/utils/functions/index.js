@@ -63,3 +63,16 @@ export const arrayMove = (array, from, to) => {
   array.splice(to < 0 ? array.length + to : to, 0, array.splice(from, 1)[0]);
   return array;
 };
+
+export const getUrlParams = () => {
+  let searchStr = window?.location?.search;
+  searchStr = searchStr?.substring(1, searchStr?.length);
+  const params = searchStr?.split("&");
+  const paramsObj = {};
+
+  for (let i = 0; i < params?.length; i++) {
+    let tmpArr = params[i]?.split("=");
+    paramsObj[tmpArr[0]] = tmpArr[1];
+  }
+  return paramsObj || {};
+};

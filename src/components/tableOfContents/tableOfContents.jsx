@@ -9,7 +9,7 @@ import { SortableContainer, SortableElement } from "react-sortable-hoc";
 import TextfieldPopupComponent from "components/textfieldPopup/TextfieldPopup";
 import FolderOrFileComponent from "components/folderOrFile/FolderOrFile";
 import ConfirmPopupComponent from "components/confirmPopup/ConfirmPopup";
-import { arrayMove } from "utils/functions";
+import { arrayMove, getUrlParams } from "utils/functions";
 import apiService from "apis/apiService";
 import { readme, schema, apisTree, endpointUrl } from "apis/urls";
 
@@ -19,6 +19,9 @@ import appStyles from "./tableOfContents.module.scss";
 const tableOfContents = (props) => {
   // PROPS HERE
   const { models, setModels, readmeFiles, setReadmeFiles, sortedApisTree, updateSortedApisTree } = props;
+
+  // VARIABLES HERE
+  const serviceMID = getUrlParams()?.serviceMID;
 
   // HOOKS HERE
   const [openReadme, setOpenReadme] = useState(false);
@@ -74,6 +77,7 @@ const tableOfContents = (props) => {
       case "add-folder":
         response = await apiService(apisTree().post, {
           folderName,
+          serviceMID,
         });
         if (response?.success) {
           const updatedTreeAfterAddingFolder = [...sortedApisTree];
@@ -185,6 +189,7 @@ const tableOfContents = (props) => {
       case "add-readme-file":
         response = await apiService(readme().post, {
           fileName,
+          serviceMID,
         });
         if (response?.success) {
           const updatedReadmeFiles = [...readmeFiles];
@@ -209,6 +214,7 @@ const tableOfContents = (props) => {
       case "add-model":
         response = await apiService(schema().post, {
           fileName,
+          serviceMID,
         });
 
         if (response?.success) {
@@ -251,6 +257,7 @@ const tableOfContents = (props) => {
     const response = await apiService(endpointUrl().post, {
       title: fileName,
       method,
+      serviceMID,
     });
     if (response?.success) {
       return response?.data;

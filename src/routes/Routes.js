@@ -12,9 +12,9 @@ import Route from "./RouteWrapper";
 const Routes = () => {
   return (
     <Switch>
-      <Route path="/" exact component={LoginPage} />
-      <Route path="/dashboard" exact component={DashboardPage} isPrivate />
-      <Route path="/documentation" exact component={DocumentationPage} isPrivate />
+      <Route exact path="/" component={LoginPage} />
+      <Route exact path="/dashboard" component={DashboardPage} isPrivate />
+      <Route exact path="/documentation" component={DocumentationPage} isPrivate />
       <Route component={LoginPage} />
     </Switch>
   );

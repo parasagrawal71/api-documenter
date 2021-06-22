@@ -2,6 +2,7 @@ import axios from "axios";
 
 // IMPORTS //
 import { SERVER_URL_LOCAL, SERVER_URL_HEROKU } from "utils/constants";
+import { getUrlParams } from "utils/functions";
 import { GET, POST, PUT, DELETE } from "./httpConstants";
 import handleError from "./handleError";
 
@@ -12,10 +13,14 @@ const request = axios.create({
 const apiService = (apiResource, body, config) => {
   const { method, endpoint } = apiResource;
 
+  const paramsObj = getUrlParams();
+
+  const configToRequest = { params: { serviceMID: paramsObj?.serviceMID }, ...config };
+
   switch (method.toUpperCase()) {
     case GET:
       return request
-        .get(endpoint, config)
+        .get(endpoint, configToRequest)
         .then((response) => {
           //   console.log("get response:- ", response);
           return response?.data;
@@ -24,7 +29,7 @@ const apiService = (apiResource, body, config) => {
 
     case POST:
       return request
-        .post(endpoint, body, config)
+        .post(endpoint, body, configToRequest)
         .then((response) => {
           //   console.log("post response:- ", response);
           return response?.data;
@@ -33,7 +38,7 @@ const apiService = (apiResource, body, config) => {
 
     case PUT:
       return request
-        .put(endpoint, body, config)
+        .put(endpoint, body, configToRequest)
         .then((response) => {
           //   console.log("put response:- ", response);
           return response?.data;
@@ -42,7 +47,7 @@ const apiService = (apiResource, body, config) => {
 
     case DELETE:
       return request
-        .delete(endpoint, config)
+        .delete(endpoint, configToRequest)
         .then((response) => {
           //   console.log("delete response:- ", response);
           return response?.data;
