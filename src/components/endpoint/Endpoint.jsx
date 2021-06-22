@@ -233,6 +233,7 @@ const Endpoint = (props) => {
             renderInput={(params) => (
               <ThemeTextField
                 {...params}
+                backgroundColor="#FFFFFF"
                 InputLabelProps={{
                   // shrink: false,
                   focused: false,
@@ -255,6 +256,7 @@ const Endpoint = (props) => {
           value={editMode ? fieldValue : ""}
           placeholder={fieldName === "examples" ? "Example title" : capitalizeFirstLetter(fieldName)}
           multiline={isMultiline === "multiline"}
+          backgroundColor="#FFFFFF"
           onClick={(e) => e.stopPropagation()}
           onChange={(e) => {
             dispatchEndpoint({

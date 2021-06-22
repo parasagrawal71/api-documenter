@@ -69,21 +69,24 @@ const EndpointsWrapper = (props) => {
 
             {apiFolder?.files?.map((aFileObj, fileIndex) => {
               return (
-                <EndpointComponent
-                  key={fileIndex}
-                  endpointMongoId={aFileObj?.endpointMID}
-                  selectedEnv={selectedEnv}
-                  updateApisTree={(fileName, method) => {
-                    if (sortedApisTree?.[folderIndex].files?.[fileIndex]) {
-                      sortedApisTree[folderIndex].files[fileIndex].fileName = fileName;
-                      sortedApisTree[folderIndex].files[fileIndex].method = method;
-                    }
-                    updateSortedApisTree([...sortedApisTree]);
-                    updateFolderInApisTree(sortedApisTree, folderIndex);
-                  }}
-                  enableEditMode={enableEditMode}
-                  setEnableEditMode={setEnableEditMode}
-                />
+                <>
+                  <span>&nbsp;</span>
+                  <EndpointComponent
+                    key={fileIndex}
+                    endpointMongoId={aFileObj?.endpointMID}
+                    selectedEnv={selectedEnv}
+                    updateApisTree={(fileName, method) => {
+                      if (sortedApisTree?.[folderIndex].files?.[fileIndex]) {
+                        sortedApisTree[folderIndex].files[fileIndex].fileName = fileName;
+                        sortedApisTree[folderIndex].files[fileIndex].method = method;
+                      }
+                      updateSortedApisTree([...sortedApisTree]);
+                      updateFolderInApisTree(sortedApisTree, folderIndex);
+                    }}
+                    enableEditMode={enableEditMode}
+                    setEnableEditMode={setEnableEditMode}
+                  />
+                </>
               );
             })}
           </section>

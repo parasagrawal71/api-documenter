@@ -4,7 +4,9 @@
 .main-container {
   font-size: 0.9em;
   padding: 15px;
-  margin: 0 10px;
+  margin: 10px 10px 40px 10px;
+  background-color: #f9f9f9;
+  border-radius: 5px;
 
   & > * {
     // All immediate children irrespective of element
@@ -159,9 +161,11 @@
       .request-body__json {
         flex: 1;
         padding: 5px 10px;
-        border-radius: 3px;
-        outline: 1px solid lightgrey;
+        border-radius: 4px;
+        border: 1px solid gray;
         overflow: overlay;
+        background-color: #ffffff;
+        outline: none;
 
         &::-webkit-scrollbar {
           width: 5px;
@@ -175,6 +179,7 @@
 
         &.disabled {
           border: none;
+          background-color: rgba(178, 190, 181, 0.15);
         }
       }
 
@@ -202,9 +207,10 @@
       .response-body__json {
         flex: 1;
         padding: 5px 10px;
-        border-radius: 3px;
-        outline: 1px solid lightgrey;
+        border-radius: 4px;
+        border: 1px solid lightgrey;
         overflow: overlay;
+        background-color: #ffffff;
 
         &::-webkit-scrollbar {
           width: 5px;

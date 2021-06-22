@@ -155,6 +155,7 @@ const AppTable = (props) => {
       return (
         <ThemeTextField
           disabled={headerKey === "value" && !disableValueTextbox && (editMode || addMode)}
+          disabledBgColor="rgba(178, 190, 181, 0.15)"
           value={(headerKey === "value" && !disableValueTextbox) || editMode ? fieldValue : ""}
           multiline={isMultiline === "multiline"}
           onChange={(e) => {

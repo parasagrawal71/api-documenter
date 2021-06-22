@@ -10,7 +10,12 @@ export const ThemeTextField = styled((props) => (
   maxWidth: (props) => (props?.maxWidth ? props.maxWidth : "100%"),
   ".MuiOutlinedInput-root": {
     fontSize: "0.9em",
-    backgroundColor: (props) => (props?.disabled ? "lightgrey" : "rgb(178, 190, 181, 0.15)"),
+    backgroundColor: (props) =>
+      props?.disabled
+        ? props?.disabledBgColor || "lightgrey"
+        : props?.backgroundColor
+        ? props?.backgroundColor
+        : "rgba(178, 190, 181, 0.15)",
     borderRadius: (props) => (props?.borderRadius ? props.borderRadius : "5px"),
     color: (props) => (props?.color ? props.color : "#000000"),
     "& fieldset": {
