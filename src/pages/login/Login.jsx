@@ -24,13 +24,18 @@ const Login = (props) => {
   const [mode, setMode] = useState("login");
 
   const login = () => {
+    resetForm();
     props?.history?.push("/dashboard");
   };
 
   const toggleMode = () => {
+    resetForm();
+    setMode(mode === "login" ? "register" : "login");
+  };
+
+  const resetForm = () => {
     reset();
     resetRef?.current?.click();
-    setMode(mode === "login" ? "register" : "login");
   };
 
   return (
