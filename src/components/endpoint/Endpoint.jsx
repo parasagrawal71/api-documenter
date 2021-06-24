@@ -13,7 +13,7 @@ import { toast } from "react-toastify";
 import ReactHtmlParser from "react-html-parser";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
-import { ThemeTextField, ThemeAutocomplete, ThemeButton } from "utils/commonStyles/styledComponents";
+import { ThemeTextField, ThemeAutocomplete, ThemeButton } from "utils/commonStyles/StyledComponents";
 import GenericActionsPopover from "subComponents/genericActionsPopover/GenericActionsPopover";
 import { capitalizeFirstLetter, getStatusText, prettyPrintJson, validateJSON } from "utils/functions";
 import AppTableComponent from "components/appTable/AppTable";

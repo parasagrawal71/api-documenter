@@ -1,0 +1,54 @@
+.main-cnt {
+  display: flex;
+  justify-content: center;
+  height: 100vh;
+
+  .form {
+    display: flex;
+    flex-direction: column;
+    width: 500px;
+    height: fit-content;
+    padding: 50px;
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+    position: relative;
+    top: 25%;
+
+    .form-header {
+      display: flex;
+      margin-bottom: 20px;
+
+      .header-button {
+        flex: 1;
+        background-color: rgba(178, 190, 181, 0.15);
+
+        &:first-child {
+          margin-right: 20px;
+        }
+
+        &.active {
+          box-shadow: inset 0px 0px 5px #c1c1c1;
+        }
+      }
+    }
+
+    .label {
+      margin-bottom: 5px;
+    }
+
+    .input {
+      outline: none;
+    }
+
+    .error-msg {
+      font-size: 0.7em;
+      margin-bottom: 20px;
+      margin-top: 5px;
+      height: 15px;
+      color: var(--error);
+    }
+
+    .button {
+    }
+  }
+}

@@ -3,7 +3,7 @@ import { ClickAwayListener } from "@material-ui/core";
 import { ListAlt as ListAltIcon } from "@material-ui/icons";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
-import { ThemeAutocomplete, ThemeTextField } from "utils/commonStyles/styledComponents";
+import { ThemeAutocomplete, ThemeTextField } from "utils/commonStyles/StyledComponents";
 import EnvPopoverComponent from "components/envPopover/EnvPopover";
 
 // IMPORT ASSETS HERE

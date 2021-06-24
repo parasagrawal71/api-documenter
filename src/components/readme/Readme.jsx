@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
-import { ThemeButton } from "utils/commonStyles/styledComponents";
+import { ThemeButton } from "utils/commonStyles/StyledComponents";
 import apiService from "apis/apiService";
 import { readme } from "apis/urls";
 

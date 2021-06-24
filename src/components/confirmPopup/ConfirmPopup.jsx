@@ -2,7 +2,7 @@ import React from "react";
 import { Dialog } from "@material-ui/core";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
-import { ThemeButton } from "utils/commonStyles/styledComponents";
+import { ThemeButton } from "utils/commonStyles/StyledComponents";
 
 // IMPORT ASSETS HERE
 import appStyles from "./ConfirmPopup.module.scss";

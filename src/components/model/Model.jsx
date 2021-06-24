@@ -3,7 +3,7 @@ import { AddCircleOutlined as AddIcon } from "@material-ui/icons";
 import cx from "classnames";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
-import { ThemeButton } from "utils/commonStyles/styledComponents";
+import { ThemeButton } from "utils/commonStyles/StyledComponents";
 import AppTableComponent from "components/appTable/AppTable";
 import apiService from "apis/apiService";
 import { schema } from "apis/urls";

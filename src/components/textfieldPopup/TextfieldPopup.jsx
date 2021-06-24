@@ -3,7 +3,7 @@ import { Dialog } from "@material-ui/core";
 import cx from "classnames";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
-import { ThemeTextField, ThemeAutocomplete, ThemeButton } from "utils/commonStyles/styledComponents";
+import { ThemeTextField, ThemeAutocomplete, ThemeButton } from "utils/commonStyles/StyledComponents";
 
 // IMPORT ASSETS HERE
 import appStyles from "./TextfieldPopup.module.scss";

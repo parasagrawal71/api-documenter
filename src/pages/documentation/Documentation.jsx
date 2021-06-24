@@ -10,7 +10,7 @@ import EndpointsWrapperComponent from "components/endpointsWrapper/EndpointsWrap
 import apiService from "apis/apiService";
 import { readme, schema, apisTree } from "apis/urls";
 import { sortArrayOfObjs } from "utils/functions";
-import { ThemeSwitch } from "utils/commonStyles/styledComponents";
+import { ThemeSwitch } from "utils/commonStyles/StyledComponents";
 
 // IMPORT ASSETS HERE
 import environments from "assets/environments.json";

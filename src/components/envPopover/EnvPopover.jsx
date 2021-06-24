@@ -4,7 +4,7 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
 import { AddCircleOutlined as AddIcon, RemoveCircleOutlined as RemoveIcon } from "@material-ui/icons";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
-import { ThemeTextField } from "utils/commonStyles/styledComponents";
+import { ThemeTextField } from "utils/commonStyles/StyledComponents";
 import appStyles from "./EnvPopover.module.scss";
 
 const useStyles = makeStyles((theme) => ({

@@ -6,7 +6,7 @@ import cx from "classnames";
 import ReactHtmlParser from "react-html-parser";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
-import { ThemeTextField, ThemeCheckbox, ThemeAutocomplete } from "utils/commonStyles/styledComponents";
+import { ThemeTextField, ThemeCheckbox, ThemeAutocomplete } from "utils/commonStyles/StyledComponents";
 
 // IMPORT ASSETS HERE
 import appStyles from "./AppTable.module.scss";
