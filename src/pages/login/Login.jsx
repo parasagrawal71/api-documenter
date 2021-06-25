@@ -75,7 +75,7 @@ const Login = (props) => {
   };
 
   // COMPONENTS HERE
-  const EmailComponent = () => {
+  const emailComponent = () => {
     return (
       <ThemeTextField
         id="email"
@@ -94,7 +94,7 @@ const Login = (props) => {
     );
   };
 
-  const PasswordComponent = () => {
+  const passwordComponent = () => {
     return (
       <ThemeTextField
         id="password"
@@ -109,8 +109,7 @@ const Login = (props) => {
           },
           pattern: {
             value: mode === "register" ? PASSWORD_REGEX : "",
-            message:
-              "At least one upper case, one lower case, one digit, one special character and Minimum eight in length",
+            message: "At least one upper case, lower case, digit, special character and Minimum eight in length",
           },
         })}
         error={!!errors?.password}
@@ -121,7 +120,7 @@ const Login = (props) => {
       />
     );
   };
-  const ConfirmPasswordComponent = () => {
+  const confirmPasswordComponent = () => {
     return (
       <ThemeTextField
         id="confirmPassword"
@@ -169,11 +168,11 @@ const Login = (props) => {
           </ThemeButton>
         </section>
 
-        {showFields?.email && <EmailComponent />}
+        {showFields?.email && emailComponent()}
 
-        {showFields?.password && <PasswordComponent />}
+        {showFields?.password && passwordComponent()}
 
-        {showFields?.confirmPassword && <ConfirmPasswordComponent />}
+        {showFields?.confirmPassword && confirmPasswordComponent()}
 
         <input type="reset" ref={resetRef} style={{ display: "none" }} />
 
