@@ -94,7 +94,7 @@ export const ThemeCheckbox = styled(
 )({
   padding: 0,
   ".MuiSvgIcon-root": {
-    fill: (props) => (!props.checked && props.error ? "var(--error) !important" : ""),
+    fill: (props) => (!props?.checked && props?.error ? "var(--error) !important" : ""),
   },
 });
 

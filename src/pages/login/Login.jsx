@@ -85,7 +85,7 @@ const Login = (props) => {
           required: { value: true, message: "Required" },
           pattern: { value: EMAIL_REGEX, message: "Wrong Format" },
         })}
-        error={errors?.email}
+        error={!!errors?.email}
         className={appStyles.inputTextField}
         disabled={disableFields?.email}
         helperText={errors?.email?.message}
@@ -113,7 +113,7 @@ const Login = (props) => {
               "At least one upper case, one lower case, one digit, one special character and Minimum eight in length",
           },
         })}
-        error={errors?.password}
+        error={!!errors?.password}
         className={appStyles.inputTextField}
         disabled={disableFields?.password}
         helperText={errors?.password?.message}
@@ -136,7 +136,7 @@ const Login = (props) => {
             message: "Passwords do not match",
           },
         })}
-        error={errors?.confirmPassword}
+        error={!!errors?.confirmPassword}
         className={appStyles.inputTextField}
         disabled={disableFields?.confirmPassword}
         helperText={errors?.confirmPassword?.message}
