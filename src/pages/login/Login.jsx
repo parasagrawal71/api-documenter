@@ -77,83 +77,71 @@ const Login = (props) => {
   // COMPONENTS HERE
   const EmailComponent = () => {
     return (
-      <>
-        <label htmlFor="email" className={appStyles.label}>
-          Email
-        </label>
-        <ThemeTextField
-          id="email"
-          name="email"
-          {...register("email", {
-            required: { value: true, message: "Required" },
-            pattern: { value: EMAIL_REGEX, message: "Wrong Format" },
-          })}
-          error={errors?.email}
-          className={appStyles.input}
-          disabled={disableFields?.email}
-          helperText={errors?.email?.message}
-          isHelperText
-        />
-      </>
+      <ThemeTextField
+        id="email"
+        name="email"
+        customlabel="Email"
+        {...register("email", {
+          required: { value: true, message: "Required" },
+          pattern: { value: EMAIL_REGEX, message: "Wrong Format" },
+        })}
+        error={errors?.email}
+        className={appStyles.inputTextField}
+        disabled={disableFields?.email}
+        helperText={errors?.email?.message}
+        ishelpertext="true"
+      />
     );
   };
 
   const PasswordComponent = () => {
     return (
-      <>
-        <label htmlFor="password" className={appStyles.label}>
-          Password
-        </label>
-        <ThemeTextField
-          id="password"
-          name="password"
-          type="password"
-          {...register("password", {
-            required: { value: true, message: "Required" },
-            maxLength: {
-              value: mode === "register" ? 50 : undefined,
-              message: "Max 50 Characters",
-            },
-            pattern: {
-              value: mode === "register" ? PASSWORD_REGEX : "",
-              message:
-                "At least one upper case, one lower case, one digit, one special character and Minimum eight in length",
-            },
-          })}
-          error={errors?.password}
-          className={appStyles.input}
-          disabled={disableFields?.password}
-          helperText={errors?.password?.message}
-          isHelperText
-        />
-      </>
+      <ThemeTextField
+        id="password"
+        name="password"
+        customlabel="Password"
+        type="password"
+        {...register("password", {
+          required: { value: true, message: "Required" },
+          maxLength: {
+            value: mode === "register" ? 50 : undefined,
+            message: "Max 50 Characters",
+          },
+          pattern: {
+            value: mode === "register" ? PASSWORD_REGEX : "",
+            message:
+              "At least one upper case, one lower case, one digit, one special character and Minimum eight in length",
+          },
+        })}
+        error={errors?.password}
+        className={appStyles.inputTextField}
+        disabled={disableFields?.password}
+        helperText={errors?.password?.message}
+        ishelpertext="true"
+      />
     );
   };
   const ConfirmPasswordComponent = () => {
     return (
-      <>
-        <label htmlFor="confirmPassword" className={appStyles.label}>
-          Confirm Password
-        </label>
-        <ThemeTextField
-          id="confirmPassword"
-          name="confirmPassword"
-          type="password"
-          {...register("confirmPassword", {
-            required: { value: true, message: "Required" },
-            maxLength: { value: 50, message: "Max 50 Characters" },
-            pattern: {
-              value: new RegExp(getValues("password")),
-              message: "Passwords do not match",
-            },
-          })}
-          error={errors?.confirmPassword}
-          className={appStyles.input}
-          disabled={disableFields?.confirmPassword}
-          helperText={errors?.confirmPassword?.message}
-          isHelperText
-        />
-      </>
+      <ThemeTextField
+        id="confirmPassword"
+        name="confirmPassword"
+        customlabel="Confirm Password"
+        type="password"
+        {...register("confirmPassword", {
+          required: { value: true, message: "Required" },
+          maxLength: { value: 50, message: "Max 50 Characters" },
+          pattern: {
+            value: new RegExp(getValues("password")),
+            message: "Passwords do not match",
+          },
+        })}
+        error={errors?.confirmPassword}
+        className={appStyles.inputTextField}
+        disabled={disableFields?.confirmPassword}
+        helperText={errors?.confirmPassword?.message}
+        ishelpertext="true"
+      />
     );
   };
 
@@ -165,7 +153,7 @@ const Login = (props) => {
             className={cx(appStyles["header-button"], {
               [appStyles.active]: mode === "login",
             })}
-            variant="default"
+            variant="text"
             onClick={toggleMode}
           >
             Login
@@ -174,7 +162,7 @@ const Login = (props) => {
             className={cx(appStyles["header-button"], {
               [appStyles.active]: mode === "register",
             })}
-            variant="default"
+            variant="text"
             onClick={toggleMode}
           >
             Register
@@ -189,7 +177,7 @@ const Login = (props) => {
 
         <input type="reset" ref={resetRef} style={{ display: "none" }} />
 
-        <ThemeButton type="submit" className={appStyles.button}>
+        <ThemeButton type="submit" className={appStyles.submitBtn}>
           {mode === "login" ? "Login" : "Register"}
         </ThemeButton>
       </form>
