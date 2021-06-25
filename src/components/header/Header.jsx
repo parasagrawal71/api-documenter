@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { ClickAwayListener } from "@material-ui/core";
-import { ListAlt as ListAltIcon } from "@material-ui/icons";
+import { ListAlt as ListAltIcon, ExitToApp as LogoutIcon } from "@material-ui/icons";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
 import { ThemeAutocomplete, ThemeTextField } from "utils/commonStyles/StyledComponents";
 import EnvPopoverComponent from "components/envPopover/EnvPopover";
+import { clearSession } from "utils/cookie";
 
 // IMPORT ASSETS HERE
 import environments from "assets/environments.json";
@@ -23,6 +24,11 @@ const Header = (props) => {
 
   const handleCloseEnvPopover = () => {
     setOpenEnvPopover(null);
+  };
+
+  const logout = () => {
+    clearSession();
+    window.location.href = "/";
   };
 
   return (
@@ -61,6 +67,8 @@ const Header = (props) => {
             />
           </div>
         </ClickAwayListener>
+
+        <LogoutIcon className={appStyles["logout-btn"]} onClick={logout} />
       </section>
     </header>
   );

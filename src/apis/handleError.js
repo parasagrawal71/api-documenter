@@ -15,19 +15,31 @@ const handleError = (error) => {
   const status = error.response ? error.response.status : null;
   switch (status) {
     case NOT_FOUND:
-      return "Server could not find the requested information.";
+      // "Server could not find the requested information.";
+      return error?.response?.data;
+
     case FORBIDDEN:
-      return "FORBIDDEN";
+      // "FORBIDDEN";
+      return error?.response?.data;
+
     case UNAUTHORIZED:
-      return "UNAUTHORIZED";
+      // "UNAUTHORIZED";
+      return error?.response?.data;
+
     case BAD_REQUEST:
-      return "BAD REQUEST";
+      // "BAD REQUEST";
+      return error?.response?.data;
+
     case INTERNAL_SERVER_ERROR:
-      return "INTERNAL SERVER ERROR";
+      // "INTERNAL SERVER ERROR";
+      return error?.response?.data;
+
     case REQUEST_TIMED_OUT:
-      return "REQUEST TIMED OUT";
+      // "REQUEST TIMED OUT";
+      return error?.response?.data;
+
     default:
-      return `${error.message}`;
+      return error?.response?.data || error?.message;
   }
 };
 

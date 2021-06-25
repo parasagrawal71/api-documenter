@@ -3,6 +3,7 @@ import axios from "axios";
 // IMPORTS //
 import { SERVER_URL_LOCAL, SERVER_URL_HEROKU } from "utils/constants";
 import { getUrlParams } from "utils/functions";
+import { readCookie } from "utils/cookie";
 import { GET, POST, PUT, DELETE } from "./httpConstants";
 import handleError from "./handleError";
 
@@ -15,7 +16,11 @@ const apiService = (apiResource, body, config) => {
 
   const paramsObj = getUrlParams();
 
-  const configToRequest = { params: { serviceMID: paramsObj?.serviceMID }, ...config };
+  const configToRequest = {
+    params: { serviceMID: paramsObj?.serviceMID },
+    headers: { Authorization: `Bearer ${readCookie("token")}` },
+    ...config,
+  };
 
   switch (method.toUpperCase()) {
     case GET:
