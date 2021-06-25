@@ -39,6 +39,7 @@ const ConfirmPopup = (props) => {
 
         <ThemeButton
           issecondary="true"
+          backgroundColor="green"
           onClick={() => {
             if (confirmCallback) {
               confirmCallback();

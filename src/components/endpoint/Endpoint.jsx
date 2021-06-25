@@ -180,6 +180,7 @@ const Endpoint = (props) => {
     {
       displayName: "Name",
       key: "name",
+      required: true,
     },
     {
       displayName: "Required",
@@ -188,6 +189,7 @@ const Endpoint = (props) => {
     {
       displayName: "Description",
       key: "description",
+      required: true,
     },
     {
       displayName: "Value",
@@ -199,6 +201,7 @@ const Endpoint = (props) => {
     {
       displayName: "Name",
       key: "name",
+      required: true,
     },
     {
       displayName: "Required",
@@ -229,14 +232,16 @@ const Endpoint = (props) => {
           <ThemeAutocomplete
             options={["GET", "POST", "PUT", "DELETE", "PATCH"]}
             getOptionLabel={(option) => option || ""}
-            width="150px"
+            customStyle={{ width: "150px" }}
             renderInput={(params) => (
               <ThemeTextField
                 {...params}
-                backgroundColor="#FFFFFF"
                 InputLabelProps={{
                   // shrink: false,
                   focused: false,
+                }}
+                customStyle={{
+                  backgroundColor: "#FFFFFF",
                 }}
               />
             )}
@@ -256,7 +261,6 @@ const Endpoint = (props) => {
           value={editMode ? fieldValue : ""}
           placeholder={fieldName === "examples" ? "Example title" : capitalizeFirstLetter(fieldName)}
           multiline={isMultiline === "multiline"}
-          backgroundColor="#FFFFFF"
           onClick={(e) => e.stopPropagation()}
           onChange={(e) => {
             dispatchEndpoint({
@@ -272,6 +276,9 @@ const Endpoint = (props) => {
             });
           }}
           rows={2}
+          customStyle={{
+            backgroundColor: "#FFFFFF",
+          }}
         />
       );
     } else {
@@ -478,11 +485,11 @@ const Endpoint = (props) => {
           {!editMode && !addMode && (
             <>
               <ThemeButton
-                width="85px"
                 className={cx(appStyles["send-request-btn"], {
                   [appStyles.viewMode]: !enableEditMode,
                 })}
                 onClick={sendApiCall}
+                customStyle={{ width: "85px" }}
               >
                 Send
               </ThemeButton>
@@ -514,15 +521,15 @@ const Endpoint = (props) => {
           )}
           {enableEditMode ? (
             !editMode ? (
-              <ThemeButton width="75px" onClick={handleEditSaveBtn}>
+              <ThemeButton onClick={handleEditSaveBtn} customStyle={{ width: "75px" }}>
                 Edit
               </ThemeButton>
             ) : (
               <>
-                <ThemeButton width="85px" issecondary="true" onClick={handleCancelBtn}>
+                <ThemeButton issecondary="true" onClick={handleCancelBtn} customStyle={{ width: "85px" }}>
                   Cancel
                 </ThemeButton>
-                <ThemeButton width="75px" onClick={handleEditSaveBtn}>
+                <ThemeButton onClick={handleEditSaveBtn} customStyle={{ width: "75px" }}>
                   Save
                 </ThemeButton>
               </>

@@ -3,63 +3,98 @@ import styled from "styled-components";
 import { TextField, Checkbox, Button, Switch } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
-export const ThemeTextField = styled((props) => (
-  <TextField {...props} variant={props?.variant || "outlined"} size="small" />
-))({
-  width: (props) => (props?.width ? props.width : "100%"),
-  maxWidth: (props) => (props?.maxWidth ? props.maxWidth : "100%"),
+/* *********************************************************
+ * TextField
+ * *********************************************************
+ */
+export const ThemeTextField = styled((props) => <TextField variant="outlined" size="small" {...props} />)({
+  // .MuiTextField-root
+  width: ({ customStyle, ...props }) => customStyle?.width || "100%",
+  maxWidth: ({ customStyle, ...props }) => customStyle?.maxWidth || "100%",
+  minHeight: ({ customStyle, ...props }) => props?.isHelperText && (customStyle?.minHeight || "60px"),
+
   ".MuiOutlinedInput-root": {
     fontSize: "0.9em",
-    backgroundColor: (props) =>
+    backgroundColor: ({ customStyle, ...props }) =>
       props?.disabled
-        ? props?.disabledBgColor || "lightgrey"
-        : props?.backgroundColor
-        ? props?.backgroundColor
-        : "rgba(178, 190, 181, 0.15)",
-    borderRadius: (props) => (props?.borderRadius ? props.borderRadius : "5px"),
-    color: (props) => (props?.color ? props.color : "#000000"),
-    "& fieldset": {
-      borderWidth: 0,
-      border: (props) => (props.iserror ? "1px solid var(--error)" : ""),
-    },
-    "&:hover fieldset": {
-      border: (props) => (props.disabled ? "" : props.iserror ? "1px solid var(--error)" : "1px solid lightgrey"),
-    },
-    "&.Mui-focused fieldset": {
-      border: (props) => (props.disabled ? "" : props.iserror ? "1px solid var(--error)" : "1px solid lightgrey"),
-    },
+        ? customStyle?.disabledBgColor || "lightgrey"
+        : customStyle?.backgroundColor || "rgba(178, 190, 181, 0.15)",
+    borderRadius: ({ customStyle, ...props }) => customStyle?.borderRadius || "5px",
+    color: ({ customStyle, ...props }) => customStyle?.color || "#000000",
+    // INPUT
     input: {
-      padding: 8,
-
+      padding: ({ customStyle, ...props }) => customStyle?.padding || 8,
       "&::-webkit-calendar-picker-indicator": {
         outline: "none",
         border: "none",
       },
     },
+    // FIELDSET
+    fieldset: {
+      borderWidth: 0,
+      border: ({ customStyle, ...props }) =>
+        props?.error ? "1px solid var(--error) !important" : customStyle?.border || "",
+    },
+    "&:hover fieldset": {
+      border: ({ customStyle, ...props }) =>
+        props?.disabled ? "" : props?.error ? "1px solid var(--error)" : "1px solid lightgrey",
+    },
+    "&.Mui-focused fieldset": {
+      border: ({ customStyle, ...props }) =>
+        props?.disabled ? "" : props?.error ? "1px solid var(--error)" : "1px solid lightgrey",
+    },
   },
-  ".MuiInputBase-input.Mui-disabled": {
-    color: "#000000",
+
+  ".MuiFormHelperText-root": {
+    margin: 0,
+    fontSize: "0.7em",
+    marginTop: 1,
+    color: "grey",
+
+    "&.Mui-error": {
+      color: "var(--error)",
+    },
   },
+
+  ".MuiInputBase-input": {
+    "&.Mui-disabled": {
+      color: "#000000",
+      opacity: 0.5,
+    },
+  },
+
   ".MuiInputBase-multiline": {
     padding: 8,
   },
 });
 
+/* *********************************************************
+ * Checkbox
+ * *********************************************************
+ */
 export const ThemeCheckbox = styled((props) => (
-  <Checkbox {...props} color={props?.backgroundColor || props?.issecondary ? "secondary" : "primary"} />
+  <Checkbox color={props?.issecondary ? "secondary" : "primary"} {...props} />
 ))({
   padding: 0,
   ".MuiSvgIcon-root": {
-    fill: (props) => (!props.checked && props.iserror ? "var(--error) !important" : ""),
+    fill: (props) => (!props.checked && props.error ? "var(--error) !important" : ""),
   },
 });
 
+/* *********************************************************
+ * Switch
+ * *********************************************************
+ */
 export const ThemeSwitch = styled((props) => (
-  <Switch {...props} color={props?.backgroundColor || props?.issecondary ? "secondary" : "primary"} />
+  <Switch color={props?.issecondary ? "secondary" : "primary"} {...props} />
 ))({});
 
+/* *********************************************************
+ * Autocomplete
+ * *********************************************************
+ */
 export const ThemeAutocomplete = styled((props) => <Autocomplete {...props} />)({
-  width: (props) => (props?.width ? props.width : "100%"),
+  width: ({ customStyle, ...props }) => customStyle.width || "100%",
   ".MuiInputBase-root": {
     padding: 0,
   },
@@ -72,15 +107,14 @@ export const ThemeAutocomplete = styled((props) => <Autocomplete {...props} />)(
   },
 });
 
+/* *********************************************************
+ * Button
+ * *********************************************************
+ */
 export const ThemeButton = styled((props) => (
-  <Button
-    {...props}
-    variant={props?.variant || "contained"}
-    color={props?.backgroundColor || props?.issecondary ? "secondary" : "primary"}
-    disableTouchRipple
-  />
+  <Button variant="contained" color={props?.issecondary ? "secondary" : "primary"} disableTouchRipple {...props} />
 ))({
-  width: (props) => props?.width,
+  width: ({ customStyle, ...props }) => customStyle?.width,
   boxShadow: "none",
-  color: (props) => props?.color,
+  color: ({ customStyle, ...props }) => customStyle?.color,
 });

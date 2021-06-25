@@ -38,7 +38,7 @@ const TextfieldPopup = (props) => {
             <ThemeAutocomplete
               options={["GET", "POST", "PUT", "DELETE", "PATCH"]}
               getOptionLabel={(option) => option || ""}
-              width="200px"
+              customStyle={{ width: "200px" }}
               renderInput={(params) => (
                 <ThemeTextField
                   {...params}

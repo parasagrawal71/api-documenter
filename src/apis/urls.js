@@ -106,7 +106,7 @@ export const auth = () => ({
     endpoint: "/auth/login",
   },
   register: {
-    method: "GET",
+    method: "POST",
     endpoint: "/auth/register",
   },
 });

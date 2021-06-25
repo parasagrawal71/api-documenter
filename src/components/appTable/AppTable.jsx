@@ -84,7 +84,7 @@ const AppTable = (props) => {
               });
             }
           }}
-          iserror={tableRowData?.error?.[headerObj?.key]?.toString()}
+          error={tableRowData?.error?.[headerObj?.key]?.toString()}
           onBlur={() => {
             if (dispatchModel) {
               dispatchModel({
@@ -99,6 +99,21 @@ const AppTable = (props) => {
                 },
               });
             }
+
+            if (dispatchEndpoint) {
+              // TODO: ADD ENDPOINT FIELD VALIDATIONS
+              // dispatchEndpoint({
+              //   type: "",
+              //   payload: {
+              //     headerKey: "error",
+              //     rowIndex,
+              //     value: {
+              //       ...(tableRowData?.error || {}),
+              //       [headerKey]: headerObj?.required ? true : undefined,
+              //     },
+              //   },
+              // });
+            }
           }}
         />
       ) : fieldValue ? (
@@ -111,14 +126,14 @@ const AppTable = (props) => {
         <ThemeAutocomplete
           options={modelFieldTypes}
           getOptionLabel={(option) => option?.type || ""}
-          width="250px"
+          customStyle={{ width: "250px" }}
           renderInput={(params) => (
             <ThemeTextField
               {...params}
               InputLabelProps={{
                 focused: false,
               }}
-              iserror={tableRowData?.error?.[headerObj?.key]?.toString()}
+              error={tableRowData?.error?.[headerObj?.key]?.toString()}
               onBlur={() => {
                 if (dispatchModel) {
                   dispatchModel({
@@ -155,7 +170,6 @@ const AppTable = (props) => {
       return (
         <ThemeTextField
           disabled={headerKey === "value" && !disableValueTextbox && (editMode || addMode)}
-          disabledBgColor="rgba(178, 190, 181, 0.15)"
           value={(headerKey === "value" && !disableValueTextbox) || editMode ? fieldValue : ""}
           multiline={isMultiline === "multiline"}
           onChange={(e) => {
@@ -182,7 +196,7 @@ const AppTable = (props) => {
             }
           }}
           rows={2}
-          iserror={tableRowData?.error?.[headerObj?.key]?.toString()}
+          error={tableRowData?.error?.[headerObj?.key]?.toString()}
           onBlur={() => {
             if (dispatchModel) {
               dispatchModel({
@@ -197,6 +211,9 @@ const AppTable = (props) => {
                 },
               });
             }
+          }}
+          customStyle={{
+            disabledBgColor: "rgba(178, 190, 181, 0.15)",
           }}
         />
       );

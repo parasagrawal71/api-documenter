@@ -41,7 +41,7 @@ const Header = (props) => {
           <ThemeAutocomplete
             options={environments}
             getOptionLabel={(option) => option?.envName || ""}
-            width="250px"
+            customStyle={{ width: "250px" }}
             renderInput={(params) => (
               <ThemeTextField
                 {...params}

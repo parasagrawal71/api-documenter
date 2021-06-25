@@ -24,8 +24,10 @@ const Login = (props) => {
     getValues,
     reset,
     formState: { errors },
-  } = useForm();
+  } = useForm({ mode: "all" });
   const [mode, setMode] = useState("login");
+  const [showFields, setShowFields] = useState({ email: true, password: true });
+  const [disableFields, setDisableFields] = useState({});
 
   const login = async () => {
     const response = await apiService(auth().login, null, {
@@ -37,19 +39,34 @@ const Login = (props) => {
       setCookie("token", token, expiry);
       props?.history?.push("/dashboard");
     } else {
+      // resetForm({}, { keepValues: true, keepErrors: true });
       toast.error(response?.message);
       toast.clearWaitingQueue();
     }
   };
 
   const registerUser = async () => {
-    resetForm();
-    props?.history?.push("/dashboard");
+    const response = await apiService(auth().register); // { email: getValues("email"), password: getValues("password") }
+    if (response?.success) {
+      const { token, expiry } = response?.data;
+      resetForm();
+      // setCookie("token", token, expiry);
+      // props?.history?.push("/dashboard");
+    } else {
+      toast.error(response?.message);
+      toast.clearWaitingQueue();
+    }
   };
 
   const toggleMode = () => {
     resetForm();
-    setMode(mode === "login" ? "register" : "login");
+    const newMode = mode === "login" ? "register" : "login";
+    setMode(newMode);
+    if (newMode === "login") {
+      setShowFields({ email: true, password: true });
+    } else {
+      setShowFields({ email: true, password: true, confirmPassword: true });
+    }
   };
 
   const resetForm = () => {
@@ -66,14 +83,17 @@ const Login = (props) => {
         </label>
         <ThemeTextField
           id="email"
+          name="email"
           {...register("email", {
             required: { value: true, message: "Required" },
             pattern: { value: EMAIL_REGEX, message: "Wrong Format" },
           })}
-          iserror={errors?.email}
+          error={errors?.email}
           className={appStyles.input}
+          disabled={disableFields?.email}
+          helperText={errors?.email?.message}
+          isHelperText
         />
-        <span className={appStyles["error-msg"]}>{errors?.email && errors?.email?.message}</span>
       </>
     );
   };
@@ -86,6 +106,7 @@ const Login = (props) => {
         </label>
         <ThemeTextField
           id="password"
+          name="password"
           type="password"
           {...register("password", {
             required: { value: true, message: "Required" },
@@ -99,10 +120,12 @@ const Login = (props) => {
                 "At least one upper case, one lower case, one digit, one special character and Minimum eight in length",
             },
           })}
-          iserror={errors?.password}
+          error={errors?.password}
           className={appStyles.input}
+          disabled={disableFields?.password}
+          helperText={errors?.password?.message}
+          isHelperText
         />
-        <span className={appStyles["error-msg"]}>{errors?.password && errors?.password?.message}</span>
       </>
     );
   };
@@ -114,6 +137,7 @@ const Login = (props) => {
         </label>
         <ThemeTextField
           id="confirmPassword"
+          name="confirmPassword"
           type="password"
           {...register("confirmPassword", {
             required: { value: true, message: "Required" },
@@ -123,10 +147,12 @@ const Login = (props) => {
               message: "Passwords do not match",
             },
           })}
-          iserror={errors?.confirmPassword}
+          error={errors?.confirmPassword}
           className={appStyles.input}
+          disabled={disableFields?.confirmPassword}
+          helperText={errors?.confirmPassword?.message}
+          isHelperText
         />
-        <span className={appStyles["error-msg"]}>{errors?.confirmPassword && errors?.confirmPassword?.message}</span>
       </>
     );
   };
@@ -155,11 +181,11 @@ const Login = (props) => {
           </ThemeButton>
         </section>
 
-        <EmailComponent />
+        {showFields?.email && <EmailComponent />}
 
-        <PasswordComponent />
+        {showFields?.password && <PasswordComponent />}
 
-        {mode === "register" && <ConfirmPasswordComponent />}
+        {showFields?.confirmPassword && <ConfirmPasswordComponent />}
 
         <input type="reset" ref={resetRef} style={{ display: "none" }} />
 
