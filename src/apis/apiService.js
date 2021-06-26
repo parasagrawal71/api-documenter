@@ -4,22 +4,22 @@ import axios from "axios";
 import { SERVER_URL_LOCAL, SERVER_URL_HEROKU } from "utils/constants";
 import { getUrlParams } from "utils/functions";
 import { readCookie } from "utils/cookie";
-import { GET, POST, PUT, DELETE } from "./httpConstants";
+import { GET, POST, PUT, DELETE, PATCH } from "./httpConstants";
 import handleError from "./handleError";
 
 const request = axios.create({
   baseURL: window.location.origin?.includes("localhost") ? SERVER_URL_LOCAL : SERVER_URL_HEROKU,
 });
 
-const apiService = (apiResource, body, config) => {
+const apiService = (apiResource, body, { params, headers, ...restConfig } = {}) => {
   const { method, endpoint } = apiResource;
 
   const paramsObj = getUrlParams();
 
   const configToRequest = {
-    params: { serviceMID: paramsObj?.serviceMID },
-    headers: { Authorization: `Bearer ${readCookie("token")}` },
-    ...config,
+    params: { serviceMID: paramsObj?.serviceMID, ...(params || {}) },
+    headers: { Authorization: `Bearer ${readCookie("token")}`, ...(headers || {}) },
+    ...(restConfig || {}),
   };
 
   switch (method.toUpperCase()) {
@@ -53,6 +53,15 @@ const apiService = (apiResource, body, config) => {
     case DELETE:
       return request
         .delete(endpoint, configToRequest)
+        .then((response) => {
+          //   console.log("delete response:- ", response);
+          return response?.data;
+        })
+        .catch((e) => handleError(e));
+
+    case PATCH:
+      return request
+        .patch(endpoint, body, configToRequest)
         .then((response) => {
           //   console.log("delete response:- ", response);
           return response?.data;

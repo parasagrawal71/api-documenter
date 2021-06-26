@@ -48,12 +48,19 @@ const Login = (props) => {
       setCookie("token", token, expiry);
       props?.history?.push("/dashboard");
     } else {
+      if (response?.errorCode === "PASSWORD_NOT_SET") {
+        setMode("login");
+        setSubmitBtnText({ id: "set_password", value: "Set Password" });
+        setShowFields({ email: true, password: true, confirmPassword: true });
+        setDisableFields({ email: true });
+        setShowGoogleBtn(false);
+      }
       toast.error(response?.message);
       toast.clearWaitingQueue();
     }
   };
 
-  const registerUser = async () => {
+  const backupRegisterUser = async () => {
     if (submitBtnText?.id === "send_otp") {
       const response = await apiService(auth().register, {
         email: getValues("email"),
@@ -83,21 +90,47 @@ const Login = (props) => {
         toast.error(response?.message);
         toast.clearWaitingQueue();
       }
-    } else if (submitBtnText?.id === "set_password") {
-      const response = await apiService(auth().setPassword, {
-        email: getValues("email"),
-        password: getValues("password"),
-      });
-      if (response?.success) {
-        toast.success(response?.message);
-        const { token, expiry } = response?.data;
-        setCookie("token", token, expiry);
-        props?.history?.push("/dashboard");
+    }
+  };
+
+  const registerUser = async () => {
+    const response = await apiService(auth().register, {
+      email: getValues("email"),
+      password: getValues("password"),
+    });
+    if (response?.success) {
+      toast.success(response?.message);
+      resetForm();
+      setMode("login");
+      setSubmitBtnText({ id: "login", value: "Login" });
+      setShowFields({ email: true, password: true });
+      setShowGoogleBtn(true);
+    } else {
+      if (response?.message === "Already registered") {
         resetForm();
-      } else {
-        toast.error(response?.message);
-        toast.clearWaitingQueue();
+        setMode("login");
+        setSubmitBtnText({ id: "login", value: "Login" });
+        setShowFields({ email: true, password: true });
+        setShowGoogleBtn(true);
       }
+      toast.error(response?.message);
+      toast.clearWaitingQueue();
+    }
+  };
+
+  const handleSetPassword = async () => {
+    const response = await apiService(auth().setPassword, null, {
+      params: { email: getValues("email"), password: getValues("password") },
+    });
+    if (response?.success) {
+      toast.success(response?.message);
+      const { token, expiry } = response?.data;
+      setCookie("token", token, expiry);
+      props?.history?.push("/dashboard");
+      resetForm();
+    } else {
+      toast.error(response?.message);
+      toast.clearWaitingQueue();
     }
   };
 
@@ -120,10 +153,11 @@ const Login = (props) => {
     if (newMode === "login") {
       setSubmitBtnText({ id: "login", value: "Login" });
       setShowFields({ email: true, password: true });
+      setShowGoogleBtn(true);
     } else {
-      setSubmitBtnText({ id: "send_otp", value: "Send OTP" });
-      setShowFields({ email: true, otp: true });
-      setDisableFields({ otp: true });
+      setSubmitBtnText({ id: "register", value: "Register" });
+      setShowFields({ email: true, password: true, confirmPassword: true });
+      setShowGoogleBtn(false);
     }
   };
 
@@ -154,6 +188,20 @@ const Login = (props) => {
     }
   };
 
+  const handleSubmitBtn = () => {
+    if (mode === "login") {
+      if (submitBtnText?.id === "set_password") {
+        handleSetPassword();
+      }
+
+      if (submitBtnText?.id === "login") {
+        login();
+      }
+    } else {
+      registerUser();
+    }
+  };
+
   // COMPONENTS HERE
   const emailComponent = () => {
     return (
@@ -161,10 +209,9 @@ const Login = (props) => {
         id="email"
         name="email"
         customlabel="Email"
-        type="email"
         {...register("email", {
           required: { value: requiredFields?.email, message: "Required" },
-          pattern: { value: EMAIL_REGEX, message: "Wrong Format" },
+          pattern: { value: EMAIL_REGEX, message: "Invalid Email" },
         })}
         error={!!errors?.email}
         className={appStyles.inputTextField}
@@ -209,7 +256,7 @@ const Login = (props) => {
           required: { value: requiredFields?.password, message: "Required" },
           pattern: {
             value: mode === "register" ? PASSWORD_REGEX : "",
-            message: "At least one upper case, lower case, digit, special character and Minimum eight in length",
+            message: "At least one upper case, lower case, digit, special character and minimum eight in length",
           },
         })}
         error={!!errors?.password}
@@ -264,7 +311,7 @@ const Login = (props) => {
 
   return (
     <section className={appStyles["main-cnt"]}>
-      <form onSubmit={handleSubmit(mode === "login" ? login : registerUser)} className={appStyles.form}>
+      <form onSubmit={handleSubmit(handleSubmitBtn)} className={appStyles.form}>
         <section className={appStyles["form-header"]}>
           <ThemeButton
             className={cx(appStyles["header-button"], {

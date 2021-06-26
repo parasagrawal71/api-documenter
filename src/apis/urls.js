@@ -109,21 +109,21 @@ export const auth = () => ({
     method: "GET",
     endpoint: "/auth/google-login",
   },
+  verifyEmail: {
+    method: "GET",
+    endpoint: "/auth/verify-email",
+  },
   register: {
     method: "POST",
     endpoint: "/auth/register",
-  },
-  verifyEmail: {
-    method: "PATCH",
-    endpoint: "/auth/verify-email",
   },
   setPassword: {
     method: "PATCH",
     endpoint: "/auth/set-password",
   },
-  resendOtp: {
+  forgotPassword: {
     method: "PATCH",
-    endpoint: "/auth/resend-otp",
+    endpoint: "/auth/forgot-password",
   },
 });
 // ****************************************************************************************** //
