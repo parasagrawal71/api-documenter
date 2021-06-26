@@ -105,6 +105,10 @@ export const auth = () => ({
     method: "GET",
     endpoint: "/auth/login",
   },
+  googleLogin: {
+    method: "GET",
+    endpoint: "/auth/google-login",
+  },
   register: {
     method: "POST",
     endpoint: "/auth/register",

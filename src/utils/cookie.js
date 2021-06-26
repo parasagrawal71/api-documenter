@@ -7,7 +7,7 @@ import { ENCRYPTION_KEY } from "config";
  * @param {*} cvalue cookie value
  */
 export const setCookie = (cname, cvalue, expiry) => {
-  if (cname === "token") {
+  if (cname === "token" && cvalue) {
     cvalue = CryptoJS.AES.encrypt(cvalue, ENCRYPTION_KEY).toString();
   }
 

@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import cx from "classnames";
 import { toast } from "react-toastify";
+import GoogleLogin from "react-google-login";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
 import { EMAIL_REGEX, PASSWORD_REGEX, NUMBERS_REGEX } from "utils/constants";
@@ -10,6 +11,7 @@ import apiService from "apis/apiService";
 import { auth } from "apis/urls";
 import { setCookie } from "utils/cookie";
 import { startCountDown } from "utils/functions";
+import { GOOGLE_CLIENT_ID } from "config";
 
 // IMPORT ASSETS HERE
 import appStyles from "./Login.module.scss";
@@ -34,6 +36,7 @@ const Login = (props) => {
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [showResendOtp, setShowResendOtp] = useState(false);
   const [timer, setTimer] = useState();
+  const [showGoogleBtn, setShowGoogleBtn] = useState(true);
 
   const login = async () => {
     const response = await apiService(auth().login, null, {
@@ -127,6 +130,28 @@ const Login = (props) => {
   const resetForm = () => {
     reset();
     resetRef?.current?.click();
+  };
+
+  const onGoogleResponse = async (googleResponse) => {
+    if (googleResponse?.tokenObj?.id_token) {
+      const { id_token: idToken, expires_at: expiresAt } = googleResponse?.tokenObj;
+
+      const response = await apiService(auth().googleLogin, null, {
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+        },
+      });
+      if (response?.success) {
+        setCookie("token", idToken, expiresAt * 1000);
+        props?.history?.push("/dashboard");
+      } else {
+        toast.error(response?.message);
+        toast.clearWaitingQueue();
+      }
+    } else {
+      toast.error(googleResponse?.details);
+      toast.clearWaitingQueue();
+    }
   };
 
   // COMPONENTS HERE
@@ -223,6 +248,20 @@ const Login = (props) => {
     );
   };
 
+  const googleLoginButton = () => {
+    return (
+      <GoogleLogin
+        clientId={GOOGLE_CLIENT_ID}
+        scope="profile email"
+        buttonText="Login with Google"
+        onSuccess={onGoogleResponse}
+        onFailure={onGoogleResponse}
+        cookiePolicy="single_host_origin"
+        className={appStyles["google-login"]}
+      />
+    );
+  };
+
   return (
     <section className={appStyles["main-cnt"]}>
       <form onSubmit={handleSubmit(mode === "login" ? login : registerUser)} className={appStyles.form}>
@@ -260,6 +299,8 @@ const Login = (props) => {
         <ThemeButton type="submit" className={appStyles.submitBtn}>
           {submitBtnText?.value}
         </ThemeButton>
+
+        {showGoogleBtn && googleLoginButton()}
 
         <div className={appStyles.footer}>
           {showForgotPassword && <span className={appStyles["forgot-pwd"]}>Forgot your password ?</span>}

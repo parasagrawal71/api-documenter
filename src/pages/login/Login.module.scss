@@ -37,6 +37,25 @@
     }
 
     .submitBtn {
+      margin-bottom: 20px;
+      height: 40px;
+    }
+
+    .google-login {
+      background-color: var(--primary) !important;
+      color: white !important;
+      border-radius: 4px !important;
+      height: 40px !important;
+      display: flex;
+      justify-content: center;
+
+      div {
+        background-color: transparent !important;
+      }
+
+      &:hover {
+       background-color: rgba(53, 57, 70, 0.9) !important;
+      }
     }
 
     .footer {
