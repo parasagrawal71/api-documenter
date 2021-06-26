@@ -109,5 +109,17 @@ export const auth = () => ({
     method: "POST",
     endpoint: "/auth/register",
   },
+  verifyEmail: {
+    method: "PATCH",
+    endpoint: "/auth/verify-email",
+  },
+  setPassword: {
+    method: "PATCH",
+    endpoint: "/auth/set-password",
+  },
+  resendOtp: {
+    method: "PATCH",
+    endpoint: "/auth/resend-otp",
+  },
 });
 // ****************************************************************************************** //

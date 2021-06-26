@@ -76,3 +76,26 @@ export const getUrlParams = () => {
   }
   return paramsObj || {};
 };
+
+export const startCountDown = (duration, setTimer, onCompleteCallback) => {
+  // Duration (in minutes)
+  let timer = duration * 60;
+  let minutes;
+  let seconds;
+  const timerInterval = setInterval(() => {
+    minutes = parseInt(timer / 60, 10);
+    seconds = parseInt(timer % 60, 10);
+
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    seconds = seconds < 10 ? "0" + seconds : seconds;
+
+    setTimer(minutes + ":" + seconds);
+    --timer;
+
+    if (timer < 0) {
+      setTimer(null);
+      onCompleteCallback?.();
+      clearInterval(timerInterval);
+    }
+  }, 1000);
+};

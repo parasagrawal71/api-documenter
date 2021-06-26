@@ -38,5 +38,30 @@
 
     .submitBtn {
     }
+
+    .footer {
+      margin-top: 20px;
+      font-size: 0.8em;
+      display: flex;
+      justify-content: center;
+
+      .forgot-pwd {
+        cursor: pointer;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+
+      .resend-otp {
+        &:hover {
+          text-decoration: underline;
+        }
+
+        &.active {
+          cursor: pointer;
+        }
+      }
+    }
   }
 }

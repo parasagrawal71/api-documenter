@@ -4,11 +4,12 @@ import cx from "classnames";
 import { toast } from "react-toastify";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
-import { EMAIL_REGEX, PASSWORD_REGEX } from "utils/constants";
+import { EMAIL_REGEX, PASSWORD_REGEX, NUMBERS_REGEX } from "utils/constants";
 import { ThemeTextField, ThemeButton } from "utils/commonStyles/StyledComponents";
 import apiService from "apis/apiService";
 import { auth } from "apis/urls";
 import { setCookie } from "utils/cookie";
+import { startCountDown } from "utils/functions";
 
 // IMPORT ASSETS HERE
 import appStyles from "./Login.module.scss";
@@ -28,6 +29,11 @@ const Login = (props) => {
   const [mode, setMode] = useState("login");
   const [showFields, setShowFields] = useState({ email: true, password: true });
   const [disableFields, setDisableFields] = useState({});
+  const [submitBtnText, setSubmitBtnText] = useState({ id: "login", value: "Login" });
+  const [requiredFields, setRequiredFields] = useState({ email: true, password: true, confirmPassword: true });
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [showResendOtp, setShowResendOtp] = useState(false);
+  const [timer, setTimer] = useState();
 
   const login = async () => {
     const response = await apiService(auth().login, null, {
@@ -39,19 +45,65 @@ const Login = (props) => {
       setCookie("token", token, expiry);
       props?.history?.push("/dashboard");
     } else {
-      // resetForm({}, { keepValues: true, keepErrors: true });
       toast.error(response?.message);
       toast.clearWaitingQueue();
     }
   };
 
   const registerUser = async () => {
-    const response = await apiService(auth().register); // { email: getValues("email"), password: getValues("password") }
+    if (submitBtnText?.id === "send_otp") {
+      const response = await apiService(auth().register, {
+        email: getValues("email"),
+      });
+      if (response?.success) {
+        toast.success(response?.message);
+        setDisableFields({ email: true });
+        setRequiredFields({ otp: true });
+        setSubmitBtnText({ id: "verify_email", value: "Verify Email" });
+        setShowResendOtp(true);
+        startCountDown(1, setTimer);
+      } else {
+        toast.error(response?.message);
+        toast.clearWaitingQueue();
+      }
+    } else if (submitBtnText?.id === "verify_email") {
+      const response = await apiService(auth().verifyEmail, {
+        email: getValues("email"),
+        otp: getValues("otp"),
+      });
+      if (response?.success) {
+        toast.success(response?.message);
+        setShowFields({ password: true, confirmPassword: true });
+        setRequiredFields({ password: true, confirmPassword: true });
+        setSubmitBtnText({ id: "set_password", value: "Set Password" });
+      } else {
+        toast.error(response?.message);
+        toast.clearWaitingQueue();
+      }
+    } else if (submitBtnText?.id === "set_password") {
+      const response = await apiService(auth().setPassword, {
+        email: getValues("email"),
+        password: getValues("password"),
+      });
+      if (response?.success) {
+        toast.success(response?.message);
+        const { token, expiry } = response?.data;
+        setCookie("token", token, expiry);
+        props?.history?.push("/dashboard");
+        resetForm();
+      } else {
+        toast.error(response?.message);
+        toast.clearWaitingQueue();
+      }
+    }
+  };
+
+  const handleResendOtp = async () => {
+    const response = await apiService(auth().resendOtp, {
+      email: getValues("email"),
+    });
     if (response?.success) {
-      const { token, expiry } = response?.data;
-      resetForm();
-      // setCookie("token", token, expiry);
-      // props?.history?.push("/dashboard");
+      toast.success(response?.message);
     } else {
       toast.error(response?.message);
       toast.clearWaitingQueue();
@@ -63,9 +115,12 @@ const Login = (props) => {
     const newMode = mode === "login" ? "register" : "login";
     setMode(newMode);
     if (newMode === "login") {
+      setSubmitBtnText({ id: "login", value: "Login" });
       setShowFields({ email: true, password: true });
     } else {
-      setShowFields({ email: true, password: true, confirmPassword: true });
+      setSubmitBtnText({ id: "send_otp", value: "Send OTP" });
+      setShowFields({ email: true, otp: true });
+      setDisableFields({ otp: true });
     }
   };
 
@@ -81,8 +136,9 @@ const Login = (props) => {
         id="email"
         name="email"
         customlabel="Email"
+        type="email"
         {...register("email", {
-          required: { value: true, message: "Required" },
+          required: { value: requiredFields?.email, message: "Required" },
           pattern: { value: EMAIL_REGEX, message: "Wrong Format" },
         })}
         error={!!errors?.email}
@@ -90,6 +146,29 @@ const Login = (props) => {
         disabled={disableFields?.email}
         helperText={errors?.email?.message}
         ishelpertext="true"
+      />
+    );
+  };
+
+  const otpComponent = () => {
+    return (
+      <ThemeTextField
+        id="otp"
+        name="otp"
+        customlabel="Otp"
+        {...register("otp", {
+          required: { value: requiredFields?.otp, message: "Required" },
+          pattern: {
+            value: mode === "register" ? NUMBERS_REGEX : "",
+            message: "Numbers only",
+          },
+        })}
+        error={!!errors?.otp}
+        className={appStyles.inputTextField}
+        disabled={disableFields?.otp}
+        helperText={errors?.otp?.message}
+        ishelpertext="true"
+        inputProps={{ maxLength: 4 }}
       />
     );
   };
@@ -102,11 +181,7 @@ const Login = (props) => {
         customlabel="Password"
         type="password"
         {...register("password", {
-          required: { value: true, message: "Required" },
-          maxLength: {
-            value: mode === "register" ? 50 : undefined,
-            message: "Max 50 Characters",
-          },
+          required: { value: requiredFields?.password, message: "Required" },
           pattern: {
             value: mode === "register" ? PASSWORD_REGEX : "",
             message: "At least one upper case, lower case, digit, special character and Minimum eight in length",
@@ -117,9 +192,12 @@ const Login = (props) => {
         disabled={disableFields?.password}
         helperText={errors?.password?.message}
         ishelpertext="true"
+        autoComplete="new-password"
+        inputProps={{ maxLength: 50 }}
       />
     );
   };
+
   const confirmPasswordComponent = () => {
     return (
       <ThemeTextField
@@ -128,8 +206,7 @@ const Login = (props) => {
         customlabel="Confirm Password"
         type="password"
         {...register("confirmPassword", {
-          required: { value: true, message: "Required" },
-          maxLength: { value: 50, message: "Max 50 Characters" },
+          required: { value: requiredFields?.confirmPassword, message: "Required" },
           pattern: {
             value: new RegExp(getValues("password")),
             message: "Passwords do not match",
@@ -140,6 +217,8 @@ const Login = (props) => {
         disabled={disableFields?.confirmPassword}
         helperText={errors?.confirmPassword?.message}
         ishelpertext="true"
+        autoComplete="new-password"
+        inputProps={{ maxLength: 50 }}
       />
     );
   };
@@ -174,11 +253,33 @@ const Login = (props) => {
 
         {showFields?.confirmPassword && confirmPasswordComponent()}
 
+        {showFields?.otp && otpComponent()}
+
         <input type="reset" ref={resetRef} style={{ display: "none" }} />
 
         <ThemeButton type="submit" className={appStyles.submitBtn}>
-          {mode === "login" ? "Login" : "Register"}
+          {submitBtnText?.value}
         </ThemeButton>
+
+        <div className={appStyles.footer}>
+          {showForgotPassword && <span className={appStyles["forgot-pwd"]}>Forgot your password ?</span>}
+          {showResendOtp && (
+            <>
+              <span
+                className={cx(appStyles["resend-otp"], {
+                  [appStyles.active]: !timer,
+                })}
+                onClick={handleResendOtp}
+                onKeyDown={() => {}}
+                role="button"
+                tabIndex="0"
+              >
+                Resend OTP
+              </span>
+              {timer && <span>&nbsp;in {timer}</span>}
+            </>
+          )}
+        </div>
       </form>
     </section>
   );
