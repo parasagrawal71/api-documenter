@@ -22,12 +22,8 @@
         flex: 1;
         background-color: rgba(178, 190, 181, 0.15);
 
-        &:first-child {
-          margin-right: 20px;
-        }
-
         &.active {
-          box-shadow: inset 0px 0px 5px #c1c1c1;
+          box-shadow: inset 0px 5px 10px #c1c1c1;
         }
       }
     }
@@ -49,12 +45,16 @@
       display: flex;
       justify-content: center;
 
+      img {
+        margin-right: 10px;
+      }
+
       div {
         background-color: transparent !important;
       }
 
       &:hover {
-       background-color: rgba(53, 57, 70, 0.9) !important;
+        background-color: rgba(53, 57, 70, 0.9) !important;
       }
     }
 

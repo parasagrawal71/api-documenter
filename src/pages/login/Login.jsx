@@ -14,6 +14,7 @@ import { startCountDown } from "utils/functions";
 import { GOOGLE_CLIENT_ID } from "config";
 
 // IMPORT ASSETS HERE
+import googleIcon from "assets/images/google-icon.svg";
 import appStyles from "./Login.module.scss";
 
 const Login = (props) => {
@@ -298,13 +299,21 @@ const Login = (props) => {
   const googleLoginButton = () => {
     return (
       <GoogleLogin
+        render={(renderProps) => (
+          <ThemeButton
+            onClick={renderProps.onClick}
+            disabled={renderProps.disabled}
+            className={appStyles["google-login"]}
+          >
+            <img src={googleIcon} alt="Google icon" />
+            <span>Login with Google</span>
+          </ThemeButton>
+        )}
         clientId={GOOGLE_CLIENT_ID}
         scope="profile email"
-        buttonText="Login with Google"
         onSuccess={onGoogleResponse}
         onFailure={onGoogleResponse}
         cookiePolicy="single_host_origin"
-        className={appStyles["google-login"]}
       />
     );
   };
