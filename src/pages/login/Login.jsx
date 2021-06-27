@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import cx from "classnames";
 import { toast } from "react-toastify";
@@ -29,17 +29,21 @@ const Login = (props) => {
     reset,
     formState: { errors },
   } = useForm({ mode: "all" });
-  const [mode, setMode] = useState("login");
-  const [showFields, setShowFields] = useState({ email: true, password: true });
+  const [tab, setTab] = useState("login");
+  const [showFields, setShowFields] = useState({});
   const [disableFields, setDisableFields] = useState({});
-  const [submitBtnText, setSubmitBtnText] = useState({ id: "login", value: "Login" });
-  const [requiredFields, setRequiredFields] = useState({ email: true, password: true, confirmPassword: true });
-  const [showForgotPassword, setShowForgotPassword] = useState(true);
+  const [submitButton, setSubmitButton] = useState({});
+  const [requiredFields, setRequiredFields] = useState({});
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [showResendOtp, setShowResendOtp] = useState(false);
   const [timer, setTimer] = useState(null);
-  const [showGoogleBtn, setShowGoogleBtn] = useState(true);
+  const [showGoogleBtn, setShowGoogleBtn] = useState(false);
   const [pwdPatternValidation, setPwdPatternValidation] = useState(false);
   const [loaders, setLoaders] = useState({});
+
+  useEffect(() => {
+    modifyStates("LOGIN");
+  }, []);
 
   const login = async () => {
     setLoaders({ submit: true });
@@ -54,10 +58,11 @@ const Login = (props) => {
       props?.history?.push("/dashboard");
     } else {
       if (response?.errorCode === "PASSWORD_NOT_SET") {
-        setMode("login");
-        setSubmitBtnText({ id: "set_password", value: "Set Password" });
+        setTab("login");
+        setSubmitButton({ id: "set_password", value: "Set Password" });
         setPwdPatternValidation(true);
         setShowFields({ email: true, password: true, confirmPassword: true });
+        setRequiredFields({ email: true, password: true, confirmPassword: true });
         setDisableFields({ email: true });
         setShowGoogleBtn(false);
       }
@@ -76,19 +81,11 @@ const Login = (props) => {
     if (response?.success) {
       toast.success(response?.message);
       resetForm();
-      setMode("login");
-      setSubmitBtnText({ id: "login", value: "Login" });
-      setShowFields({ email: true, password: true });
-      setShowGoogleBtn(true);
-      setPwdPatternValidation(false);
+      modifyStates("LOGIN");
     } else {
       if (response?.error?.code === "ALREADY_REGISTERED") {
         resetForm();
-        setMode("login");
-        setSubmitBtnText({ id: "login", value: "Login" });
-        setShowFields({ email: true, password: true });
-        setShowGoogleBtn(true);
-        setPwdPatternValidation(false);
+        modifyStates("LOGIN");
       }
       toast.error(response?.message);
       toast.clearWaitingQueue();
@@ -125,12 +122,7 @@ const Login = (props) => {
     });
     if (response?.success) {
       toast.success(response?.message);
-      setShowFields({ password: true, confirmPassword: true });
-      setRequiredFields({ password: true, confirmPassword: true });
-      setSubmitBtnText({ id: "set_password", value: "Set Password" });
-      setPwdPatternValidation(true);
-      setTimer(null);
-      setShowResendOtp(false);
+      modifyStates("SET_PASSWORD");
     } else {
       toast.error(response?.message);
       toast.clearWaitingQueue();
@@ -145,11 +137,7 @@ const Login = (props) => {
     });
     if (response?.success) {
       toast.success(response?.message);
-      setShowFields({ email: true, otp: true });
-      setRequiredFields({ email: true, otp: true });
-      setSubmitBtnText({ id: "verify_email", value: "Verify Email" });
-      setDisableFields({ email: true });
-      setShowResendOtp(true);
+      modifyStates("VERIFY_EMAIL");
       startCountDown(1, setTimer);
     } else {
       toast.error(response?.message);
@@ -159,30 +147,17 @@ const Login = (props) => {
   };
 
   const handleForgotPassword = async () => {
-    setShowFields({ email: true });
-    setRequiredFields({ email: true });
-    setSubmitBtnText({ id: "send_otp", value: "Send OTP" });
-    setShowGoogleBtn(false);
-    setShowForgotPassword(false);
+    resetForm();
+    modifyStates("SEND_OTP");
   };
 
   const toggleMode = (newMode) => {
     resetForm();
-    setMode(newMode);
+    setTab(newMode);
     if (newMode === "login") {
-      setSubmitBtnText({ id: "login", value: "Login" });
-      setShowFields({ email: true, password: true });
-      setShowGoogleBtn(true);
-      setShowForgotPassword(true);
-      setPwdPatternValidation(false);
-      setDisableFields({});
+      modifyStates("LOGIN");
     } else {
-      setSubmitBtnText({ id: "register", value: "Register" });
-      setShowFields({ email: true, password: true, confirmPassword: true });
-      setShowGoogleBtn(false);
-      setShowForgotPassword(false);
-      setPwdPatternValidation(true);
-      setDisableFields({});
+      modifyStates("REGISTER");
     }
   };
 
@@ -217,24 +192,82 @@ const Login = (props) => {
   };
 
   const handleSubmitBtn = () => {
-    if (mode === "login") {
-      if (submitBtnText?.id === "set_password") {
+    if (tab === "login") {
+      if (submitButton?.id === "set_password") {
         handleSetPassword();
       }
 
-      if (submitBtnText?.id === "login") {
+      if (submitButton?.id === "login") {
         login();
       }
 
-      if (submitBtnText?.id === "send_otp") {
+      if (submitButton?.id === "send_otp") {
         sendOtpToEmail();
       }
 
-      if (submitBtnText?.id === "verify_email") {
+      if (submitButton?.id === "verify_email") {
         verifyEmailAdress();
       }
     } else {
       registerUser();
+    }
+  };
+
+  const modifyStates = (mode) => {
+    if (mode === "LOGIN") {
+      setTab("login");
+      setSubmitButton({ id: "login", value: "Login" });
+      setShowFields({ email: true, password: true });
+      setRequiredFields({ email: true, password: true });
+      setDisableFields({});
+      setShowGoogleBtn(true);
+      setShowForgotPassword(true);
+      setShowResendOtp(false);
+      setTimer(null);
+      setPwdPatternValidation(false);
+    } else if (mode === "REGISTER") {
+      setTab("register");
+      setSubmitButton({ id: "register", value: "Register" });
+      setShowFields({ email: true, password: true, confirmPassword: true });
+      setRequiredFields({ email: true, password: true, confirmPassword: true });
+      setDisableFields({});
+      setShowGoogleBtn(false);
+      setShowForgotPassword(false);
+      setShowResendOtp(false);
+      setTimer(null);
+      setPwdPatternValidation(true);
+    } else if (mode === "SET_PASSWORD") {
+      setTab("login");
+      setSubmitButton({ id: "set_password", value: "Set Password" });
+      setShowFields({ email: true, password: true, confirmPassword: true });
+      setRequiredFields({ email: true, password: true, confirmPassword: true });
+      setDisableFields({ email: true });
+      setShowGoogleBtn(false);
+      setShowForgotPassword(false);
+      setShowResendOtp(false);
+      setTimer(null);
+      setPwdPatternValidation(true);
+    } else if (mode === "SEND_OTP") {
+      setTab("login");
+      setSubmitButton({ id: "send_otp", value: "Send OTP" });
+      setShowFields({ email: true });
+      setRequiredFields({ email: true });
+      setDisableFields({});
+      setShowGoogleBtn(false);
+      setShowForgotPassword(false);
+      setShowResendOtp(false);
+      setTimer(null);
+      setPwdPatternValidation(false);
+    } else if (mode === "VERIFY_EMAIL") {
+      setTab("login");
+      setSubmitButton({ id: "verify_email", value: "Verify Email" });
+      setShowFields({ email: true, otp: true });
+      setRequiredFields({ email: true, otp: true });
+      setDisableFields({ email: true });
+      setShowGoogleBtn(false);
+      setShowForgotPassword(false);
+      setShowResendOtp(true);
+      setTimer("01:00");
     }
   };
 
@@ -267,7 +300,7 @@ const Login = (props) => {
         {...register("otp", {
           required: { value: requiredFields?.otp, message: "Required" },
           pattern: {
-            value: mode === "register" ? NUMBERS_REGEX : "",
+            value: tab === "register" ? NUMBERS_REGEX : "",
             message: "Numbers only",
           },
         })}
@@ -360,7 +393,7 @@ const Login = (props) => {
         <section className={appStyles["form-header"]}>
           <ThemeButton
             className={cx(appStyles["header-button"], {
-              [appStyles.active]: mode === "login",
+              [appStyles.active]: tab === "login",
             })}
             variant="text"
             onClick={() => toggleMode("login")}
@@ -369,7 +402,7 @@ const Login = (props) => {
           </ThemeButton>
           <ThemeButton
             className={cx(appStyles["header-button"], {
-              [appStyles.active]: mode === "register",
+              [appStyles.active]: tab === "register",
             })}
             variant="text"
             onClick={() => toggleMode("register")}
@@ -389,7 +422,7 @@ const Login = (props) => {
         <input type="reset" ref={resetRef} style={{ display: "none" }} />
 
         <ThemeButton type="submit" className={appStyles.submitBtn} loader={String(loaders?.submit || false)}>
-          {submitBtnText?.value}
+          {submitButton?.value}
         </ThemeButton>
 
         {showGoogleBtn && googleLoginButton()}
