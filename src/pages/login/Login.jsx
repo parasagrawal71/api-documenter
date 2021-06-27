@@ -34,12 +34,15 @@ const Login = (props) => {
   const [disableFields, setDisableFields] = useState({});
   const [submitBtnText, setSubmitBtnText] = useState({ id: "login", value: "Login" });
   const [requiredFields, setRequiredFields] = useState({ email: true, password: true, confirmPassword: true });
-  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(true);
   const [showResendOtp, setShowResendOtp] = useState(false);
-  const [timer, setTimer] = useState();
+  const [timer, setTimer] = useState(null);
   const [showGoogleBtn, setShowGoogleBtn] = useState(true);
+  const [pwdPatternValidation, setPwdPatternValidation] = useState(false);
+  const [loaders, setLoaders] = useState({});
 
   const login = async () => {
+    setLoaders({ submit: true });
     const response = await apiService(auth().login, null, {
       params: { email: getValues("email"), password: getValues("password") },
     });
@@ -47,11 +50,13 @@ const Login = (props) => {
       const { token, expiry } = response?.data;
       resetForm();
       setCookie("token", token, expiry);
+      setCookie("tokenProvider", "documenter");
       props?.history?.push("/dashboard");
     } else {
       if (response?.errorCode === "PASSWORD_NOT_SET") {
         setMode("login");
         setSubmitBtnText({ id: "set_password", value: "Set Password" });
+        setPwdPatternValidation(true);
         setShowFields({ email: true, password: true, confirmPassword: true });
         setDisableFields({ email: true });
         setShowGoogleBtn(false);
@@ -59,42 +64,11 @@ const Login = (props) => {
       toast.error(response?.message);
       toast.clearWaitingQueue();
     }
-  };
-
-  const backupRegisterUser = async () => {
-    if (submitBtnText?.id === "send_otp") {
-      const response = await apiService(auth().register, {
-        email: getValues("email"),
-      });
-      if (response?.success) {
-        toast.success(response?.message);
-        setDisableFields({ email: true });
-        setRequiredFields({ otp: true });
-        setSubmitBtnText({ id: "verify_email", value: "Verify Email" });
-        setShowResendOtp(true);
-        startCountDown(1, setTimer);
-      } else {
-        toast.error(response?.message);
-        toast.clearWaitingQueue();
-      }
-    } else if (submitBtnText?.id === "verify_email") {
-      const response = await apiService(auth().verifyEmail, {
-        email: getValues("email"),
-        otp: getValues("otp"),
-      });
-      if (response?.success) {
-        toast.success(response?.message);
-        setShowFields({ password: true, confirmPassword: true });
-        setRequiredFields({ password: true, confirmPassword: true });
-        setSubmitBtnText({ id: "set_password", value: "Set Password" });
-      } else {
-        toast.error(response?.message);
-        toast.clearWaitingQueue();
-      }
-    }
+    setLoaders({ submit: false });
   };
 
   const registerUser = async () => {
+    setLoaders({ submit: true });
     const response = await apiService(auth().register, {
       email: getValues("email"),
       password: getValues("password"),
@@ -106,20 +80,24 @@ const Login = (props) => {
       setSubmitBtnText({ id: "login", value: "Login" });
       setShowFields({ email: true, password: true });
       setShowGoogleBtn(true);
+      setPwdPatternValidation(false);
     } else {
-      if (response?.message === "Already registered") {
+      if (response?.error?.code === "ALREADY_REGISTERED") {
         resetForm();
         setMode("login");
         setSubmitBtnText({ id: "login", value: "Login" });
         setShowFields({ email: true, password: true });
         setShowGoogleBtn(true);
+        setPwdPatternValidation(false);
       }
       toast.error(response?.message);
       toast.clearWaitingQueue();
     }
+    setLoaders({ submit: false });
   };
 
   const handleSetPassword = async () => {
+    setLoaders({ submit: true });
     const response = await apiService(auth().setPassword, null, {
       params: { email: getValues("email"), password: getValues("password") },
     });
@@ -127,38 +105,84 @@ const Login = (props) => {
       toast.success(response?.message);
       const { token, expiry } = response?.data;
       setCookie("token", token, expiry);
+      setCookie("tokenProvider", "documenter");
       props?.history?.push("/dashboard");
       resetForm();
     } else {
       toast.error(response?.message);
       toast.clearWaitingQueue();
     }
+    setLoaders({ submit: false });
   };
 
-  const handleResendOtp = async () => {
-    const response = await apiService(auth().resendOtp, {
-      email: getValues("email"),
+  const verifyEmailAdress = async () => {
+    setLoaders({ submit: true });
+    const response = await apiService(auth().verifyEmail, null, {
+      params: {
+        email: getValues("email"),
+        otp: getValues("otp"),
+      },
     });
     if (response?.success) {
       toast.success(response?.message);
+      setShowFields({ password: true, confirmPassword: true });
+      setRequiredFields({ password: true, confirmPassword: true });
+      setSubmitBtnText({ id: "set_password", value: "Set Password" });
+      setPwdPatternValidation(true);
+      setTimer(null);
+      setShowResendOtp(false);
     } else {
       toast.error(response?.message);
       toast.clearWaitingQueue();
     }
+    setLoaders({ submit: false });
   };
 
-  const toggleMode = () => {
+  const sendOtpToEmail = async () => {
+    setLoaders({ submit: true });
+    const response = await apiService(auth().forgotPassword, null, {
+      params: { email: getValues("email") },
+    });
+    if (response?.success) {
+      toast.success(response?.message);
+      setShowFields({ email: true, otp: true });
+      setRequiredFields({ email: true, otp: true });
+      setSubmitBtnText({ id: "verify_email", value: "Verify Email" });
+      setDisableFields({ email: true });
+      setShowResendOtp(true);
+      startCountDown(1, setTimer);
+    } else {
+      toast.error(response?.message);
+      toast.clearWaitingQueue();
+    }
+    setLoaders({ submit: false });
+  };
+
+  const handleForgotPassword = async () => {
+    setShowFields({ email: true });
+    setRequiredFields({ email: true });
+    setSubmitBtnText({ id: "send_otp", value: "Send OTP" });
+    setShowGoogleBtn(false);
+    setShowForgotPassword(false);
+  };
+
+  const toggleMode = (newMode) => {
     resetForm();
-    const newMode = mode === "login" ? "register" : "login";
     setMode(newMode);
     if (newMode === "login") {
       setSubmitBtnText({ id: "login", value: "Login" });
       setShowFields({ email: true, password: true });
       setShowGoogleBtn(true);
+      setShowForgotPassword(true);
+      setPwdPatternValidation(false);
+      setDisableFields({});
     } else {
       setSubmitBtnText({ id: "register", value: "Register" });
       setShowFields({ email: true, password: true, confirmPassword: true });
       setShowGoogleBtn(false);
+      setShowForgotPassword(false);
+      setPwdPatternValidation(true);
+      setDisableFields({});
     }
   };
 
@@ -168,6 +192,7 @@ const Login = (props) => {
   };
 
   const onGoogleResponse = async (googleResponse) => {
+    setLoaders({ googleBtn: true });
     if (googleResponse?.tokenObj?.id_token) {
       const { id_token: idToken, expires_at: expiresAt } = googleResponse?.tokenObj;
 
@@ -178,6 +203,7 @@ const Login = (props) => {
       });
       if (response?.success) {
         setCookie("token", idToken, expiresAt * 1000);
+        setCookie("tokenProvider", "google");
         props?.history?.push("/dashboard");
       } else {
         toast.error(response?.message);
@@ -187,6 +213,7 @@ const Login = (props) => {
       toast.error(googleResponse?.details);
       toast.clearWaitingQueue();
     }
+    setLoaders({ googleBtn: false });
   };
 
   const handleSubmitBtn = () => {
@@ -197,6 +224,14 @@ const Login = (props) => {
 
       if (submitBtnText?.id === "login") {
         login();
+      }
+
+      if (submitBtnText?.id === "send_otp") {
+        sendOtpToEmail();
+      }
+
+      if (submitBtnText?.id === "verify_email") {
+        verifyEmailAdress();
       }
     } else {
       registerUser();
@@ -256,7 +291,7 @@ const Login = (props) => {
         {...register("password", {
           required: { value: requiredFields?.password, message: "Required" },
           pattern: {
-            value: mode === "register" ? PASSWORD_REGEX : "",
+            value: pwdPatternValidation ? PASSWORD_REGEX : "",
             message: "At least one upper case, lower case, digit, special character and minimum eight in length",
           },
         })}
@@ -304,6 +339,7 @@ const Login = (props) => {
             onClick={renderProps.onClick}
             disabled={renderProps.disabled}
             className={appStyles["google-login"]}
+            loader={String(loaders?.googleBtn || false)}
           >
             <img src={googleIcon} alt="Google icon" />
             <span>Login with Google</span>
@@ -327,7 +363,7 @@ const Login = (props) => {
               [appStyles.active]: mode === "login",
             })}
             variant="text"
-            onClick={toggleMode}
+            onClick={() => toggleMode("login")}
           >
             Login
           </ThemeButton>
@@ -336,7 +372,7 @@ const Login = (props) => {
               [appStyles.active]: mode === "register",
             })}
             variant="text"
-            onClick={toggleMode}
+            onClick={() => toggleMode("register")}
           >
             Register
           </ThemeButton>
@@ -352,21 +388,35 @@ const Login = (props) => {
 
         <input type="reset" ref={resetRef} style={{ display: "none" }} />
 
-        <ThemeButton type="submit" className={appStyles.submitBtn}>
+        <ThemeButton type="submit" className={appStyles.submitBtn} loader={String(loaders?.submit || false)}>
           {submitBtnText?.value}
         </ThemeButton>
 
         {showGoogleBtn && googleLoginButton()}
 
         <div className={appStyles.footer}>
-          {showForgotPassword && <span className={appStyles["forgot-pwd"]}>Forgot your password ?</span>}
+          {showForgotPassword && (
+            <span
+              className={appStyles["forgot-pwd"]}
+              onClick={handleForgotPassword}
+              role="button"
+              onKeyDown={() => {}}
+              tabIndex="0"
+            >
+              Forgot your password ?
+            </span>
+          )}
           {showResendOtp && (
             <>
               <span
                 className={cx(appStyles["resend-otp"], {
                   [appStyles.active]: !timer,
                 })}
-                onClick={handleResendOtp}
+                onClick={() => {
+                  if (timer === null) {
+                    sendOtpToEmail();
+                  }
+                }}
                 onKeyDown={() => {}}
                 role="button"
                 tabIndex="0"

@@ -109,9 +109,9 @@ export const auth = () => ({
     method: "GET",
     endpoint: "/auth/google-login",
   },
-  verifyEmail: {
+  accountVerification: {
     method: "GET",
-    endpoint: "/auth/verify-email",
+    endpoint: "/auth/account-verification",
   },
   register: {
     method: "POST",
@@ -124,6 +124,10 @@ export const auth = () => ({
   forgotPassword: {
     method: "PATCH",
     endpoint: "/auth/forgot-password",
+  },
+  verifyEmail: {
+    method: "PATCH",
+    endpoint: "/auth/verify-email",
   },
 });
 // ****************************************************************************************** //

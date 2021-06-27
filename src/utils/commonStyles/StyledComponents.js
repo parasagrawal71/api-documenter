@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { TextField, Checkbox, Button, Switch } from "@material-ui/core";
+import { TextField, Checkbox, Button, Switch, CircularProgress } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
 /* *********************************************************
@@ -129,14 +129,22 @@ export const ThemeAutocomplete = styled(React.forwardRef((props, ref) => <Autoco
  * *********************************************************
  */
 export const ThemeButton = styled(
-  React.forwardRef((props, ref) => (
-    <Button
-      ref={ref}
-      variant="contained"
-      color={props?.issecondary ? "secondary" : "primary"}
-      disableTouchRipple
-      {...props}
-    />
+  React.forwardRef(({ customStyle, ...props }, ref) => (
+    <>
+      <Button
+        ref={ref}
+        variant="contained"
+        color={props?.issecondary ? "secondary" : "primary"}
+        disableTouchRipple
+        {...props}
+      >
+        {props?.loader === "true" ? (
+          <CircularProgress style={{ color: customStyle?.loaderColor || "#fff", width: "1.3em", height: "1.3em" }} />
+        ) : (
+          props?.children
+        )}
+      </Button>
+    </>
   ))
 )({
   width: ({ customStyle, ...props }) => customStyle?.width,

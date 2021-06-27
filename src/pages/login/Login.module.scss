@@ -73,12 +73,12 @@
       }
 
       .resend-otp {
-        &:hover {
-          text-decoration: underline;
-        }
-
         &.active {
           cursor: pointer;
+
+          &:hover {
+            text-decoration: underline;
+          }
         }
       }
     }
