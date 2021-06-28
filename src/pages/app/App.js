@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 
@@ -8,12 +8,21 @@ import useGlobal from "redux/globalHook";
 import history from "routes/history";
 import Routes from "routes/Routes";
 import ScrollToTop from "routes/ScrollToTop";
+import { fetchLoggedInUserData } from "apis/apiCalls";
 
 // IMPORT ASSETS HERE
 import "./App.css";
 
-const App = () => {
-  const [globalState] = useGlobal();
+const App = (props) => {
+  const [globalState, globalActions] = useGlobal();
+
+  useEffect(() => {
+    fetchLoggedInUserData().then((userData) => {
+      globalActions.updateLoggedInUser(userData);
+    });
+
+    // eslint-disable-next-line
+  }, []);
 
   // Customize material ui theme
   const materialUiTheme = createMuiTheme({

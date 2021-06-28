@@ -12,6 +12,8 @@ import { auth } from "apis/urls";
 import { setCookie } from "utils/cookie";
 import { startCountDown } from "utils/functions";
 import { GOOGLE_CLIENT_ID } from "config";
+import { fetchLoggedInUserData } from "apis/apiCalls";
+import useGlobal from "redux/globalHook";
 
 // IMPORT ASSETS HERE
 import googleIcon from "assets/images/google-icon.svg";
@@ -29,6 +31,7 @@ const Login = (props) => {
     reset,
     formState: { errors },
   } = useForm({ mode: "all" });
+  const [globalState, globalActions] = useGlobal();
   const [tab, setTab] = useState("login");
   const [showFields, setShowFields] = useState({});
   const [disableFields, setDisableFields] = useState({});
@@ -51,10 +54,14 @@ const Login = (props) => {
       params: { email: getValues("email"), password: getValues("password") },
     });
     if (response?.success) {
-      const { token, expiry } = response?.data;
+      const { token, expiry, user } = response?.data;
       resetForm();
       setCookie("token", token, expiry);
       setCookie("tokenProvider", "documenter");
+      setCookie("userMID", user?._id);
+      fetchLoggedInUserData().then((userData) => {
+        globalActions.updateLoggedInUser(userData);
+      });
       props?.history?.push("/dashboard");
     } else {
       if (response?.errorCode === "PASSWORD_NOT_SET") {
@@ -100,9 +107,13 @@ const Login = (props) => {
     });
     if (response?.success) {
       toast.success(response?.message);
-      const { token, expiry } = response?.data;
+      const { token, expiry, user } = response?.data;
       setCookie("token", token, expiry);
       setCookie("tokenProvider", "documenter");
+      setCookie("userMID", user?._id);
+      fetchLoggedInUserData().then((userData) => {
+        globalActions.updateLoggedInUser(userData);
+      });
       props?.history?.push("/dashboard");
       resetForm();
     } else {
@@ -179,6 +190,10 @@ const Login = (props) => {
       if (response?.success) {
         setCookie("token", idToken, expiresAt * 1000);
         setCookie("tokenProvider", "google");
+        setCookie("userMID", response?.data?._id);
+        fetchLoggedInUserData().then((userData) => {
+          globalActions.updateLoggedInUser(userData);
+        });
         props?.history?.push("/dashboard");
       } else {
         toast.error(response?.message);
