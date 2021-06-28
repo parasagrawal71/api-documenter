@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
+import HeaderComponent from "components/header/Header";
 import apiService from "apis/apiService";
 import { service } from "apis/urls";
 
@@ -24,6 +25,7 @@ const Dashboard = (props) => {
 
   return (
     <section className={appStyles["main-cnt"]}>
+      <HeaderComponent />
       {serviceList?.map((aService, index) => {
         return (
           <Link

@@ -37,36 +37,40 @@ const Header = (props) => {
         <div className={appStyles["app-header__appName"]}>Documentation</div>
       </section>
       <section className={appStyles["app-header--right"]}>
-        <div className={appStyles["app-header__envs-dropdown"]}>
-          <ThemeAutocomplete
-            options={environments}
-            getOptionLabel={(option) => option?.envName || ""}
-            customStyle={{ width: "250px" }}
-            renderInput={(params) => (
-              <ThemeTextField
-                {...params}
-                InputLabelProps={{
-                  focused: false,
+        {selectedEnv && (
+          <div className={appStyles["app-header__envs"]}>
+            <div className={appStyles["app-header__envs-dropdown"]}>
+              <ThemeAutocomplete
+                options={environments}
+                getOptionLabel={(option) => option?.envName || ""}
+                customStyle={{ width: "250px", padding: 0, color: "lightgrey" }}
+                renderInput={(params) => (
+                  <ThemeTextField
+                    {...params}
+                    InputLabelProps={{
+                      focused: false,
+                    }}
+                  />
+                )}
+                onChange={(e, selectedOption) => {
+                  setSelectedEnv(selectedOption);
                 }}
+                value={selectedEnv || ""}
               />
-            )}
-            onChange={(e, selectedOption) => {
-              setSelectedEnv(selectedOption);
-            }}
-            value={selectedEnv || ""}
-          />
-        </div>
-        <ClickAwayListener onClickAway={handleCloseEnvPopover}>
-          <div className={appStyles["app-header__edit-env"]}>
-            <ListAltIcon className={appStyles["app-header__edit-env__icon"]} onClick={toggleOpenEnvPopover} />
-            <EnvPopoverComponent
-              openEnvPopover={openEnvPopover}
-              handleCloseEnvPopover={handleCloseEnvPopover}
-              selectedEnv={selectedEnv}
-              setSelectedEnv={setSelectedEnv}
-            />
+            </div>
+            <ClickAwayListener onClickAway={handleCloseEnvPopover}>
+              <div className={appStyles["app-header__edit-env"]}>
+                <ListAltIcon className={appStyles["app-header__edit-env__icon"]} onClick={toggleOpenEnvPopover} />
+                <EnvPopoverComponent
+                  openEnvPopover={openEnvPopover}
+                  handleCloseEnvPopover={handleCloseEnvPopover}
+                  selectedEnv={selectedEnv}
+                  setSelectedEnv={setSelectedEnv}
+                />
+              </div>
+            </ClickAwayListener>
           </div>
-        </ClickAwayListener>
+        )}
 
         <LogoutIcon className={appStyles["logout-btn"]} onClick={logout} />
       </section>

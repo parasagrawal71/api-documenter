@@ -17,21 +17,31 @@
 
   .app-header--right {
     @include flex-row-v-cen;
-    .app-header__envs-dropdown {
-      margin-right: 10px;
-    }
-    .app-header__edit-env {
-      .app-header__edit-env__icon {
-        font-size: 2rem;
 
-        &:hover {
-          cursor: pointer;
+    .app-header__envs {
+      @include flex-row-v-cen;
+      margin-right: 20px;
+
+      .app-header__envs-dropdown {
+        margin-right: 10px;
+      }
+
+      .app-header__edit-env {
+        @include flex-row-v-cen;
+
+        .app-header__edit-env__icon {
+          font-size: 2rem;
+
+          &:hover {
+            cursor: pointer;
+          }
         }
       }
     }
 
     .logout-btn {
       cursor: pointer;
+      font-size: 1.9em;
     }
   }
 }
