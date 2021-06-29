@@ -84,6 +84,7 @@ const Login = (props) => {
     const response = await apiService(auth().register, {
       email: getValues("email"),
       password: getValues("password"),
+      name: getValues("name"),
     });
     if (response?.success) {
       toast.success(response?.message);
@@ -243,8 +244,8 @@ const Login = (props) => {
     } else if (mode === "REGISTER") {
       setTab("register");
       setSubmitButton({ id: "register", value: "Register" });
-      setShowFields({ email: true, password: true, confirmPassword: true });
-      setRequiredFields({ email: true, password: true, confirmPassword: true });
+      setShowFields({ name: true, email: true, password: true, confirmPassword: true });
+      setRequiredFields({ name: true, email: true, password: true, confirmPassword: true });
       setDisableFields({});
       setShowGoogleBtn(false);
       setShowForgotPassword(false);
@@ -287,6 +288,24 @@ const Login = (props) => {
   };
 
   // COMPONENTS HERE
+  const nameComponent = () => {
+    return (
+      <ThemeTextField
+        id="name"
+        name="name"
+        customlabel="Name"
+        {...register("name", {
+          required: { value: requiredFields?.name, message: "Required" },
+        })}
+        error={!!errors?.name}
+        className={appStyles.inputTextField}
+        disabled={disableFields?.name}
+        helperText={errors?.name?.message}
+        ishelpertext="true"
+      />
+    );
+  };
+
   const emailComponent = () => {
     return (
       <ThemeTextField
@@ -425,6 +444,8 @@ const Login = (props) => {
             Register
           </ThemeButton>
         </section>
+
+        {showFields?.name && nameComponent()}
 
         {showFields?.email && emailComponent()}
 
