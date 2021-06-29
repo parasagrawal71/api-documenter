@@ -26,13 +26,15 @@ const Users = (props) => {
   return (
     <section className={appStyles["main-cnt"]}>
       <HeaderComponent />
-      {users?.map((aUser, index) => {
-        return (
-          <div key={index} className={appStyles["user-cnt"]}>
-            {aUser?.name}
-          </div>
-        );
-      })}
+      <section className={appStyles["users-cnt"]}>
+        {users?.map((aUser, index) => {
+          return (
+            <section key={index} className={appStyles["user-cnt"]}>
+              {aUser?.name}
+            </section>
+          );
+        })}
+      </section>
     </section>
   );
 };

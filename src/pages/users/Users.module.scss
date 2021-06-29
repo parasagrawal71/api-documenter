@@ -1,6 +1,15 @@
 .main-cnt {
-  .user-cnt {
+  .users-cnt {
     padding: 50px;
-    border: 1px solid lightgrey;
+
+    .user-cnt {
+      padding: 30px;
+      border: 1px solid lightgrey;
+      border-radius: 5px;
+
+      &:not(:last-child) {
+        margin-bottom: 20px;
+      }
+    }
   }
 }

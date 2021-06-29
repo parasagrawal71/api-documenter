@@ -1,11 +1,16 @@
 .main-cnt {
-  .service-link {
-    text-decoration: none;
-    color: #000000;
-  }
-
-  .service-cnt {
+  .services-cnt {
     padding: 50px;
-    border: 1px solid lightgrey;
+
+    .service-cnt {
+      padding: 50px;
+      border: 1px solid lightgrey;
+      border-radius: 5px;
+      cursor: pointer;
+
+      &:not(:last-child) {
+        margin-bottom: 20px;
+      }
+    }
   }
 }

@@ -26,20 +26,24 @@ const Dashboard = (props) => {
   return (
     <section className={appStyles["main-cnt"]}>
       <HeaderComponent />
-      {serviceList?.map((aService, index) => {
-        return (
-          <Link
-            key={index}
-            className={appStyles["service-link"]}
-            to={{
-              pathname: "/documentation",
-              search: `?serviceMID=${aService?._id}`,
-            }}
-          >
-            <div className={appStyles["service-cnt"]}>{aService?.serviceName}</div>
-          </Link>
-        );
-      })}
+      <section className={appStyles["services-cnt"]}>
+        {serviceList?.map((aService, index) => {
+          return (
+            <div
+              key={index}
+              className={appStyles["service-cnt"]}
+              role="button"
+              tabIndex="0"
+              onKeyDown={() => {}}
+              onClick={() => {
+                props?.history?.push(`/documentation?serviceMID=${aService?._id}`);
+              }}
+            >
+              {aService?.serviceName}x
+            </div>
+          );
+        })}
+      </section>
     </section>
   );
 };
