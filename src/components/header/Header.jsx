@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { ClickAwayListener } from "@material-ui/core";
+import { Link } from "react-router-dom";
 import { ListAlt as ListAltIcon, ExitToApp as LogoutIcon } from "@material-ui/icons";
+import cx from "classnames";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
 import { ThemeAutocomplete, ThemeTextField } from "utils/commonStyles/StyledComponents";
@@ -35,6 +37,24 @@ const Header = (props) => {
     <header className={appStyles["app-header"]}>
       <section className={appStyles["app-header--left"]}>
         <div className={appStyles["app-header__appName"]}>Documentation</div>
+      </section>
+      <section className={appStyles["app-header--mid"]}>
+        <Link
+          className={cx(appStyles["app-header_menu-item"], {
+            [appStyles.active]: window.location.href.includes("dashboard"),
+          })}
+          to="/dashboard"
+        >
+          Dashboard
+        </Link>
+        <Link
+          className={cx(appStyles["app-header_menu-item"], {
+            [appStyles.active]: window.location.href.includes("users"),
+          })}
+          to="/users"
+        >
+          Users
+        </Link>
       </section>
       <section className={appStyles["app-header--right"]}>
         {selectedEnv && (

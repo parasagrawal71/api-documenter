@@ -138,5 +138,9 @@ export const user = (mongoId) => ({
     method: "GET",
     endpoint: `/user/${mongoId}`,
   },
+  getAll: {
+    method: "GET",
+    endpoint: `/user`,
+  },
 });
 // ****************************************************************************************** //

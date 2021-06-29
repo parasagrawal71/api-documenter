@@ -15,6 +15,28 @@
     }
   }
 
+  .app-header--mid {
+    @include flex-row-v-cen;
+
+    .app-header_menu-item {
+      cursor: pointer;
+      text-decoration: none;
+      color: white;
+
+      &:not(:last-child) {
+        margin-right: 10px;
+      }
+
+      &:hover {
+        text-decoration: underline;
+      }
+
+      &.active {
+        text-decoration: underline;
+      }
+    }
+  }
+
   .app-header--right {
     @include flex-row-v-cen;
 
