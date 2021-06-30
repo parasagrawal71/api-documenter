@@ -6,9 +6,46 @@
       padding: 30px;
       border: 1px solid lightgrey;
       border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .user-cnt--left {
+        display: flex;
+        align-items: center;
+
+        .user-cnt__name {
+          margin-right: 50px;
+        }
+
+        .user-cnt__email {
+        }
+      }
 
       &:not(:last-child) {
         margin-bottom: 20px;
+      }
+
+      .formControl {
+        margin: 1px;
+        min-width: 150px;
+        max-width: 300px;
+        min-height: 50px;
+      }
+
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+      }
+
+      .chip {
+        margin: 2px;
+      }
+
+      .menu-item {
+        &.selected {
+          font-weight: bold;
+        }
       }
     }
   }

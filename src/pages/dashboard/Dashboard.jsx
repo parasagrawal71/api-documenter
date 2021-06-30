@@ -39,7 +39,7 @@ const Dashboard = (props) => {
                 props?.history?.push(`/documentation?serviceMID=${aService?._id}`);
               }}
             >
-              {aService?.serviceName}x
+              {aService?.serviceName}
             </div>
           );
         })}

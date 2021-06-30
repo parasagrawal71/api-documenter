@@ -142,5 +142,9 @@ export const user = (mongoId) => ({
     method: "GET",
     endpoint: `/user`,
   },
+  put: {
+    method: "PUT",
+    endpoint: `/user/${mongoId}`,
+  },
 });
 // ****************************************************************************************** //
