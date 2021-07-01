@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Popover } from "@material-ui/core";
 import { AddCircleOutlined as AddIcon, RemoveCircleOutlined as RemoveIcon } from "@material-ui/icons";
@@ -19,9 +19,22 @@ const useStyles = makeStyles((theme) => ({
 
 export default function EnvPopover(props) {
   // PROPS HERE
-  const { openEnvPopover, handleCloseEnvPopover, selectedEnv, setSelectedEnv } = props;
+  const {
+    openEnvPopover,
+    handleCloseEnvPopover,
+    selectedEnv,
+    setSelectedEnv,
+    selectedEnvOldData,
+    setSelectedEnvOldData,
+  } = props;
 
   const classes = useStyles();
+
+  useEffect(() => {
+    setSelectedEnvOldData(selectedEnv);
+
+    // eslint-disable-next-line
+  }, []);
 
   return (
     <Popover

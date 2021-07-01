@@ -8,13 +8,12 @@ import ModelComponent from "components/model/Model";
 import ReadmeComponent from "components/readme/Readme";
 import EndpointsWrapperComponent from "components/endpointsWrapper/EndpointsWrapper";
 import apiService from "apis/apiService";
-import { readme, schema, apisTree } from "apis/urls";
+import { readme, schema, apisTree, environment } from "apis/urls";
 import { getUrlParams, sortArrayOfObjs } from "utils/functions";
 import { ThemeSwitch } from "utils/commonStyles/StyledComponents";
 import useGlobal from "redux/globalHook";
 
 // IMPORT ASSETS HERE
-import environments from "assets/environments.json";
 import appStyles from "./Documentation.module.scss";
 
 const Documentation = () => {
@@ -25,16 +24,37 @@ const Documentation = () => {
   const [sortedApisTree, setSortedApisTree] = useState([]);
   const [enableEditMode, setEnableEditMode] = useState(false);
   const [globalState] = useGlobal();
+  const [environments, setEnvironments] = useState([]);
 
   useEffect(() => {
-    setSelectedEnv(environments[0]);
-
     // fetchModels();
     // fetchReadmeFiles();
     fetchApisTree();
+    getEnvironments();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    const updatedEnvironments = environments?.map((env) => {
+      if (env?._id === selectedEnv?._id) {
+        return selectedEnv;
+      }
+
+      return env;
+    });
+    setEnvironments(updatedEnvironments);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedEnv]);
+
+  const getEnvironments = async () => {
+    const response = await apiService(environment().getAll);
+    if (response?.success) {
+      setEnvironments(response?.data);
+      setSelectedEnv(response?.data?.[0]);
+    }
+  };
 
   const fetchModels = async () => {
     const response = await apiService(schema().getAll);
@@ -64,7 +84,12 @@ const Documentation = () => {
 
   return (
     <section className={appStyles["main-container"]}>
-      <HeaderComponent selectedEnv={selectedEnv} setSelectedEnv={setSelectedEnv} />
+      <HeaderComponent
+        environments={environments}
+        setEnvironments={setEnvironments}
+        selectedEnv={selectedEnv}
+        setSelectedEnv={setSelectedEnv}
+      />
       <section className={appStyles["content-cnt"]}>
         <section className={appStyles["table-of-contents"]}>
           <TableOfContentsComponent

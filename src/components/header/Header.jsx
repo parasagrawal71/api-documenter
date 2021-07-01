@@ -3,6 +3,7 @@ import { ClickAwayListener } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import { ListAlt as ListAltIcon, ExitToApp as LogoutIcon } from "@material-ui/icons";
 import cx from "classnames";
+import { toast } from "react-toastify";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
 import { ThemeAutocomplete, ThemeTextField } from "utils/commonStyles/StyledComponents";
@@ -11,32 +12,25 @@ import { clearSession } from "utils/cookie";
 import useGlobal from "redux/globalHook";
 import apiService from "apis/apiService";
 import { environment } from "apis/urls";
+import { getUrlParams } from "utils/functions";
 
 // IMPORT ASSETS HERE
 import appStyles from "./Header.module.scss";
 
 const Header = (props) => {
   // PROPS HERE
-  const { selectedEnv, setSelectedEnv } = props;
+  const { environments, setEnvironments, selectedEnv, setSelectedEnv } = props;
+
+  // VARIABLES HERE
+  const serviceMID = getUrlParams()?.serviceMID;
 
   // HOOKS HERE
   const [openEnvPopover, setOpenEnvPopover] = useState(null);
+  const [selectedEnvOldData, setSelectedEnvOldData] = useState(null);
   const [globalState] = useGlobal();
-  const [environments, setEnvironments] = useState([]);
-
-  useEffect(() => {
-    getEnvironments();
-  }, []);
-
-  const getEnvironments = async () => {
-    const response = await apiService(environment().getAll);
-    if (response?.success) {
-      setEnvironments(response?.data);
-    }
-  };
 
   const createEnvironment = async (reqBody) => {
-    const response = await apiService(environment().post, reqBody);
+    const response = await apiService(environment().post, { ...reqBody, serviceMID });
     if (response?.success) {
       // setEnvironments(); response?.data
     }
@@ -45,7 +39,11 @@ const Header = (props) => {
   const editEnvironment = async (updatedEnvironment) => {
     const response = await apiService(environment(updatedEnvironment?._id).put, updatedEnvironment);
     if (response?.success) {
-      // setEnvironments(); response?.data
+      setSelectedEnvOldData({});
+    } else {
+      setSelectedEnv(selectedEnvOldData);
+      toast.error("Couldn't update environment!");
+      toast.clearWaitingQueue();
     }
   };
 
@@ -61,6 +59,9 @@ const Header = (props) => {
   };
 
   const handleCloseEnvPopover = () => {
+    if (openEnvPopover) {
+      editEnvironment(selectedEnv);
+    }
     setOpenEnvPopover(null);
   };
 
@@ -124,6 +125,8 @@ const Header = (props) => {
                   handleCloseEnvPopover={handleCloseEnvPopover}
                   selectedEnv={selectedEnv}
                   setSelectedEnv={setSelectedEnv}
+                  selectedEnvOldData={selectedEnvOldData}
+                  setSelectedEnvOldData={setSelectedEnvOldData}
                 />
               </div>
             </ClickAwayListener>
