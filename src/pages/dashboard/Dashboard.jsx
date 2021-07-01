@@ -37,6 +37,9 @@ const Dashboard = (props) => {
     const response = await apiService(service().getAll);
     if (response?.success) {
       setServiceList(response?.data);
+    } else {
+      toast.error(response?.message);
+      toast.clearWaitingQueue();
     }
   };
 
@@ -45,6 +48,9 @@ const Dashboard = (props) => {
     if (response?.success) {
       serviceList.unshift(response?.data);
       setServiceList([...serviceList]);
+    } else {
+      toast.error(response?.message);
+      toast.clearWaitingQueue();
     }
   };
 
@@ -53,6 +59,9 @@ const Dashboard = (props) => {
     if (response?.success) {
       const updatedServiceList = serviceList.filter((aSer) => aSer._id !== mongoId);
       setServiceList([...updatedServiceList]);
+    } else {
+      toast.error(response?.message);
+      toast.clearWaitingQueue();
     }
   };
 
@@ -137,8 +146,8 @@ const Dashboard = (props) => {
               </section>
               <section className={appStyles.endpointsCount}>
                 {[0, 1]?.includes(aService?.endpointsCount)
-                  ? `${aService?.endpointsCount} Endpoint`
-                  : `${aService?.endpointsCount} Endpoints`}
+                  ? `${aService?.endpointsCount} endpoint`
+                  : `${aService?.endpointsCount} endpoints`}
               </section>
               <section className={appStyles.actionBtns}>
                 {editMode === aService?._id && (
