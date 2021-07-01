@@ -11,8 +11,6 @@ import { SortableHandle } from "react-sortable-hoc";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
 import ActionsPopoverComponent from "components/actionsPopover/ActionsPopover";
-import useGlobal from "redux/globalHook";
-import { getUrlParams } from "utils/functions";
 
 // IMPORT ASSETS HERE
 import appStyles from "./FolderOrFile.module.scss";
@@ -33,12 +31,12 @@ const FolderOrFile = (props) => {
     deleteText,
     deleteCallback,
     href,
+    enableEditMode,
   } = props;
 
   // HOOKS HERE
   const [showActionsBtn, setShowActionsBtn] = useState(false);
   const [showActionPopup, setShowActionPopup] = useState(false);
-  const [globalState] = useGlobal();
 
   const inlineStyles = {
     folderFileCnt: {
@@ -117,18 +115,17 @@ const FolderOrFile = (props) => {
         </a>
       </section>
 
-      {globalState?.loggedInUser?.editAccess?.includes?.(getUrlParams?.()?.serviceName) &&
-        (showActionsBtn || showActionPopup) && (
-          <section className={appStyles["folder-file-cnt--right"]}>
-            <MoreIcon
-              className={appStyles.actionIcons}
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowActionPopup(true);
-              }}
-            />
-          </section>
-        )}
+      {enableEditMode && (showActionsBtn || showActionPopup) && (
+        <section className={appStyles["folder-file-cnt--right"]}>
+          <MoreIcon
+            className={appStyles.actionIcons}
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowActionPopup(true);
+            }}
+          />
+        </section>
+      )}
       {showActionPopup && (
         <ActionsPopoverComponent
           openPopover={showActionPopup}

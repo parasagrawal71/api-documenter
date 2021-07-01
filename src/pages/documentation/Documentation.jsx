@@ -74,6 +74,9 @@ const Documentation = () => {
             setReadmeFiles={setReadmeFiles}
             sortedApisTree={sortedApisTree}
             updateSortedApisTree={updateSortedApisTree}
+            enableEditMode={
+              globalState?.loggedInUser?.editAccess?.includes?.(getUrlParams?.()?.serviceName) && enableEditMode
+            }
           />
         </section>
         <section className={appStyles["content-cnt--right"]}>

@@ -93,7 +93,7 @@ const Dashboard = (props) => {
                     setOpenConfirmPopup({ open: true, serviceMID: aService?._id });
                   }}
                   className={cx(appStyles.deleteServiceBtn, {
-                    [appStyles.visibilityHidden]: showDeleteIcon !== aService?._id,
+                    visibilityHidden: showDeleteIcon !== aService?._id,
                   })}
                 />
               </Tooltip>

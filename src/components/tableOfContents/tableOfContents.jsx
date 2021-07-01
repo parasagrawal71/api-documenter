@@ -12,14 +12,14 @@ import ConfirmPopupComponent from "components/confirmPopup/ConfirmPopup";
 import { arrayMove, getUrlParams } from "utils/functions";
 import apiService from "apis/apiService";
 import { readme, schema, apisTree, endpointUrl } from "apis/urls";
-import useGlobal from "redux/globalHook";
 
 // IMPORT ASSETS HERE
 import appStyles from "./tableOfContents.module.scss";
 
 const tableOfContents = (props) => {
   // PROPS HERE
-  const { models, setModels, readmeFiles, setReadmeFiles, sortedApisTree, updateSortedApisTree } = props;
+  const { models, setModels, readmeFiles, setReadmeFiles, sortedApisTree, updateSortedApisTree, enableEditMode } =
+    props;
 
   // VARIABLES HERE
   const serviceMID = getUrlParams()?.serviceMID;
@@ -45,7 +45,6 @@ const tableOfContents = (props) => {
     subFolderObj: {},
     fileObj: {},
   });
-  const [globalState] = useGlobal();
 
   const openCloseFolder = (folderName, subFolderName, folderIndex) => {
     const updatedFolders = sortedApisTree?.map((folderObj, index) => {
@@ -309,6 +308,7 @@ const tableOfContents = (props) => {
           });
         }}
         href={aFileObj?.fileName}
+        enableEditMode={enableEditMode}
       />
     );
   };
@@ -343,6 +343,7 @@ const tableOfContents = (props) => {
           });
         }}
         href={aFileObj?.fileName}
+        enableEditMode={enableEditMode}
       />
     );
   };
@@ -391,6 +392,7 @@ const tableOfContents = (props) => {
             });
           }}
           href={subFolder?.folderName}
+          enableEditMode={enableEditMode}
         />
 
         <SortableCont
@@ -450,6 +452,7 @@ const tableOfContents = (props) => {
             });
           }}
           href="readme"
+          enableEditMode={enableEditMode}
         />
 
         {openReadme &&
@@ -470,6 +473,7 @@ const tableOfContents = (props) => {
                     });
                   }}
                   href={aFileObj?.fileName}
+                  enableEditMode={enableEditMode}
                 />
               );
             })
@@ -498,6 +502,7 @@ const tableOfContents = (props) => {
             });
           }}
           href="models"
+          enableEditMode={enableEditMode}
         />
 
         {openModels &&
@@ -518,6 +523,7 @@ const tableOfContents = (props) => {
                     });
                   }}
                   href={aFileObj?.fileName}
+                  enableEditMode={enableEditMode}
                 />
               );
             })
@@ -529,21 +535,19 @@ const tableOfContents = (props) => {
 
       <div className={appStyles["sub-header"]}>
         <span>APIs</span>
-        {globalState?.loggedInUser?.editAccess?.includes?.(getUrlParams?.()?.serviceName) && (
-          <Tooltip title="Add Folder">
-            <AddFolderIcon
-              className={appStyles.addFolderIcon}
-              onClick={(e) => {
-                e.stopPropagation();
-                setOpenTextfieldPopup({
-                  actionType: "add-folder",
-                  open: true,
-                  placeholder1: "Enter Folder Name",
-                });
-              }}
-            />
-          </Tooltip>
-        )}
+        <Tooltip title="Add Folder">
+          <AddFolderIcon
+            className={cx(appStyles.addFolderIcon, { visibilityHidden: !enableEditMode })}
+            onClick={(e) => {
+              e.stopPropagation();
+              setOpenTextfieldPopup({
+                actionType: "add-folder",
+                open: true,
+                placeholder1: "Enter Folder Name",
+              });
+            }}
+          />
+        </Tooltip>
       </div>
 
       {/* *********************************** API FOLDERS starts here ************************************* */}
@@ -587,6 +591,7 @@ const tableOfContents = (props) => {
                     });
                   }}
                   href={apiFolder?.folderName}
+                  enableEditMode={enableEditMode}
                 />
 
                 <SortableCont
