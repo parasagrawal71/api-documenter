@@ -14,11 +14,18 @@
         display: flex;
         align-items: center;
 
-        .user-cnt__name {
+        div:not(:last-child) {
           margin-right: 50px;
         }
 
+        .user-cnt__name {
+        }
+
         .user-cnt__email {
+          width: 300px;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
         }
       }
 

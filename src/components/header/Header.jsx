@@ -8,6 +8,7 @@ import cx from "classnames";
 import { ThemeAutocomplete, ThemeTextField } from "utils/commonStyles/StyledComponents";
 import EnvPopoverComponent from "components/envPopover/EnvPopover";
 import { clearSession } from "utils/cookie";
+import useGlobal from "redux/globalHook";
 
 // IMPORT ASSETS HERE
 import environments from "assets/environments.json";
@@ -19,6 +20,7 @@ const Header = (props) => {
 
   // HOOKS HERE
   const [openEnvPopover, setOpenEnvPopover] = useState(null);
+  const [globalState] = useGlobal();
 
   const toggleOpenEnvPopover = (event) => {
     setOpenEnvPopover(openEnvPopover ? null : event?.currentTarget);
@@ -47,14 +49,16 @@ const Header = (props) => {
         >
           Dashboard
         </Link>
-        <Link
-          className={cx(appStyles["app-header_menu-item"], {
-            [appStyles.active]: window.location.href.includes("users"),
-          })}
-          to="/users"
-        >
-          Users
-        </Link>
+        {globalState?.loggedInUser?.superuser && (
+          <Link
+            className={cx(appStyles["app-header_menu-item"], {
+              [appStyles.active]: window.location.href.includes("users"),
+            })}
+            to="/users"
+          >
+            Users
+          </Link>
+        )}
       </section>
       <section className={appStyles["app-header--right"]}>
         {selectedEnv && (

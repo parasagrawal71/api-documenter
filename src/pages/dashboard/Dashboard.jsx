@@ -36,7 +36,7 @@ const Dashboard = (props) => {
               tabIndex="0"
               onKeyDown={() => {}}
               onClick={() => {
-                props?.history?.push(`/documentation?serviceMID=${aService?._id}`);
+                props?.history?.push(`/documentation?serviceMID=${aService?._id}&serviceName=${aService?.serviceName}`);
               }}
             >
               {aService?.serviceName}

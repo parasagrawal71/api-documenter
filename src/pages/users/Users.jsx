@@ -6,6 +6,7 @@ import cx from "classnames";
 import HeaderComponent from "components/header/Header";
 import apiService from "apis/apiService";
 import { user, service } from "apis/urls";
+import { ThemeButton } from "utils/commonStyles/StyledComponents";
 
 // IMPORT ASSETS HERE
 import appStyles from "./Users.module.scss";
@@ -53,6 +54,18 @@ const Users = (props) => {
     setUsers(updatedUsers);
   };
 
+  const updateUsersState = (updatedUser) => {
+    const updatedUsers = users.map((aUser) => {
+      if (aUser?._id === updatedUser?._id) {
+        return updatedUser;
+      }
+
+      return aUser;
+    });
+
+    setUsers(updatedUsers);
+  };
+
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
   const MenuProps = {
@@ -74,6 +87,32 @@ const Users = (props) => {
               <section className={appStyles["user-cnt--left"]}>
                 <div className={appStyles["user-cnt__name"]}>{aUser?.name}</div>
                 <div className={appStyles["user-cnt__email"]}>{aUser?.email}</div>
+                <div className={appStyles["user-cnt__superuser"]}>
+                  {aUser?.superuser ? (
+                    <ThemeButton
+                      variant="default"
+                      onClick={() => {
+                        aUser.superuser = false;
+                        updateUser(aUser);
+                        updateUsersState(aUser);
+                      }}
+                      // disabled
+                      // customStyle={{ color: "#000 !important" }}
+                    >
+                      Remove Superuser
+                    </ThemeButton>
+                  ) : (
+                    <ThemeButton
+                      variant="default"
+                      onClick={() => {
+                        aUser.superuser = true;
+                        updateUser(aUser);
+                      }}
+                    >
+                      Make Superuser
+                    </ThemeButton>
+                  )}
+                </div>
               </section>
               <FormControl className={appStyles.formControl}>
                 <Select

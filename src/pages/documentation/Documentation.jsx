@@ -9,8 +9,9 @@ import ReadmeComponent from "components/readme/Readme";
 import EndpointsWrapperComponent from "components/endpointsWrapper/EndpointsWrapper";
 import apiService from "apis/apiService";
 import { readme, schema, apisTree } from "apis/urls";
-import { sortArrayOfObjs } from "utils/functions";
+import { getUrlParams, sortArrayOfObjs } from "utils/functions";
 import { ThemeSwitch } from "utils/commonStyles/StyledComponents";
+import useGlobal from "redux/globalHook";
 
 // IMPORT ASSETS HERE
 import environments from "assets/environments.json";
@@ -23,6 +24,7 @@ const Documentation = () => {
   const [readmeFiles, setReadmeFiles] = useState([]);
   const [sortedApisTree, setSortedApisTree] = useState([]);
   const [enableEditMode, setEnableEditMode] = useState(false);
+  const [globalState] = useGlobal();
 
   useEffect(() => {
     setSelectedEnv(environments[0]);
@@ -101,15 +103,17 @@ const Documentation = () => {
             <div id="endpoints" className={appStyles.title}>
               <div>APIs</div>
               <div className={appStyles["title--right"]}>
-                <Tooltip title={enableEditMode ? "Edit Mode" : "View Mode"}>
-                  <ThemeSwitch
-                    checked={enableEditMode}
-                    onChange={(e) => {
-                      setEnableEditMode(e?.target.checked);
-                    }}
-                    className={appStyles["mode-switch"]}
-                  />
-                </Tooltip>
+                {globalState?.loggedInUser?.editAccess?.includes?.(getUrlParams?.()?.serviceName) && (
+                  <Tooltip title={enableEditMode ? "Edit Mode" : "View Mode"}>
+                    <ThemeSwitch
+                      checked={enableEditMode}
+                      onChange={(e) => {
+                        setEnableEditMode(e?.target.checked);
+                      }}
+                      className={appStyles["mode-switch"]}
+                    />
+                  </Tooltip>
+                )}
               </div>
             </div>
             <EndpointsWrapperComponent
