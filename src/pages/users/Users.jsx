@@ -92,6 +92,9 @@ const Users = (props) => {
     <section className={appStyles["main-cnt"]}>
       <HeaderComponent />
       <section className={appStyles["users-cnt"]}>
+        <section className={appStyles["users-cnt__header"]}>
+          <div className={appStyles["users-cnt__header__title"]}>Users</div>
+        </section>
         {users?.map((aUser, index) => {
           return (
             <section key={index} className={appStyles["user-cnt"]}>
@@ -102,15 +105,15 @@ const Users = (props) => {
                   {aUser?.superuser ? (
                     <ThemeButton
                       variant="default"
-                      onClick={() => {
-                        aUser.superuser = false;
-                        updateUser(aUser);
-                        updateUsersState(aUser);
-                      }}
-                      // disabled
-                      // customStyle={{ color: "#000 !important" }}
+                      // onClick={() => {
+                      //   aUser.superuser = false;
+                      //   updateUser(aUser);
+                      //   updateUsersState(aUser);
+                      // }}
+                      disabled
+                      customStyle={{ color: "#000 !important" }}
                     >
-                      Remove Superuser
+                      Superuser
                     </ThemeButton>
                   ) : (
                     <ThemeButton
@@ -127,6 +130,7 @@ const Users = (props) => {
               </section>
               <FormControl className={appStyles.formControl}>
                 <Select
+                  className={appStyles.select}
                   multiple
                   displayEmpty
                   value={aUser?.editAccess}
@@ -144,14 +148,14 @@ const Users = (props) => {
                           <Chip key={serviceName} label={serviceName} className={appStyles.chip} />
                         ))
                       ) : (
-                        <em>Select services</em>
+                        <em>Assign Edit Access</em>
                       )}
                     </div>
                   )}
                   MenuProps={MenuProps}
                 >
                   <MenuItem disabled value="">
-                    <em>Select services</em>
+                    <em>Assign Edit Access</em>
                   </MenuItem>
                   {serviceList?.map((aService) => (
                     <MenuItem
