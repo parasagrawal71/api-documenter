@@ -88,6 +88,7 @@ const Dashboard = (props) => {
             className={appStyles["add-service-btn"]}
             onClick={() => {
               setOpenTextfieldPopup({ open: true, placeholder1: "Enter service name" });
+              setEditMode(null);
             }}
           >
             Add Service
@@ -97,12 +98,18 @@ const Dashboard = (props) => {
           return (
             <div
               key={index}
-              className={appStyles["service-cnt"]}
+              className={cx(appStyles["service-cnt"], {
+                cursorPointer: editMode !== aService?._id,
+              })}
               role="button"
               tabIndex="0"
               onKeyDown={() => {}}
               onClick={() => {
-                props?.history?.push(`/documentation?serviceMID=${aService?._id}&serviceName=${aService?.serviceName}`);
+                if (editMode !== aService?._id) {
+                  props?.history?.push(
+                    `/documentation?serviceMID=${aService?._id}&serviceName=${aService?.serviceName}`
+                  );
+                }
               }}
               onMouseEnter={(e) => {
                 e.stopPropagation();
@@ -113,7 +120,7 @@ const Dashboard = (props) => {
                 setShowActionIcons(null);
               }}
             >
-              <div>
+              <section className={appStyles.serviceName}>
                 {editMode === aService?._id ? (
                   <ThemeTextField
                     value={aService?.serviceName}
@@ -127,8 +134,13 @@ const Dashboard = (props) => {
                 ) : (
                   aService?.serviceName
                 )}
-              </div>
-              <div>
+              </section>
+              <section className={appStyles.endpointsCount}>
+                {[0, 1]?.includes(aService?.endpointsCount)
+                  ? `${aService?.endpointsCount} Endpoint`
+                  : `${aService?.endpointsCount} Endpoints`}
+              </section>
+              <section className={appStyles.actionBtns}>
                 {editMode === aService?._id && (
                   <ThemeButton
                     issecondary
@@ -175,6 +187,7 @@ const Dashboard = (props) => {
                       onClick={(e) => {
                         e?.stopPropagation();
                         setOpenConfirmPopup({ open: true, serviceMID: aService?._id });
+                        setEditMode(null);
                       }}
                       className={cx(appStyles.actionBtn, {
                         visibilityHidden: showActionIcons !== aService?._id,
@@ -182,7 +195,7 @@ const Dashboard = (props) => {
                     />
                   </Tooltip>
                 )}
-              </div>
+              </section>
             </div>
           );
         })}

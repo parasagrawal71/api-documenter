@@ -22,10 +22,8 @@
     .service-cnt {
       padding: 30px;
       border-radius: 5px;
-      cursor: pointer;
       display: flex;
       align-items: center;
-      justify-content: space-between;
       background-color: rgba(220, 228, 222, 0.15);
       box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
       min-height: 50px;
@@ -34,19 +32,36 @@
         margin-bottom: 20px;
       }
 
-      .cancelBtn {
+      .serviceName {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        width: 500px;
         margin-right: 20px;
       }
 
-      .saveBtn {
+      .endpointsCount {
       }
 
-      .actionBtn {
-        padding: 10px;
-        border-radius: 5px;
+      .actionBtns {
+        flex: 1;
+        display: flex;
+        justify-content: flex-end;
 
-        &:hover {
-          background-color: lightgrey;
+        .cancelBtn {
+          margin-right: 20px;
+        }
+
+        .saveBtn {
+        }
+
+        .actionBtn {
+          padding: 10px;
+          border-radius: 5px;
+
+          &:hover {
+            background-color: lightgrey;
+          }
         }
       }
     }

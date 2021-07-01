@@ -54,3 +54,11 @@ html {
 .visibilityHidden {
   visibility: hidden;
 }
+
+.cursorDefault {
+  cursor: default;
+}
+
+.cursorPointer {
+  cursor: pointer;
+}
