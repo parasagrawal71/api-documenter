@@ -137,6 +137,10 @@ export const auth = () => ({
     method: "PATCH",
     endpoint: "/auth/verify-email",
   },
+  resendVerificationEmail: {
+    method: "PATCH",
+    endpoint: "/auth/resend-verification-email",
+  },
 });
 // ****************************************************************************************** //
 

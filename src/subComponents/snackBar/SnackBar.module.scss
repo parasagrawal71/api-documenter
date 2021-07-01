@@ -1,0 +1,13 @@
+.snackbar {
+  display: flex;
+  align-items: center;
+
+  .alert {
+    display: flex;
+    align-items: center;
+
+    .button {
+      margin-left: 5px;
+    }
+  }
+}

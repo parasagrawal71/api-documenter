@@ -14,6 +14,7 @@ import { startCountDown } from "utils/functions";
 import { GOOGLE_CLIENT_ID } from "config";
 import { fetchLoggedInUserData } from "apis/apiCalls";
 import useGlobal from "redux/globalHook";
+import SnackbarComponent from "subComponents/snackBar/SnackBar";
 
 // IMPORT ASSETS HERE
 import googleIcon from "assets/images/google-icon.svg";
@@ -43,6 +44,7 @@ const Login = (props) => {
   const [showGoogleBtn, setShowGoogleBtn] = useState(false);
   const [pwdPatternValidation, setPwdPatternValidation] = useState(false);
   const [loaders, setLoaders] = useState({});
+  const [snackBar, setSnackBar] = useState({});
 
   useEffect(() => {
     modifyStates("LOGIN");
@@ -64,17 +66,21 @@ const Login = (props) => {
       });
       props?.history?.push("/dashboard");
     } else {
+      let isErrorToast = true;
+
       if (response?.errorCode === "PASSWORD_NOT_SET") {
-        setTab("login");
-        setSubmitButton({ id: "set_password", value: "Set Password" });
-        setPwdPatternValidation(true);
-        setShowFields({ email: true, password: true, confirmPassword: true });
-        setRequiredFields({ email: true, password: true, confirmPassword: true });
-        setDisableFields({ email: true });
-        setShowGoogleBtn(false);
+        modifyStates("SET_PASSWORD");
       }
-      toast.error(response?.message);
-      toast.clearWaitingQueue();
+
+      if (response?.errorCode === "USER_NOT_VERIFIED") {
+        setSnackBar({ show: true, message: `Your email is not verified yet.` });
+        isErrorToast = false;
+      }
+
+      if (isErrorToast) {
+        toast.error(response?.message);
+        toast.clearWaitingQueue();
+      }
     }
     setLoaders({ submit: false });
   };
@@ -91,12 +97,22 @@ const Login = (props) => {
       resetForm();
       modifyStates("LOGIN");
     } else {
+      let isErrorToast = true;
+
       if (response?.error?.code === "ALREADY_REGISTERED") {
         resetForm();
         modifyStates("LOGIN");
       }
-      toast.error(response?.message);
-      toast.clearWaitingQueue();
+
+      if (response?.error?.code === "USER_NOT_VERIFIED") {
+        setSnackBar({ show: true, message: `Your email is not verified yet.` });
+        isErrorToast = false;
+      }
+
+      if (isErrorToast) {
+        toast.error(response?.message);
+        toast.clearWaitingQueue();
+      }
     }
     setLoaders({ submit: false });
   };
@@ -226,6 +242,23 @@ const Login = (props) => {
       }
     } else {
       registerUser();
+    }
+  };
+
+  const handleResendVerificationEmail = async () => {
+    setSnackBar({ show: false });
+    resetForm();
+    modifyStates("LOGIN");
+    const response = await apiService(auth().resendVerificationEmail, null, {
+      params: {
+        email: getValues("email"),
+      },
+    });
+    if (response?.success) {
+      toast.success(response?.message);
+    } else {
+      toast.error(response?.message);
+      toast.clearWaitingQueue();
     }
   };
 
@@ -497,6 +530,18 @@ const Login = (props) => {
           )}
         </div>
       </form>
+
+      <SnackbarComponent
+        snackBar={snackBar}
+        stayOpen
+        severity="warning"
+        isButton
+        buttonText="Resend Email Verification"
+        buttonCallback={handleResendVerificationEmail}
+        handleClose={() => {
+          setSnackBar({ show: false });
+        }}
+      />
     </section>
   );
 };
