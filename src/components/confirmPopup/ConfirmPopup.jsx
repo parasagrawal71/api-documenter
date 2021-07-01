@@ -22,7 +22,7 @@ const ConfirmPopup = (props) => {
         setOpenPopup({});
       }}
     >
-      <section>{message || "Are you sure you want to delete it?"}</section>
+      <section className={appStyles.message}>{message || "Are you sure you want to delete it?"}</section>
 
       <section className={appStyles["action-btns-cnt"]}>
         <ThemeButton

@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Delete as DeleteIcon } from "@material-ui/icons";
+import { Delete as DeleteIcon, Edit as EditIcon } from "@material-ui/icons";
 import { Tooltip } from "@material-ui/core";
 import cx from "classnames";
+import { toast } from "react-toastify";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
 import HeaderComponent from "components/header/Header";
 import apiService from "apis/apiService";
 import { service } from "apis/urls";
-import { ThemeButton } from "utils/commonStyles/StyledComponents";
+import { ThemeButton, ThemeTextField } from "utils/commonStyles/StyledComponents";
 import TextfieldPopupComponent from "components/textfieldPopup/TextfieldPopup";
 import ConfirmPopupComponent from "components/confirmPopup/ConfirmPopup";
 
@@ -16,7 +17,9 @@ import appStyles from "./Dashboard.module.scss";
 
 const Dashboard = (props) => {
   const [serviceList, setServiceList] = useState([]);
-  const [showDeleteIcon, setShowDeleteIcon] = useState(null);
+  const [serviceOldData, setServiceOldData] = useState({});
+  const [showActionIcons, setShowActionIcons] = useState(null);
+  const [editMode, setEditMode] = useState(null);
   const [openTextfieldPopup, setOpenTextfieldPopup] = useState({
     open: false,
     placeholder1: "",
@@ -53,18 +56,43 @@ const Dashboard = (props) => {
     }
   };
 
+  const editService = async (updatedService) => {
+    const response = await apiService(service(updatedService?._id).put, updatedService);
+    if (response?.success) {
+      //
+    } else {
+      toast.error(response?.message);
+      toast.clearWaitingQueue();
+      updateServiceState(serviceOldData);
+    }
+  };
+
+  const updateServiceState = (updatedService) => {
+    const updatedServiceList = serviceList.map((aSer) => {
+      if (aSer?._id === updatedService?._id) {
+        return updatedService;
+      }
+
+      return aSer;
+    });
+    setServiceList([...updatedServiceList]);
+  };
+
   return (
     <section className={appStyles["main-cnt"]}>
       <HeaderComponent />
       <section className={appStyles["services-cnt"]}>
-        <ThemeButton
-          className={appStyles["add-service-btn"]}
-          onClick={() => {
-            setOpenTextfieldPopup({ open: true });
-          }}
-        >
-          Add Service
-        </ThemeButton>
+        <section className={appStyles["services-cnt__header"]}>
+          <div className={appStyles["services-cnt__header__title"]}>Services</div>
+          <ThemeButton
+            className={appStyles["add-service-btn"]}
+            onClick={() => {
+              setOpenTextfieldPopup({ open: true, placeholder1: "Enter service name" });
+            }}
+          >
+            Add Service
+          </ThemeButton>
+        </section>
         {serviceList?.map((aService, index) => {
           return (
             <div
@@ -78,25 +106,83 @@ const Dashboard = (props) => {
               }}
               onMouseEnter={(e) => {
                 e.stopPropagation();
-                setShowDeleteIcon(aService?._id);
+                setShowActionIcons(aService?._id);
               }}
               onMouseLeave={(e) => {
                 e.stopPropagation();
-                setShowDeleteIcon(null);
+                setShowActionIcons(null);
               }}
             >
-              <div>{aService?.serviceName}</div>
-              <Tooltip title="Delete service">
-                <DeleteIcon
-                  onClick={(e) => {
-                    e?.stopPropagation();
-                    setOpenConfirmPopup({ open: true, serviceMID: aService?._id });
-                  }}
-                  className={cx(appStyles.deleteServiceBtn, {
-                    visibilityHidden: showDeleteIcon !== aService?._id,
-                  })}
-                />
-              </Tooltip>
+              <div>
+                {editMode === aService?._id ? (
+                  <ThemeTextField
+                    value={aService?.serviceName}
+                    onClick={(e) => e?.stopPropagation()}
+                    onChange={(e) => {
+                      e?.stopPropagation();
+                      const newServiceName = e?.target?.value;
+                      updateServiceState({ ...aService, serviceName: newServiceName });
+                    }}
+                  />
+                ) : (
+                  aService?.serviceName
+                )}
+              </div>
+              <div>
+                {editMode === aService?._id && (
+                  <ThemeButton
+                    issecondary
+                    className={appStyles.cancelBtn}
+                    onClick={(e) => {
+                      e?.stopPropagation();
+                      setEditMode(null);
+                      updateServiceState(serviceOldData);
+                      setServiceOldData({});
+                    }}
+                  >
+                    Cancel
+                  </ThemeButton>
+                )}
+                {editMode === aService?._id && (
+                  <ThemeButton
+                    className={appStyles.saveBtn}
+                    onClick={(e) => {
+                      e?.stopPropagation();
+                      editService(aService);
+                      setEditMode(null);
+                    }}
+                  >
+                    Save
+                  </ThemeButton>
+                )}
+                {editMode !== aService?._id && (
+                  <Tooltip title="Edit service">
+                    <EditIcon
+                      onClick={(e) => {
+                        e?.stopPropagation();
+                        setEditMode(aService?._id);
+                        setServiceOldData({ ...aService });
+                      }}
+                      className={cx(appStyles.actionBtn, {
+                        visibilityHidden: showActionIcons !== aService?._id,
+                      })}
+                    />
+                  </Tooltip>
+                )}
+                {editMode !== aService?._id && (
+                  <Tooltip title="Delete service">
+                    <DeleteIcon
+                      onClick={(e) => {
+                        e?.stopPropagation();
+                        setOpenConfirmPopup({ open: true, serviceMID: aService?._id });
+                      }}
+                      className={cx(appStyles.actionBtn, {
+                        visibilityHidden: showActionIcons !== aService?._id,
+                      })}
+                    />
+                  </Tooltip>
+                )}
+              </div>
             </div>
           );
         })}
