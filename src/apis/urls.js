@@ -96,6 +96,14 @@ export const service = (mongoId) => ({
     method: "GET",
     endpoint: "/service",
   },
+  post: {
+    method: "POST",
+    endpoint: "/service",
+  },
+  delete: {
+    method: "DELETE",
+    endpoint: `/service/${mongoId}`,
+  },
 });
 // ****************************************************************************************** //
 

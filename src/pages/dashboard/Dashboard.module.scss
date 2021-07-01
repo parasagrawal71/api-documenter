@@ -1,15 +1,38 @@
 .main-cnt {
   .services-cnt {
     padding: 50px;
+    display: flex;
+    flex-direction: column;
+
+    .add-service-btn {
+      align-self: flex-end;
+      margin-bottom: 20px;
+    }
 
     .service-cnt {
       padding: 50px;
       border: 1px solid lightgrey;
       border-radius: 5px;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
 
       &:not(:last-child) {
         margin-bottom: 20px;
+      }
+
+      .deleteServiceBtn {
+        padding: 10px;
+        border-radius: 5px;
+
+        &:hover {
+          background-color: lightgrey;
+        }
+
+        &.visibilityHidden {
+          visibility: hidden;
+        }
       }
     }
   }
