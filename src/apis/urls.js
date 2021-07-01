@@ -156,3 +156,24 @@ export const user = (mongoId) => ({
   },
 });
 // ****************************************************************************************** //
+
+// ********************************** 'Environment' endpoints *********************************** //
+export const environment = (mongoId) => ({
+  getAll: {
+    method: "GET",
+    endpoint: "/environment",
+  },
+  post: {
+    method: "POST",
+    endpoint: "/environment",
+  },
+  put: {
+    method: "PUT",
+    endpoint: `/environment/${mongoId}`,
+  },
+  delete: {
+    method: "DELETE",
+    endpoint: `/environment/${mongoId}`,
+  },
+});
+// ****************************************************************************************** //

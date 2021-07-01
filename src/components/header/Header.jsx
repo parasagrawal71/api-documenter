@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ClickAwayListener } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import { ListAlt as ListAltIcon, ExitToApp as LogoutIcon } from "@material-ui/icons";
@@ -9,9 +9,10 @@ import { ThemeAutocomplete, ThemeTextField } from "utils/commonStyles/StyledComp
 import EnvPopoverComponent from "components/envPopover/EnvPopover";
 import { clearSession } from "utils/cookie";
 import useGlobal from "redux/globalHook";
+import apiService from "apis/apiService";
+import { environment } from "apis/urls";
 
 // IMPORT ASSETS HERE
-import environments from "assets/environments.json";
 import appStyles from "./Header.module.scss";
 
 const Header = (props) => {
@@ -21,6 +22,39 @@ const Header = (props) => {
   // HOOKS HERE
   const [openEnvPopover, setOpenEnvPopover] = useState(null);
   const [globalState] = useGlobal();
+  const [environments, setEnvironments] = useState([]);
+
+  useEffect(() => {
+    getEnvironments();
+  }, []);
+
+  const getEnvironments = async () => {
+    const response = await apiService(environment().getAll);
+    if (response?.success) {
+      setEnvironments(response?.data);
+    }
+  };
+
+  const createEnvironment = async (reqBody) => {
+    const response = await apiService(environment().post, reqBody);
+    if (response?.success) {
+      // setEnvironments(); response?.data
+    }
+  };
+
+  const editEnvironment = async (updatedEnvironment) => {
+    const response = await apiService(environment(updatedEnvironment?._id).put, updatedEnvironment);
+    if (response?.success) {
+      // setEnvironments(); response?.data
+    }
+  };
+
+  const deleteEnvironment = async (mongoId) => {
+    const response = await apiService(environment(mongoId).delete);
+    if (response?.success) {
+      // setEnvironments(); response?.data
+    }
+  };
 
   const toggleOpenEnvPopover = (event) => {
     setOpenEnvPopover(openEnvPopover ? null : event?.currentTarget);

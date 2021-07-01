@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Select, Chip, FormControl, MenuItem } from "@material-ui/core";
 import cx from "classnames";
+import { toast } from "react-toastify";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
 import HeaderComponent from "components/header/Header";
@@ -14,6 +15,7 @@ import appStyles from "./Users.module.scss";
 
 const Users = (props) => {
   const [users, setUsers] = useState([]);
+  const [userOldData, setUserOldData] = useState({});
   const [serviceList, setServiceList] = useState([]);
   const [globalState, globalActions] = useGlobal();
 
@@ -39,9 +41,14 @@ const Users = (props) => {
   const updateUser = async (updatedUser) => {
     const response = await apiService(user(updatedUser?._id).put, updatedUser);
     if (response?.success) {
+      setUserOldData({});
       if (globalState?.loggedInUser?._id === updatedUser?._id) {
         globalActions.updateLoggedInUser(updatedUser);
       }
+    } else {
+      updateUsersState(userOldData);
+      toast.error("Couldn't update access!");
+      toast.clearWaitingQueue();
     }
   };
 
@@ -124,6 +131,9 @@ const Users = (props) => {
                   displayEmpty
                   value={aUser?.editAccess}
                   onChange={(e) => handleServiceOptionsChange(e, aUser)}
+                  onOpen={() => {
+                    setUserOldData({ ...aUser });
+                  }}
                   onClose={() => {
                     updateUser(aUser);
                   }}
