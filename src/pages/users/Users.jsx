@@ -7,6 +7,7 @@ import HeaderComponent from "components/header/Header";
 import apiService from "apis/apiService";
 import { user, service } from "apis/urls";
 import { ThemeButton } from "utils/commonStyles/StyledComponents";
+import useGlobal from "redux/globalHook";
 
 // IMPORT ASSETS HERE
 import appStyles from "./Users.module.scss";
@@ -14,6 +15,7 @@ import appStyles from "./Users.module.scss";
 const Users = (props) => {
   const [users, setUsers] = useState([]);
   const [serviceList, setServiceList] = useState([]);
+  const [globalState, globalActions] = useGlobal();
 
   useEffect(() => {
     getUsers();
@@ -37,7 +39,9 @@ const Users = (props) => {
   const updateUser = async (updatedUser) => {
     const response = await apiService(user(updatedUser?._id).put, updatedUser);
     if (response?.success) {
-      //
+      if (globalState?.loggedInUser?._id === updatedUser?._id) {
+        globalActions.updateLoggedInUser(updatedUser);
+      }
     }
   };
 

@@ -12,6 +12,7 @@ import ConfirmPopupComponent from "components/confirmPopup/ConfirmPopup";
 import { arrayMove, getUrlParams } from "utils/functions";
 import apiService from "apis/apiService";
 import { readme, schema, apisTree, endpointUrl } from "apis/urls";
+import useGlobal from "redux/globalHook";
 
 // IMPORT ASSETS HERE
 import appStyles from "./tableOfContents.module.scss";
@@ -44,6 +45,7 @@ const tableOfContents = (props) => {
     subFolderObj: {},
     fileObj: {},
   });
+  const [globalState] = useGlobal();
 
   const openCloseFolder = (folderName, subFolderName, folderIndex) => {
     const updatedFolders = sortedApisTree?.map((folderObj, index) => {
@@ -527,19 +529,21 @@ const tableOfContents = (props) => {
 
       <div className={appStyles["sub-header"]}>
         <span>APIs</span>
-        <Tooltip title="Add Folder">
-          <AddFolderIcon
-            className={appStyles.addFolderIcon}
-            onClick={(e) => {
-              e.stopPropagation();
-              setOpenTextfieldPopup({
-                actionType: "add-folder",
-                open: true,
-                placeholder1: "Enter Folder Name",
-              });
-            }}
-          />
-        </Tooltip>
+        {globalState?.loggedInUser?.editAccess?.includes?.(getUrlParams?.()?.serviceName) && (
+          <Tooltip title="Add Folder">
+            <AddFolderIcon
+              className={appStyles.addFolderIcon}
+              onClick={(e) => {
+                e.stopPropagation();
+                setOpenTextfieldPopup({
+                  actionType: "add-folder",
+                  open: true,
+                  placeholder1: "Enter Folder Name",
+                });
+              }}
+            />
+          </Tooltip>
+        )}
       </div>
 
       {/* *********************************** API FOLDERS starts here ************************************* */}
