@@ -1,3 +1,6 @@
+@import "utils/commonStyles/flex.scss";
+@import "utils/commonStyles/flex.scss";
+
 .main-container {
   flex: 1;
 
@@ -57,6 +60,27 @@
             display: flex;
             align-items: center;
             font-size: 0.6em;
+
+            .title__envs {
+              @include flex-row-v-cen;
+              margin-right: 20px;
+
+              .title__envs-dropdown {
+                margin-right: 10px;
+              }
+
+              .title__edit-env {
+                @include flex-row-v-cen;
+
+                .title__edit-env__icon {
+                  font-size: 2rem;
+
+                  &:hover {
+                    cursor: pointer;
+                  }
+                }
+              }
+            }
           }
         }
       }
