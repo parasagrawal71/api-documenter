@@ -16,7 +16,7 @@
 
     .content-cnt--right {
       flex: 1;
-      padding: 20px 10px 20px 20px;
+      padding: 0px 10px 20px 20px;
       display: flex;
       flex-direction: column;
 
@@ -41,9 +41,13 @@
         flex-direction: column;
 
         .title {
+          position: sticky;
+          top: 60px;
+          z-index: 999;
+          padding: 10px 0;
+          background-color: #fff;
           font-size: 1.3em;
           // background-color: rgba(76, 82, 100, 0.2);
-          border-radius: 5px;
           margin-bottom: 10px;
           display: flex;
           justify-content: space-between;
