@@ -11,6 +11,8 @@ import { service } from "apis/urls";
 import { ThemeButton, ThemeTextField } from "utils/commonStyles/StyledComponents";
 import TextfieldPopupComponent from "components/textfieldPopup/TextfieldPopup";
 import ConfirmPopupComponent from "components/confirmPopup/ConfirmPopup";
+import useGlobal from "redux/globalHook";
+import { fetchLoggedInUserData } from "apis/apiCalls";
 
 // IMPORT ASSETS HERE
 import appStyles from "./Dashboard.module.scss";
@@ -20,6 +22,7 @@ const Dashboard = (props) => {
   const [serviceOldData, setServiceOldData] = useState({});
   const [showActionIcons, setShowActionIcons] = useState(null);
   const [editMode, setEditMode] = useState(null);
+  const [globalState, globalActions] = useGlobal();
   const [openTextfieldPopup, setOpenTextfieldPopup] = useState({
     open: false,
     placeholder1: "",
@@ -48,6 +51,9 @@ const Dashboard = (props) => {
     if (response?.success) {
       serviceList.unshift(response?.data);
       setServiceList([...serviceList]);
+      fetchLoggedInUserData().then((userData) => {
+        globalActions.updateLoggedInUser(userData);
+      });
     } else {
       toast.error(response?.message);
       toast.clearWaitingQueue();
@@ -68,7 +74,9 @@ const Dashboard = (props) => {
   const editService = async (updatedService) => {
     const response = await apiService(service(updatedService?._id).put, updatedService);
     if (response?.success) {
-      //
+      fetchLoggedInUserData().then((userData) => {
+        globalActions.updateLoggedInUser(userData);
+      });
     } else {
       toast.error(response?.message);
       toast.clearWaitingQueue();
@@ -146,8 +154,8 @@ const Dashboard = (props) => {
               </section>
               <section className={appStyles.endpointsCount}>
                 {[0, 1]?.includes(aService?.endpointsCount)
-                  ? `${aService?.endpointsCount} endpoint`
-                  : `${aService?.endpointsCount} endpoints`}
+                  ? `${aService?.endpointsCount || 0} endpoint`
+                  : `${aService?.endpointsCount || 0} endpoints`}
               </section>
               <section className={appStyles.actionBtns}>
                 {editMode === aService?._id && (
@@ -175,34 +183,36 @@ const Dashboard = (props) => {
                     />
                   </Tooltip>
                 )}
-                {editMode !== aService?._id && (
-                  <Tooltip title="Edit service">
-                    <EditIcon
-                      onClick={(e) => {
-                        e?.stopPropagation();
-                        setEditMode(aService?._id);
-                        setServiceOldData({ ...aService });
-                      }}
-                      className={cx(appStyles.actionBtn, {
-                        visibilityHidden: showActionIcons !== aService?._id,
-                      })}
-                    />
-                  </Tooltip>
-                )}
-                {editMode !== aService?._id && (
-                  <Tooltip title="Delete service">
-                    <DeleteIcon
-                      onClick={(e) => {
-                        e?.stopPropagation();
-                        setOpenConfirmPopup({ open: true, serviceMID: aService?._id });
-                        setEditMode(null);
-                      }}
-                      className={cx(appStyles.actionBtn, {
-                        visibilityHidden: showActionIcons !== aService?._id,
-                      })}
-                    />
-                  </Tooltip>
-                )}
+                {globalState?.loggedInUser?.editAccess?.includes?.(aService?.serviceName) &&
+                  editMode !== aService?._id && (
+                    <Tooltip title="Edit service">
+                      <EditIcon
+                        onClick={(e) => {
+                          e?.stopPropagation();
+                          setEditMode(aService?._id);
+                          setServiceOldData({ ...aService });
+                        }}
+                        className={cx(appStyles.actionBtn, {
+                          visibilityHidden: showActionIcons !== aService?._id,
+                        })}
+                      />
+                    </Tooltip>
+                  )}
+                {globalState?.loggedInUser?.editAccess?.includes?.(aService?.serviceName) &&
+                  editMode !== aService?._id && (
+                    <Tooltip title="Delete service">
+                      <DeleteIcon
+                        onClick={(e) => {
+                          e?.stopPropagation();
+                          setOpenConfirmPopup({ open: true, serviceMID: aService?._id });
+                          setEditMode(null);
+                        }}
+                        className={cx(appStyles.actionBtn, {
+                          visibilityHidden: showActionIcons !== aService?._id,
+                        })}
+                      />
+                    </Tooltip>
+                  )}
               </section>
             </div>
           );
