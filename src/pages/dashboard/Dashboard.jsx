@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Delete as DeleteIcon, Edit as EditIcon, Save as SaveIcon, Cancel as CancelIcon } from "@material-ui/icons";
+import { Delete as DeleteIcon, Edit as EditIcon, Save as SaveIcon, Close as CancelIcon } from "@material-ui/icons";
 import { Tooltip } from "@material-ui/core";
 import cx from "classnames";
 import { toast } from "react-toastify";
