@@ -3,7 +3,7 @@
 .app-header {
   @include flex-row-b-sb-cen;
   background-color: rgba(76, 82, 100, 1);
-  padding: 10px;
+  padding: 15px;
   color: white;
   height: 40px; // TODO: REMOVE LATER
   position: sticky;
@@ -16,55 +16,46 @@
     }
   }
 
-  .app-header--mid {
+  .app-header--right {
     @include flex-row-v-cen;
 
     .app-header_menu-item {
       cursor: pointer;
       text-decoration: none;
       color: white;
+      padding: 10px;
+      border-radius: 4px;
 
       &:not(:last-child) {
         margin-right: 10px;
       }
 
-      &:hover {
-        text-decoration: underline;
-      }
-
       &.active {
-        text-decoration: underline;
-      }
-    }
-  }
-
-  .app-header--right {
-    @include flex-row-v-cen;
-
-    .app-header__envs {
-      @include flex-row-v-cen;
-      margin-right: 20px;
-
-      .app-header__envs-dropdown {
-        margin-right: 10px;
-      }
-
-      .app-header__edit-env {
-        @include flex-row-v-cen;
-
-        .app-header__edit-env__icon {
-          font-size: 2rem;
-
-          &:hover {
-            cursor: pointer;
-          }
-        }
+        background-color: rgb(95, 101, 121);
       }
     }
 
-    .logout-btn {
-      cursor: pointer;
-      font-size: 1.9em;
+    .user-account-cnt {
+      padding-left: 10px;
+
+      .user-account-icon {
+        width: 35px;
+        height: 35px;
+        cursor: pointer;
+      }
+    }
+
+    .accountOptionsCnt {
+      top: 72px;
+      right: 5px;
+      min-width: 115px;
+      text-transform: capitalize;
+      color: rgba(0, 0, 0, 0.7);
+      border-radius: 2px;
+    }
+
+    .accountOption {
+      padding: 10px 10px;
     }
   }
 }

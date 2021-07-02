@@ -14,7 +14,7 @@ import ReactHtmlParser from "react-html-parser";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
 import { ThemeTextField, ThemeAutocomplete, ThemeButton } from "utils/commonStyles/StyledComponents";
-import GenericActionsPopover from "subComponents/genericActionsPopover/GenericActionsPopover";
+import GenericActionsPopoverComponent from "subComponents/genericActionsPopover/GenericActionsPopover";
 import { capitalizeFirstLetter, getStatusText, prettyPrintJson, validateJSON } from "utils/functions";
 import AppTableComponent from "components/appTable/AppTable";
 import ViewMorePopupComponent from "components/viewMorePopup/ViewMorePopup";
@@ -44,7 +44,7 @@ const Endpoint = (props) => {
   const [requestBody, setRequestBody] = useState("");
   const [apiResponse, setApiResponse] = useState("");
   const [invalidReqBody, setInvalidReqBody] = useState(false);
-  const [openSendOptions, sendOpenSendOptions] = useState(false);
+  const [openSendOptions, setOpenSendOptions] = useState(false);
 
   // REDUCERS HERE
   const endpointReducers = (state, action) => {
@@ -497,14 +497,14 @@ const Endpoint = (props) => {
                 <ThemeButton
                   className={appStyles["dropdown-arrow-btn"]}
                   onClick={() => {
-                    sendOpenSendOptions(!openSendOptions);
+                    setOpenSendOptions(!openSendOptions);
                   }}
                 >
                   <div className={cx("dropdown-arrow")} />
-                  <GenericActionsPopover
+                  <GenericActionsPopoverComponent
                     openPopover={openSendOptions}
                     setOpenPopover={(val) => {
-                      sendOpenSendOptions(val);
+                      setOpenSendOptions(val);
                     }}
                     options={["Save as example"]}
                     optionsCallbacks={[
