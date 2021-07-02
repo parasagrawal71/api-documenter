@@ -48,19 +48,20 @@
         display: flex;
         justify-content: flex-end;
 
-        .cancelBtn {
-          margin-right: 20px;
-        }
-
-        .saveBtn {
-        }
-
         .actionBtn {
           padding: 10px;
           border-radius: 5px;
 
           &:hover {
             background-color: lightgrey;
+
+            // &.cancelBtn {
+            //   background-color: var(--secondary);
+            // }
+
+            // &.saveBtn {
+            //   background-color: var(--primary);
+            // }
           }
         }
       }

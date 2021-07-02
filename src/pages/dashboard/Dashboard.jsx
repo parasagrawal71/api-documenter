@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Delete as DeleteIcon, Edit as EditIcon } from "@material-ui/icons";
+import { Delete as DeleteIcon, Edit as EditIcon, Save as SaveIcon, Cancel as CancelIcon } from "@material-ui/icons";
 import { Tooltip } from "@material-ui/core";
 import cx from "classnames";
 import { toast } from "react-toastify";
@@ -151,30 +151,29 @@ const Dashboard = (props) => {
               </section>
               <section className={appStyles.actionBtns}>
                 {editMode === aService?._id && (
-                  <ThemeButton
-                    issecondary
-                    className={appStyles.cancelBtn}
-                    onClick={(e) => {
-                      e?.stopPropagation();
-                      setEditMode(null);
-                      updateServiceState(serviceOldData);
-                      setServiceOldData({});
-                    }}
-                  >
-                    Cancel
-                  </ThemeButton>
+                  <Tooltip title="Cancel">
+                    <CancelIcon
+                      className={cx(appStyles.actionBtn, appStyles.cancelBtn)}
+                      onClick={(e) => {
+                        e?.stopPropagation();
+                        setEditMode(null);
+                        updateServiceState(serviceOldData);
+                        setServiceOldData({});
+                      }}
+                    />
+                  </Tooltip>
                 )}
                 {editMode === aService?._id && (
-                  <ThemeButton
-                    className={appStyles.saveBtn}
-                    onClick={(e) => {
-                      e?.stopPropagation();
-                      editService(aService);
-                      setEditMode(null);
-                    }}
-                  >
-                    Save
-                  </ThemeButton>
+                  <Tooltip title="Save">
+                    <SaveIcon
+                      className={cx(appStyles.actionBtn, appStyles.saveBtn)}
+                      onClick={(e) => {
+                        e?.stopPropagation();
+                        editService(aService);
+                        setEditMode(null);
+                      }}
+                    />
+                  </Tooltip>
                 )}
                 {editMode !== aService?._id && (
                   <Tooltip title="Edit service">
