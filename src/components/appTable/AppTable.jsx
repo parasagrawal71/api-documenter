@@ -86,6 +86,20 @@ const AppTable = (props) => {
           }}
           error={tableRowData?.error?.[headerObj?.key]?.toString()}
           onBlur={() => {
+            if (dispatchEndpoint) {
+              dispatchEndpoint({
+                type: arrayKey,
+                payload: {
+                  headerKey: "error",
+                  rowIndex,
+                  value: {
+                    ...(tableRowData?.error || {}),
+                    [headerKey]: headerObj?.required && !tableRowData?.[headerKey] ? true : undefined,
+                  },
+                },
+              });
+            }
+
             if (dispatchModel) {
               dispatchModel({
                 type: "update-modelField",
@@ -94,7 +108,7 @@ const AppTable = (props) => {
                   rowIndex,
                   value: {
                     ...(tableRowData?.error || {}),
-                    [headerKey]: headerObj?.required ? true : undefined,
+                    [headerKey]: headerObj?.required && !tableRowData?.[headerKey] ? true : undefined,
                   },
                 },
               });
@@ -135,6 +149,20 @@ const AppTable = (props) => {
               }}
               error={tableRowData?.error?.[headerObj?.key]?.toString()}
               onBlur={() => {
+                if (dispatchEndpoint) {
+                  dispatchEndpoint({
+                    type: arrayKey,
+                    payload: {
+                      headerKey: "error",
+                      rowIndex,
+                      value: {
+                        ...(tableRowData?.error || {}),
+                        [headerKey]: headerObj?.required && !tableRowData?.[headerKey] ? true : undefined,
+                      },
+                    },
+                  });
+                }
+
                 if (dispatchModel) {
                   dispatchModel({
                     type: "update-modelField",
@@ -143,7 +171,7 @@ const AppTable = (props) => {
                       rowIndex,
                       value: {
                         ...(tableRowData?.error || {}),
-                        [headerKey]: headerObj?.required ? true : undefined,
+                        [headerKey]: headerObj?.required && !tableRowData?.[headerKey] ? true : undefined,
                       },
                     },
                   });
@@ -198,6 +226,20 @@ const AppTable = (props) => {
           rows={2}
           error={tableRowData?.error?.[headerObj?.key]?.toString()}
           onBlur={() => {
+            if (dispatchEndpoint) {
+              dispatchEndpoint({
+                type: arrayKey,
+                payload: {
+                  headerKey: "error",
+                  rowIndex,
+                  value: {
+                    ...(tableRowData?.error || {}),
+                    [headerKey]: headerObj?.required && !tableRowData?.[headerKey] ? true : undefined,
+                  },
+                },
+              });
+            }
+
             if (dispatchModel) {
               dispatchModel({
                 type: "update-modelField",
@@ -206,7 +248,7 @@ const AppTable = (props) => {
                   rowIndex,
                   value: {
                     ...(tableRowData?.error || {}),
-                    [headerKey]: headerObj?.required ? true : undefined,
+                    [headerKey]: headerObj?.required && !tableRowData?.[headerKey] ? true : undefined,
                   },
                 },
               });
@@ -293,7 +335,7 @@ const AppTable = (props) => {
                   );
                 })}
                 {(addMode || editMode) && (
-                  <TableCell className={classes.tableBodyCell} style={{ padding: cellPadding }}>
+                  <TableCell className={classes.tableBodyCell} style={{ padding: 0 }}>
                     <RemoveIcon
                       className={appStyles.removeIcon}
                       onClick={() => {

@@ -71,6 +71,9 @@ const Endpoint = (props) => {
         const updatedParameters = state?.parameters?.map((param, index) => {
           if (index === payload?.rowIndex) {
             param[payload?.headerKey] = payload?.value;
+            if (param?.error) {
+              param.error[payload?.headerKey] = undefined;
+            }
             return param;
           }
           return param;
@@ -98,6 +101,9 @@ const Endpoint = (props) => {
         const updatedReqHeaders = state?.requestHeaders?.map((reqHeader, index) => {
           if (index === payload?.rowIndex) {
             reqHeader[payload?.headerKey] = payload?.value;
+            if (reqHeader?.error) {
+              reqHeader.error[payload?.headerKey] = undefined;
+            }
             return reqHeader;
           }
           return reqHeader;
@@ -300,10 +306,88 @@ const Endpoint = (props) => {
     return ReactHtmlParser(coloredFieldValue);
   };
 
+  const isValidationsErrors = () => {
+    const requiredParameters = [];
+    parameterTableHeaders?.filter((p) => {
+      if (p.required) {
+        requiredParameters.push(p.key);
+      }
+      return p;
+    });
+
+    const requiredReqHeaders = [];
+    reqHeadTableHeaders?.filter((h) => {
+      if (h.required) {
+        requiredReqHeaders.push(h.key);
+      }
+      return h;
+    });
+
+    let isError = false;
+    endpoint?.parameters?.map((paramObj, index) => {
+      const isErrorObj = {};
+
+      requiredParameters?.map((requiredParamName) => {
+        if (!paramObj?.[requiredParamName]) {
+          isErrorObj.rowIndex = index;
+          isErrorObj.value = {
+            ...isErrorObj?.value,
+            [requiredParamName]: true,
+          };
+          isError = true;
+        }
+        return requiredParamName;
+      });
+
+      dispatchEndpoint({
+        type: "parameters",
+        payload: {
+          headerKey: "error",
+          rowIndex: isErrorObj?.rowIndex,
+          value: isErrorObj?.value,
+        },
+      });
+
+      return paramObj;
+    });
+
+    endpoint?.requestHeaders?.map((reqHeaderObj, index) => {
+      const isErrorObj = {};
+
+      requiredReqHeaders?.map((requiredHeaderName) => {
+        if (!reqHeaderObj?.[requiredHeaderName]) {
+          isErrorObj.rowIndex = index;
+          isErrorObj.value = {
+            ...isErrorObj?.value,
+            [requiredHeaderName]: true,
+          };
+          isError = true;
+        }
+        return requiredHeaderName;
+      });
+
+      dispatchEndpoint({
+        type: "requestHeaders",
+        payload: {
+          headerKey: "error",
+          rowIndex: isErrorObj?.rowIndex,
+          value: isErrorObj?.value,
+        },
+      });
+
+      return reqHeaderObj;
+    });
+
+    return isError;
+  };
+
   const handleEditSaveBtn = () => {
     if (!editMode) {
       setEditMode(true);
     } else {
+      if (isValidationsErrors()) {
+        return;
+      }
       updateEndpoint();
       setEditMode(false);
     }
