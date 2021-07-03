@@ -9,6 +9,7 @@ import ReactHtmlParser from "react-html-parser";
 import { ThemeTextField, ThemeCheckbox, ThemeAutocomplete } from "utils/commonStyles/StyledComponents";
 
 // IMPORT ASSETS HERE
+import requestHeadersArray from "utils/constants/request-headers.json";
 import appStyles from "./AppTable.module.scss";
 
 const AppTable = (props) => {
@@ -113,21 +114,6 @@ const AppTable = (props) => {
                 },
               });
             }
-
-            if (dispatchEndpoint) {
-              // TODO: ADD ENDPOINT FIELD VALIDATIONS
-              // dispatchEndpoint({
-              //   type: "",
-              //   payload: {
-              //     headerKey: "error",
-              //     rowIndex,
-              //     value: {
-              //       ...(tableRowData?.error || {}),
-              //       [headerKey]: headerObj?.required ? true : undefined,
-              //     },
-              //   },
-              // });
-            }
           }}
         />
       ) : fieldValue ? (
@@ -135,15 +121,33 @@ const AppTable = (props) => {
       ) : (
         "No"
       );
-    } else if (["type"].includes(headerKey) && (addMode || editMode)) {
+    } else if (
+      (["type"].includes(headerKey) && (addMode || editMode)) ||
+      (arrayKey === "requestHeaders" && ["name"].includes(headerKey) && (addMode || editMode))
+    ) {
       return (
         <ThemeAutocomplete
-          options={modelFieldTypes}
-          getOptionLabel={(option) => option?.type || ""}
+          disableClearable
+          options={
+            arrayKey === "modelFields" ? modelFieldTypes : arrayKey === "requestHeaders" ? requestHeadersArray : []
+          }
+          getOptionLabel={
+            arrayKey === "modelFields"
+              ? (option) => option?.type || ""
+              : arrayKey === "requestHeaders"
+              ? (option) => option || ""
+              : ""
+          }
           customStyle={{ width: "250px" }}
           renderInput={(params) => (
             <ThemeTextField
               {...params}
+              // IMPORTANT: To disable browser's autofill
+              id="field1"
+              inputProps={{
+                ...params.inputProps,
+                autoComplete: "new-password",
+              }}
               InputLabelProps={{
                 focused: false,
               }}
@@ -180,6 +184,17 @@ const AppTable = (props) => {
             />
           )}
           onChange={(e, selectedOption) => {
+            if (dispatchEndpoint) {
+              dispatchEndpoint({
+                type: arrayKey,
+                payload: {
+                  headerKey,
+                  rowIndex,
+                  value: arrayKey === "requestHeaders" ? selectedOption : "",
+                },
+              });
+            }
+
             if (dispatchModel) {
               dispatchModel({
                 type: "update-modelField",
@@ -191,7 +206,13 @@ const AppTable = (props) => {
               });
             }
           }}
-          value={{ type: fieldValue } || ""}
+          value={
+            arrayKey === "modelFields"
+              ? { type: fieldValue } || ""
+              : arrayKey === "requestHeaders"
+              ? fieldValue || ""
+              : ""
+          }
         />
       );
     } else if ((headerKey === "value" && !disableValueTextbox) || addMode || editMode) {
