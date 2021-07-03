@@ -138,7 +138,7 @@ const AppTable = (props) => {
               ? (option) => option || ""
               : ""
           }
-          customStyle={{ width: "250px" }}
+          customStyle={{ width: arrayKey === "requestHeaders" ? "300px" : "250px" }}
           renderInput={(params) => (
             <ThemeTextField
               {...params}
@@ -327,7 +327,12 @@ const AppTable = (props) => {
                     [classes.centerAlign]: ["required", "unique"].includes(header?.key),
                     [classes.widthToNameField]: ["name"].includes(header?.key),
                   })}
-                  style={{ padding: cellPadding }}
+                  style={{
+                    padding: cellPadding,
+                    width:
+                      header?.key === "name" &&
+                      ((arrayKey === "requestHeaders" && "300px") || (arrayKey === "parameters" && "250px")),
+                  }}
                 >
                   {header?.displayName}
                   {header?.required ? <span className={appStyles["required-asterisk"]}>*</span> : ""}
@@ -349,14 +354,22 @@ const AppTable = (props) => {
                         [classes.centerAlign]: ["required", "unique"].includes(header?.key),
                         [classes.widthToNameField]: ["name"].includes(header?.key),
                       })}
-                      style={{ padding: cellPadding }}
+                      style={{
+                        padding: cellPadding,
+                        width:
+                          header?.key === "name" &&
+                          ((arrayKey === "requestHeaders" && "300px") || (arrayKey === "parameters" && "250px")),
+                      }}
                     >
                       {TextFieldBoxOrValue(tableRow, header, rowIndex, tableRow[header?.key])}
                     </TableCell>
                   );
                 })}
                 {(addMode || editMode) && (
-                  <TableCell className={classes.tableBodyCell} style={{ padding: 0 }}>
+                  <TableCell
+                    className={classes.tableBodyCell}
+                    style={{ padding: 0, textAlign: "center", width: "50px" }}
+                  >
                     <RemoveIcon
                       className={appStyles.removeIcon}
                       onClick={() => {
