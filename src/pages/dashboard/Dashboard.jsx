@@ -30,6 +30,7 @@ const Dashboard = (props) => {
   const [openConfirmPopup, setOpenConfirmPopup] = useState({
     open: false,
     serviceMID: "",
+    message: "",
   });
 
   useEffect(() => {
@@ -204,7 +205,12 @@ const Dashboard = (props) => {
                       <DeleteIcon
                         onClick={(e) => {
                           e?.stopPropagation();
-                          setOpenConfirmPopup({ open: true, serviceMID: aService?._id });
+                          setOpenConfirmPopup({
+                            open: true,
+                            serviceMID: aService?._id,
+                            message:
+                              "Are you sure you want to delete the service? It will delete all the endpoints of it.",
+                          });
                           setEditMode(null);
                         }}
                         className={cx(appStyles.actionBtn, {
@@ -231,7 +237,7 @@ const Dashboard = (props) => {
       <ConfirmPopupComponent
         openPopup={openConfirmPopup?.open}
         setOpenPopup={setOpenConfirmPopup}
-        message="Are you sure you want to delete the service? It will delete all the endpoints of it."
+        message={openConfirmPopup?.message}
         confirmText="Delete"
         confirmCallback={() => {
           deleteService(openConfirmPopup?.serviceMID);

@@ -1,4 +1,5 @@
 // IMPORTS //
+import { deleteAllCookies } from "utils/cookie";
 import {
   NOT_FOUND,
   FORBIDDEN,
@@ -23,6 +24,8 @@ const handleError = (error) => {
       return error?.response?.data;
 
     case UNAUTHORIZED:
+      deleteAllCookies();
+      window.location.href = "/";
       // "UNAUTHORIZED";
       return error?.response?.data;
 

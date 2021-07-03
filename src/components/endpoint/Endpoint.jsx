@@ -230,6 +230,7 @@ const Endpoint = (props) => {
       if (fieldName === "method") {
         return (
           <ThemeAutocomplete
+            disableClearable
             options={["GET", "POST", "PUT", "DELETE", "PATCH"]}
             getOptionLabel={(option) => option || ""}
             customStyle={{ width: "150px" }}

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Tooltip, ClickAwayListener } from "@material-ui/core";
 import { toast } from "react-toastify";
-import { ListAlt as ListAltIcon } from "@material-ui/icons";
+import { Add as AddEnvIcon } from "@material-ui/icons";
+import cx from "classnames";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
 import HeaderComponent from "components/header/Header";
@@ -15,8 +16,11 @@ import { getUrlParams, sortArrayOfObjs } from "utils/functions";
 import { ThemeSwitch, ThemeAutocomplete, ThemeTextField } from "utils/commonStyles/StyledComponents";
 import useGlobal from "redux/globalHook";
 import EnvPopoverComponent from "components/envPopover/EnvPopover";
+import TextfieldPopupComponent from "components/textfieldPopup/TextfieldPopup";
+import ConfirmPopupComponent from "components/confirmPopup/ConfirmPopup";
 
 // IMPORT ASSETS HERE
+import envVariables from "assets/images/environment-variables.png";
 import appStyles from "./Documentation.module.scss";
 
 const Documentation = (props) => {
@@ -33,6 +37,16 @@ const Documentation = (props) => {
   const [environments, setEnvironments] = useState([]);
   const [openEnvPopover, setOpenEnvPopover] = useState(null);
   const [selectedEnvOldData, setSelectedEnvOldData] = useState(null);
+  const [enableShadow, setEnableShadow] = useState(false);
+  const [openTextfieldPopup, setOpenTextfieldPopup] = useState({
+    open: false,
+    placeholder1: "",
+  });
+  const [openConfirmPopup, setOpenConfirmPopup] = useState({
+    open: false,
+    envMID: "",
+    message: "",
+  });
 
   useEffect(() => {
     // fetchModels();
@@ -56,11 +70,33 @@ const Documentation = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedEnv]);
 
+  useEffect(() => {
+    const headerShadowListener = window.addEventListener("scroll", enableHeaderShadow);
+
+    return () => {
+      if (headerShadowListener) {
+        window.removeEventListener("scroll", headerShadowListener);
+      }
+    };
+  }, []);
+
+  const enableHeaderShadow = () => {
+    const positionFromTop = 200;
+    if (window.pageYOffset > positionFromTop) {
+      setEnableShadow(true);
+      return;
+    }
+    setEnableShadow(false);
+  };
+
   const getEnvironments = async () => {
     const response = await apiService(environment().getAll);
     if (response?.success) {
       setEnvironments(response?.data);
       setSelectedEnv(response?.data?.[0]);
+    } else {
+      toast.error(response?.message);
+      toast.clearWaitingQueue();
     }
   };
 
@@ -93,7 +129,11 @@ const Documentation = (props) => {
   const createEnvironment = async (reqBody) => {
     const response = await apiService(environment().post, { ...reqBody, serviceMID });
     if (response?.success) {
-      // setEnvironments(); response?.data
+      environments.push(response?.data);
+      setEnvironments(environments);
+    } else {
+      toast.error(response?.message);
+      toast.clearWaitingQueue();
     }
   };
 
@@ -109,9 +149,17 @@ const Documentation = (props) => {
   };
 
   const deleteEnvironment = async (mongoId) => {
+    // setOpenConfirmPopup({
+    //   open: true,
+    //   envMID: selectedEnv?._id,
+    //   message: "Are you sure you want to delete the environment?",
+    // });
     const response = await apiService(environment(mongoId).delete);
     if (response?.success) {
-      // setEnvironments(); response?.data
+      setEnvironments(environments.filter((env) => env._id !== mongoId));
+    } else {
+      toast.error(response?.message);
+      toast.clearWaitingQueue();
     }
   };
 
@@ -167,7 +215,10 @@ const Documentation = (props) => {
           ) : null}
 
           <section className={appStyles["endpoints-cnt"]}>
-            <div id="endpoints" className={appStyles.title}>
+            <div
+              id="endpoints"
+              className={cx(appStyles.title, enableShadow ? appStyles["header-shadow"] : appStyles["no-shadow"])}
+            >
               <div>APIs</div>
               <div className={appStyles["title--right"]}>
                 <div className={appStyles.title__envs}>
@@ -182,17 +233,39 @@ const Documentation = (props) => {
                           InputLabelProps={{
                             focused: false,
                           }}
+                          customStyle={{ backgroundColor: "rgba(178, 178, 178, 0.35)" }}
                         />
                       )}
                       onChange={(e, selectedOption) => {
                         setSelectedEnv(selectedOption);
                       }}
                       value={selectedEnv || ""}
+                      disableClearable
                     />
+                  </div>
+                  <div className={appStyles["title__add-env"]}>
+                    <Tooltip title="Add Environment">
+                      <AddEnvIcon
+                        onClick={(e) => {
+                          e?.stopPropagation();
+                          setOpenTextfieldPopup({ open: true, placeholder1: "Enter environment name" });
+                        }}
+                      />
+                    </Tooltip>
                   </div>
                   <ClickAwayListener onClickAway={handleCloseEnvPopover}>
                     <div className={appStyles["title__edit-env"]}>
-                      <ListAltIcon className={appStyles["title__edit-env__icon"]} onClick={toggleOpenEnvPopover} />
+                      <Tooltip title="Edit Environment">
+                        <img
+                          src={envVariables}
+                          alt="Env Variables"
+                          className={appStyles["title__edit-env__icon"]}
+                          onClick={toggleOpenEnvPopover}
+                          role="button"
+                          tabIndex="0"
+                          onKeyDown={() => {}}
+                        />
+                      </Tooltip>
                       <EnvPopoverComponent
                         openEnvPopover={openEnvPopover}
                         handleCloseEnvPopover={handleCloseEnvPopover}
@@ -228,6 +301,25 @@ const Documentation = (props) => {
           </section>
         </section>
       </section>
+
+      <TextfieldPopupComponent
+        openPopup={openTextfieldPopup?.open}
+        setOpenPopup={setOpenTextfieldPopup}
+        placeholder1={openTextfieldPopup?.placeholder1}
+        handleSave={(value1) => {
+          createEnvironment({ envName: value1 });
+        }}
+      />
+
+      <ConfirmPopupComponent
+        openPopup={openConfirmPopup?.open}
+        setOpenPopup={setOpenConfirmPopup}
+        message={openConfirmPopup?.message}
+        confirmText="Delete"
+        confirmCallback={() => {
+          deleteEnvironment(openConfirmPopup?.envMID);
+        }}
+      />
     </section>
   );
 };
