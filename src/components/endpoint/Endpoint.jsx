@@ -11,6 +11,7 @@ import moment from "moment";
 import cx from "classnames";
 import { toast } from "react-toastify";
 import ReactHtmlParser from "react-html-parser";
+import _ from "lodash";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
 import { ThemeTextField, ThemeAutocomplete, ThemeButton } from "utils/commonStyles/StyledComponents";
@@ -414,7 +415,7 @@ const Endpoint = (props) => {
   const handleCancelBtn = () => {
     dispatchEndpoint({
       type: "all",
-      payload: endpointOldState,
+      payload: _.cloneDeep(endpointOldState),
     });
     setEditMode(false);
   };
@@ -424,7 +425,8 @@ const Endpoint = (props) => {
 
     const response = await apiService(endpointUrl(endpoint?._id).put, requestBodyToPutApi);
     if (response?.success) {
-      setEndpointOldState(response?.data);
+      // IMPORTANT: Nested array or objects (eg. parameters, requestHeaders, etc) had same reference because of that values were mutating
+      setEndpointOldState(_.cloneDeep(response?.data));
       updateApisTree(endpoint?.title, endpoint?.method);
     }
   };
@@ -440,7 +442,7 @@ const Endpoint = (props) => {
         type: "all",
         payload: response?.data,
       });
-      setEndpointOldState(response?.data);
+      setEndpointOldState(_.cloneDeep(response?.data));
     }
   };
 
