@@ -16,13 +16,6 @@ const TextfieldPopup = (props) => {
   const [fieldOne, setFieldOne] = useState("");
   const [fieldTwo, setFieldTwo] = useState("");
 
-  useEffect(() => {
-    // return () => {
-    //   setOpenPopup({});
-    // };
-    // eslint-disable-next-line
-  }, []);
-
   return (
     <Dialog
       open={Boolean(openPopup)}
@@ -30,12 +23,15 @@ const TextfieldPopup = (props) => {
       className={appStyles["main-cnt"]}
       onClose={() => {
         setOpenPopup({});
+        setFieldOne("");
+        setFieldTwo("");
       }}
     >
       <section className={appStyles["fields-wrapper"]}>
         {placeholder2 && (
           <div className={cx(appStyles["field-cnt"], appStyles["method-cnt"])}>
             <ThemeAutocomplete
+              disableClearable
               options={["GET", "POST", "PUT", "DELETE", "PATCH"]}
               getOptionLabel={(option) => option || ""}
               customStyle={{ width: "200px" }}
@@ -63,7 +59,7 @@ const TextfieldPopup = (props) => {
               focused: false,
             }}
             placeholder={placeholder1}
-            value={fieldOne}
+            value={fieldOne || ""}
             onChange={(e) => setFieldOne(e?.target?.value)}
           />
         </div>
