@@ -16,7 +16,6 @@
   padding: 10px;
   padding-bottom: 0;
   @include flex-row-b-sb-cen;
-  text-transform: capitalize;
 
   .envTitle--left {
     @include flex-row-v-cen;

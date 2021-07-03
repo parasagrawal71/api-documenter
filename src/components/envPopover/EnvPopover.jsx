@@ -66,6 +66,8 @@ export default function EnvPopover(props) {
     control,
     name: "variables",
   });
+  const [envName, setEnvName] = useState("");
+  const [envNameErr, setEnvNameErr] = useState(false);
 
   useEffect(() => {
     // console.log("selectedEnv?.variables: ", selectedEnv?.variables);
@@ -82,8 +84,11 @@ export default function EnvPopover(props) {
 
     // WORKS
     reset({ variables: [...(selectedEnv?.variables || [])] });
-    setError("variables", {});
-    // console.log("watch: ", watch("variables"));
+    setEnvName(selectedEnv?.envName);
+    setError("variables", false);
+    setEnvNameErr(false);
+    // console.log("watch variables: ", watch("variables"));
+    // console.log("errors: ", errors);
 
     // eslint-disable-next-line
   }, [selectedEnv]);
@@ -110,7 +115,9 @@ export default function EnvPopover(props) {
 
   const handleReset = () => {
     reset({ variables: [...(selectedEnvOldData?.variables || [])] });
-    setError("variables", {});
+    setEnvName(selectedEnvOldData?.envName);
+    setError("variables", false);
+    setEnvNameErr(false);
   };
 
   const handleDeleteEnv = () => {
@@ -143,7 +150,7 @@ export default function EnvPopover(props) {
           return;
         }
 
-        if (checkIfAnyKeysFieldEmpty()) {
+        if (checkIfAnyKeysFieldEmpty() || !envName) {
           toast.error("Required fields are missing");
           return;
         }
@@ -154,6 +161,7 @@ export default function EnvPopover(props) {
         // }
 
         const selectedEnvTemp = { ...selectedEnv };
+        selectedEnvTemp.envName = envName;
         selectedEnvTemp.variables = getValues("variables");
         handleCloseEnvPopover(selectedEnvTemp);
       }}
@@ -162,7 +170,23 @@ export default function EnvPopover(props) {
       <section>
         <div className={appStyles.envTitle}>
           <div className={appStyles["envTitle--left"]}>
-            <span>{selectedEnv?.envName}</span>
+            <span>
+              <ThemeTextField
+                id="envName"
+                name="envName"
+                onChange={(e) => {
+                  setEnvNameErr(false);
+                  setEnvName(e?.target?.value);
+                }}
+                onBlur={() => {
+                  if (!envName) {
+                    setEnvNameErr(true);
+                  }
+                }}
+                value={envName}
+                error={envNameErr}
+              />
+            </span>
             <span>
               <Tooltip title="Add New Variable">
                 <AddIcon
