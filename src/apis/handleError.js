@@ -9,10 +9,19 @@ import {
   REQUEST_TIMED_OUT,
 } from "./httpConstants";
 
+const returnCustomEvent = (message) => {
+  const event = new window.CustomEvent("sessionExpiredEvent", {
+    detail: {},
+  });
+  return event;
+};
+
 const handleError = (error) => {
   // console.log("handleError error:- ", error);
   // console.log("handleError error.response:- ", error.response);
   // console.log("handleError error.response:- ", error.message);
+
+  const elem = document.querySelector("#root");
   const status = error.response ? error.response.status : null;
   switch (status) {
     case NOT_FOUND:
@@ -24,8 +33,7 @@ const handleError = (error) => {
       return error?.response?.data;
 
     case UNAUTHORIZED:
-      deleteAllCookies();
-      window.location.href = "/";
+      elem.dispatchEvent(returnCustomEvent());
       // "UNAUTHORIZED";
       return error?.response?.data;
 

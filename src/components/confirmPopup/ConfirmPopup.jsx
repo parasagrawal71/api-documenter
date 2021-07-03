@@ -9,7 +9,16 @@ import appStyles from "./ConfirmPopup.module.scss";
 
 const ConfirmPopup = (props) => {
   // PROPS HERE
-  const { openPopup, setOpenPopup, message, cancelCallback, confirmCallback, confirmText } = props;
+  const {
+    openPopup,
+    setOpenPopup,
+    message,
+    cancelCallback,
+    confirmCallback,
+    confirmText,
+    noCancelBtn,
+    disableBackdropClick,
+  } = props;
 
   // HOOKS HERE
 
@@ -18,24 +27,28 @@ const ConfirmPopup = (props) => {
       open={Boolean(openPopup)}
       classes={{ paper: appStyles["dialog-cnt"] }}
       className={appStyles["main-cnt"]}
-      onClose={() => {
-        setOpenPopup({});
+      onClose={(event, reason) => {
+        if (!disableBackdropClick) {
+          setOpenPopup({});
+        }
       }}
     >
       <section className={appStyles.message}>{message || "Are you sure you want to delete it?"}</section>
 
       <section className={appStyles["action-btns-cnt"]}>
-        <ThemeButton
-          onClick={() => {
-            if (cancelCallback) {
-              cancelCallback();
-            }
-            setOpenPopup({});
-          }}
-          className={appStyles["action-btn"]}
-        >
-          Cancel
-        </ThemeButton>
+        {!noCancelBtn && (
+          <ThemeButton
+            onClick={() => {
+              if (cancelCallback) {
+                cancelCallback();
+              }
+              setOpenPopup({});
+            }}
+            className={appStyles["action-btn"]}
+          >
+            Cancel
+          </ThemeButton>
+        )}
 
         <ThemeButton
           issecondary="true"
