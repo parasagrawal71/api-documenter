@@ -217,33 +217,37 @@ const Documentation = (props) => {
                     disableClearable
                   />
                 </div>
-                <div className={appStyles["subheader__add-env"]}>
-                  <Tooltip title="Add Environment">
-                    <AddEnvIcon
-                      onClick={(e) => {
-                        e?.stopPropagation();
-                        setOpenTextfieldPopup({ open: true, placeholder1: "Enter environment name" });
-                      }}
-                    />
-                  </Tooltip>
-                </div>
+                <Tooltip title="Add Environment">
+                  <div
+                    className={appStyles["subheader__add-env"]}
+                    onClick={(e) => {
+                      e?.stopPropagation();
+                      setOpenTextfieldPopup({ open: true, placeholder1: "Enter environment name" });
+                    }}
+                    role="button"
+                    tabIndex="0"
+                    onKeyDown={() => {}}
+                  >
+                    <AddEnvIcon />
+                  </div>
+                </Tooltip>
                 <ClickAwayListener onClickAway={handleCloseEnvPopover}>
                   <>
-                    <div
-                      className={appStyles["subheader__edit-env"]}
-                      onClick={toggleOpenEnvPopover}
-                      role="button"
-                      tabIndex="0"
-                      onKeyDown={() => {}}
-                    >
-                      <Tooltip title="Edit Environment">
+                    <Tooltip title="Edit Environment">
+                      <div
+                        className={appStyles["subheader__edit-env"]}
+                        onClick={toggleOpenEnvPopover}
+                        role="button"
+                        tabIndex="0"
+                        onKeyDown={() => {}}
+                      >
                         <img
                           src={envVariables}
                           alt="Env Variables"
                           className={appStyles["subheader__edit-env__icon"]}
                         />
-                      </Tooltip>
-                    </div>
+                      </div>
+                    </Tooltip>
                     <EnvPopoverComponent
                       openEnvPopover={openEnvPopover}
                       handleCloseEnvPopover={handleCloseEnvPopover}
