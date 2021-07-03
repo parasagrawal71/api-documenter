@@ -15,11 +15,30 @@
 .envTitle {
   padding: 10px;
   padding-bottom: 0;
-  @include flex-row-v-cen;
+  @include flex-row-b-sb-cen;
   text-transform: capitalize;
 
-  svg {
-    margin-left: 5px;
+  .envTitle--left {
     @include flex-row-v-cen;
+
+    svg {
+      margin-left: 5px;
+      @include flex-row-v-cen;
+    }
+  }
+
+  .envTitle--right {
+    @include flex-row-v-cen;
+
+    .deleteIcon {
+      cursor: pointer;
+      color: var(--error);
+      margin-right: 5px;
+    }
+
+    .resetIcon {
+      cursor: pointer;
+      color: darkgrey;
+    }
   }
 }

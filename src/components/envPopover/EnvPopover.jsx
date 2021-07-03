@@ -1,8 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Popover } from "@material-ui/core";
-import { AddCircleOutlined as AddIcon, RemoveCircleOutlined as RemoveIcon } from "@material-ui/icons";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Popover,
+  Tooltip,
+} from "@material-ui/core";
+import {
+  AddCircleOutlined as AddIcon,
+  RemoveCircleOutlined as RemoveIcon,
+  Delete as DeleteIcon,
+  Restore as ResetIcon,
+} from "@material-ui/icons";
 import { useForm, useFieldArray } from "react-hook-form";
+import { toast } from "react-toastify";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
 import { ThemeTextField } from "utils/commonStyles/StyledComponents";
@@ -27,6 +43,7 @@ export default function EnvPopover(props) {
     setSelectedEnv,
     selectedEnvOldData,
     setSelectedEnvOldData,
+    setOpenConfirmPopup,
   } = props;
 
   const classes = useStyles();
@@ -71,6 +88,39 @@ export default function EnvPopover(props) {
     // eslint-disable-next-line
   }, [selectedEnv]);
 
+  const checkIfUniqueKeysAndSetError = () => {
+    const variables = getValues("variables");
+    const keyArr = variables.map((item) => item.key);
+
+    let isDuplicate = false;
+    keyArr.map((item, idx) => {
+      if (keyArr.indexOf(item) !== idx) {
+        setError(`variables.${idx}.key`, true);
+        isDuplicate = true;
+      }
+      return item;
+    });
+    return isDuplicate;
+  };
+
+  const checkIfAnyKeysFieldEmpty = () => {
+    const variables = getValues("variables");
+    return variables?.some((variable) => !variable.key);
+  };
+
+  const handleReset = () => {
+    reset({ variables: [...(selectedEnvOldData?.variables || [])] });
+    setError("variables", {});
+  };
+
+  const handleDeleteEnv = () => {
+    setOpenConfirmPopup({
+      open: true,
+      envMID: selectedEnv?._id,
+      message: "Are you sure you want to delete the environment?",
+    });
+  };
+
   return (
     <Popover
       className={classes.popover}
@@ -88,10 +138,21 @@ export default function EnvPopover(props) {
         horizontal: "left",
       }}
       onClose={() => {
-        const lastIndex = getValues("variables")?.length - 1;
-        if (!getValues("variables")?.[lastIndex]?.key) {
-          remove(lastIndex);
+        if (checkIfUniqueKeysAndSetError()) {
+          toast.error("Duplicate keys!");
+          return;
         }
+
+        if (checkIfAnyKeysFieldEmpty()) {
+          toast.error("Required fields are missing");
+          return;
+        }
+
+        // const lastIndex = getValues("variables")?.length - 1;
+        // if (!getValues("variables")?.[lastIndex]?.key) {
+        //   remove(lastIndex);
+        // }
+
         const selectedEnvTemp = { ...selectedEnv };
         selectedEnvTemp.variables = getValues("variables");
         handleCloseEnvPopover(selectedEnvTemp);
@@ -100,20 +161,32 @@ export default function EnvPopover(props) {
     >
       <section>
         <div className={appStyles.envTitle}>
-          <span>{selectedEnv?.envName}</span>
-          <span>
-            <AddIcon
-              className={appStyles.addRemoveIcon}
-              onClick={() => {
-                const variablesTemp = getValues("variables");
-                if (variablesTemp?.length && !variablesTemp?.[variablesTemp?.length - 1]?.key) {
-                  setError(`variables.${variablesTemp?.length - 1}.key`, true);
-                  return;
-                }
-                append({ key: "", value: "" });
-              }}
-            />
-          </span>
+          <div className={appStyles["envTitle--left"]}>
+            <span>{selectedEnv?.envName}</span>
+            <span>
+              <Tooltip title="Add New Variable">
+                <AddIcon
+                  className={appStyles.addRemoveIcon}
+                  onClick={() => {
+                    const variablesTemp = getValues("variables");
+                    if (variablesTemp?.length && !variablesTemp?.[variablesTemp?.length - 1]?.key) {
+                      setError(`variables.${variablesTemp?.length - 1}.key`, true);
+                      return;
+                    }
+                    append({ key: "", value: "" });
+                  }}
+                />
+              </Tooltip>
+            </span>
+          </div>
+          <div className={appStyles["envTitle--right"]}>
+            <Tooltip title="Delete Environment">
+              <DeleteIcon className={appStyles.deleteIcon} onClick={handleDeleteEnv} />
+            </Tooltip>
+            <Tooltip title="Reset">
+              <ResetIcon className={appStyles.resetIcon} onClick={handleReset} />
+            </Tooltip>
+          </div>
         </div>
         <TableContainer component={Paper}>
           <Table className={classes.table} aria-label="simple table">
@@ -144,13 +217,15 @@ export default function EnvPopover(props) {
                       defaultValue={field.value}
                     />
                   </TableCell>
-                  <TableCell>
-                    <RemoveIcon
-                      className={appStyles.addRemoveIcon}
-                      onClick={() => {
-                        remove(rowIndex);
-                      }}
-                    />
+                  <TableCell style={{ paddingRight: 0 }}>
+                    <Tooltip title="Remove Variable">
+                      <RemoveIcon
+                        className={appStyles.addRemoveIcon}
+                        onClick={() => {
+                          remove(rowIndex);
+                        }}
+                      />
+                    </Tooltip>
                   </TableCell>
                 </TableRow>
               ))}

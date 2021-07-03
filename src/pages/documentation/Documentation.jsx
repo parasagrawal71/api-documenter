@@ -151,11 +151,6 @@ const Documentation = (props) => {
   };
 
   const deleteEnvironment = async (mongoId) => {
-    // setOpenConfirmPopup({
-    //   open: true,
-    //   envMID: selectedEnv?._id,
-    //   message: "Are you sure you want to delete the environment?",
-    // });
     const response = await apiService(environment(mongoId).delete);
     if (response?.success) {
       setEnvironments(environments.filter((env) => env._id !== mongoId));
@@ -276,6 +271,7 @@ const Documentation = (props) => {
                         setSelectedEnv={setSelectedEnv}
                         selectedEnvOldData={selectedEnvOldData}
                         setSelectedEnvOldData={setSelectedEnvOldData}
+                        setOpenConfirmPopup={setOpenConfirmPopup}
                       />
                     </>
                   </ClickAwayListener>
@@ -321,6 +317,8 @@ const Documentation = (props) => {
         confirmText="Delete"
         confirmCallback={() => {
           deleteEnvironment(openConfirmPopup?.envMID);
+          setOpenEnvPopover(null);
+          setSelectedEnv(environments?.length ? environments[0] : []);
         }}
       />
     </section>
