@@ -83,6 +83,15 @@ const Endpoint = (props) => {
 
       case "add-parameter":
         const updatedParametersAfterAddingNew = [...(state?.parameters || [])];
+        const paramLastIndex = updatedParametersAfterAddingNew?.length - 1;
+        if (paramLastIndex >= 0 && !updatedParametersAfterAddingNew?.[paramLastIndex]?.name) {
+          if (!updatedParametersAfterAddingNew?.[paramLastIndex]?.error) {
+            updatedParametersAfterAddingNew[paramLastIndex].error = {};
+          }
+          updatedParametersAfterAddingNew[paramLastIndex].error.name = true;
+          return { ...state, parameters: updatedParametersAfterAddingNew };
+        }
+
         updatedParametersAfterAddingNew?.push({
           name: "",
           required: false,
@@ -113,6 +122,15 @@ const Endpoint = (props) => {
 
       case "add-requestHeader":
         const updatedRequestHeadersAfterAddingNew = [...(state?.requestHeaders || [])];
+        const headerLastIndex = updatedRequestHeadersAfterAddingNew?.length - 1;
+        if (headerLastIndex >= 0 && !updatedRequestHeadersAfterAddingNew?.[headerLastIndex]?.name) {
+          if (!updatedRequestHeadersAfterAddingNew?.[headerLastIndex]?.error) {
+            updatedRequestHeadersAfterAddingNew[headerLastIndex].error = {};
+          }
+          updatedRequestHeadersAfterAddingNew[headerLastIndex].error.name = true;
+          return { ...state, requestHeaders: updatedRequestHeadersAfterAddingNew };
+        }
+
         updatedRequestHeadersAfterAddingNew?.push({
           name: "",
           required: false,
