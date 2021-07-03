@@ -94,6 +94,7 @@ const Documentation = (props) => {
     if (response?.success) {
       setEnvironments(response?.data);
       setSelectedEnv(response?.data?.[0]);
+      setSelectedEnvOldData({ ...response?.data?.[0] });
     } else {
       toast.error(response?.message);
       toast.clearWaitingQueue();
@@ -140,9 +141,10 @@ const Documentation = (props) => {
   const editEnvironment = async (updatedEnvironment) => {
     const response = await apiService(environment(updatedEnvironment?._id).put, updatedEnvironment);
     if (response?.success) {
-      setSelectedEnvOldData({});
+      setSelectedEnvOldData(response?.data);
+      setSelectedEnv(response?.data);
     } else {
-      setSelectedEnv(selectedEnvOldData);
+      setSelectedEnv({ ...selectedEnvOldData });
       toast.error("Couldn't update environment!");
       toast.clearWaitingQueue();
     }
@@ -167,9 +169,9 @@ const Documentation = (props) => {
     setOpenEnvPopover(openEnvPopover ? null : event?.currentTarget);
   };
 
-  const handleCloseEnvPopover = () => {
+  const handleCloseEnvPopover = (updatedSelectedEnv) => {
     if (openEnvPopover) {
-      editEnvironment(selectedEnv);
+      editEnvironment(updatedSelectedEnv);
     }
     setOpenEnvPopover(null);
   };
@@ -237,6 +239,7 @@ const Documentation = (props) => {
                         />
                       )}
                       onChange={(e, selectedOption) => {
+                        setSelectedEnvOldData({ ...selectedOption });
                         setSelectedEnv(selectedOption);
                       }}
                       value={selectedEnv || ""}
@@ -254,18 +257,18 @@ const Documentation = (props) => {
                     </Tooltip>
                   </div>
                   <ClickAwayListener onClickAway={handleCloseEnvPopover}>
-                    <div className={appStyles["title__edit-env"]}>
-                      <Tooltip title="Edit Environment">
-                        <img
-                          src={envVariables}
-                          alt="Env Variables"
-                          className={appStyles["title__edit-env__icon"]}
-                          onClick={toggleOpenEnvPopover}
-                          role="button"
-                          tabIndex="0"
-                          onKeyDown={() => {}}
-                        />
-                      </Tooltip>
+                    <>
+                      <div
+                        className={appStyles["title__edit-env"]}
+                        onClick={toggleOpenEnvPopover}
+                        role="button"
+                        tabIndex="0"
+                        onKeyDown={() => {}}
+                      >
+                        <Tooltip title="Edit Environment">
+                          <img src={envVariables} alt="Env Variables" className={appStyles["title__edit-env__icon"]} />
+                        </Tooltip>
+                      </div>
                       <EnvPopoverComponent
                         openEnvPopover={openEnvPopover}
                         handleCloseEnvPopover={handleCloseEnvPopover}
@@ -274,7 +277,7 @@ const Documentation = (props) => {
                         selectedEnvOldData={selectedEnvOldData}
                         setSelectedEnvOldData={setSelectedEnvOldData}
                       />
-                    </div>
+                    </>
                   </ClickAwayListener>
                 </div>
 
