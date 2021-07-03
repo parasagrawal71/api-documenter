@@ -32,13 +32,13 @@
 
     .deleteIcon {
       cursor: pointer;
-      color: var(--error);
+      color: var(--error-70);
       margin-right: 5px;
     }
 
     .resetIcon {
       cursor: pointer;
-      color: darkgrey;
+      color: var(--error-70);
     }
   }
 }

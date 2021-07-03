@@ -42,7 +42,8 @@ html {
   --primary: rgba(76, 82, 100, 0.9);
   --primary-70: rgba(76, 82, 100, 0.7);
   --secondary: rgba(220, 0, 78, 0.7);
-  --error: darkred;
+  --error: rgba(139, 0, 0, 1); /* darkred */
+  --error-70: rgba(139, 0, 0, 0.7);
   --success: green;
 }
 
