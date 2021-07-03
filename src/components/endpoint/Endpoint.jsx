@@ -468,15 +468,15 @@ const Endpoint = (props) => {
 
   return (
     <section className={appStyles["main-container"]}>
+      <span id={endpoint?.title} className={cx("scroll-target")}>
+        &nbsp;
+      </span>
       <section
         className={cx(appStyles["main-header"], {
           [appStyles.editMode]: editMode || addMode,
         })}
       >
         <div className={appStyles["main-header--left"]}>
-          <span id={endpoint?.title} className="scroll-target">
-            &nbsp;
-          </span>
           <span className={appStyles.title}>{TextFieldBoxOrValue("title", endpoint?.title)}</span>
           <span className={appStyles.updatedAt}>
             Updated At: {moment(endpoint?.updatedAt).format("DD-MM-YYYY hh:mm A")}

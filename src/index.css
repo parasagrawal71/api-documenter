@@ -24,8 +24,8 @@ html {
 }
 
 .scroll-target {
-  padding-top: 80px;
-  margin-top: -80px;
+  padding-top: 140px;
+  margin-top: -140px;
   font-size: 1px;
   visibility: hidden;
 }

@@ -22,6 +22,70 @@
       display: flex;
       flex-direction: column;
 
+      .subheader {
+        position: sticky;
+        top: 70px;
+        z-index: 50;
+        padding: 10px 20px;
+        background-color: #fff;
+        font-size: 1.3em;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        &.header-shadow {
+          box-shadow: rgba(0, 0, 0, 0.05) 0px 5px 10px;
+        }
+
+        &.no-shadow {
+          box-shadow: none;
+        }
+
+        .subheader--right {
+          display: flex;
+          align-items: center;
+          font-size: 0.6em;
+
+          .subheader__envs {
+            @include flex-row-v-cen;
+            margin-right: 10px;
+
+            .subheader__envs-dropdown {
+              margin-right: 10px;
+            }
+
+            .subheader__add-env {
+              background-color: rgba(178, 178, 178, 0.35);
+              border-radius: 5px;
+              padding: 4px;
+              @include flex-row-b-cen;
+              margin-right: 10px;
+              cursor: pointer;
+              color: grey;
+            }
+
+            .subheader__edit-env {
+              @include flex-row-v-cen;
+              background-color: rgba(178, 178, 178, 0.35);
+              border-radius: 5px;
+              padding: 6px;
+              cursor: pointer;
+
+              .subheader__edit-env__icon {
+                font-size: 2rem;
+                width: 20px;
+                height: 20px;
+
+                &:hover {
+                  cursor: pointer;
+                }
+              }
+            }
+          }
+        }
+      }
+
       .models-cnt,
       .readme-cnt {
         margin-bottom: 25px;
@@ -43,68 +107,10 @@
         flex-direction: column;
 
         .title {
-          position: sticky;
-          top: 70px;
-          z-index: 50;
+          font-size: 1.3em;
           padding: 10px 20px;
           background-color: #fff;
-          font-size: 1.3em;
-          // background-color: rgba(76, 82, 100, 0.2);
           margin-bottom: 10px;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-
-          &.header-shadow {
-            box-shadow: rgba(0, 0, 0, 0.05) 0px 5px 10px;
-          }
-
-          &.no-shadow {
-            box-shadow: none;
-          }
-
-          .title--right {
-            display: flex;
-            align-items: center;
-            font-size: 0.6em;
-
-            .title__envs {
-              @include flex-row-v-cen;
-              margin-right: 10px;
-
-              .title__envs-dropdown {
-                margin-right: 10px;
-              }
-
-              .title__add-env {
-                background-color: rgba(178, 178, 178, 0.35);
-                border-radius: 5px;
-                padding: 4px;
-                @include flex-row-b-cen;
-                margin-right: 10px;
-                cursor: pointer;
-                color: grey;
-              }
-
-              .title__edit-env {
-                @include flex-row-v-cen;
-                background-color: rgba(178, 178, 178, 0.35);
-                border-radius: 5px;
-                padding: 6px;
-                cursor: pointer;
-
-                .title__edit-env__icon {
-                  font-size: 2rem;
-                  width: 20px;
-                  height: 20px;
-
-                  &:hover {
-                    cursor: pointer;
-                  }
-                }
-              }
-            }
-          }
         }
       }
     }

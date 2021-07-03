@@ -189,6 +189,88 @@ const Documentation = (props) => {
           />
         </section>
         <section className={appStyles["content-cnt--right"]}>
+          <section
+            className={cx(appStyles.subheader, enableShadow ? appStyles["header-shadow"] : appStyles["no-shadow"])}
+          >
+            <div>APIs</div>
+            <div className={appStyles["subheader--right"]}>
+              <div className={appStyles.subheader__envs}>
+                <div className={appStyles["subheader__envs-dropdown"]}>
+                  <ThemeAutocomplete
+                    options={environments}
+                    getOptionLabel={(option) => option?.envName || ""}
+                    customStyle={{ width: "250px", padding: 0 }}
+                    renderInput={(params) => (
+                      <ThemeTextField
+                        {...params}
+                        InputLabelProps={{
+                          focused: false,
+                        }}
+                        customStyle={{ backgroundColor: "rgba(178, 178, 178, 0.35)" }}
+                      />
+                    )}
+                    onChange={(e, selectedOption) => {
+                      setSelectedEnvOldData({ ...selectedOption });
+                      setSelectedEnv(selectedOption);
+                    }}
+                    value={selectedEnv || ""}
+                    disableClearable
+                  />
+                </div>
+                <div className={appStyles["subheader__add-env"]}>
+                  <Tooltip title="Add Environment">
+                    <AddEnvIcon
+                      onClick={(e) => {
+                        e?.stopPropagation();
+                        setOpenTextfieldPopup({ open: true, placeholder1: "Enter environment name" });
+                      }}
+                    />
+                  </Tooltip>
+                </div>
+                <ClickAwayListener onClickAway={handleCloseEnvPopover}>
+                  <>
+                    <div
+                      className={appStyles["subheader__edit-env"]}
+                      onClick={toggleOpenEnvPopover}
+                      role="button"
+                      tabIndex="0"
+                      onKeyDown={() => {}}
+                    >
+                      <Tooltip title="Edit Environment">
+                        <img
+                          src={envVariables}
+                          alt="Env Variables"
+                          className={appStyles["subheader__edit-env__icon"]}
+                        />
+                      </Tooltip>
+                    </div>
+                    <EnvPopoverComponent
+                      openEnvPopover={openEnvPopover}
+                      handleCloseEnvPopover={handleCloseEnvPopover}
+                      selectedEnv={selectedEnv}
+                      setSelectedEnv={setSelectedEnv}
+                      selectedEnvOldData={selectedEnvOldData}
+                      setSelectedEnvOldData={setSelectedEnvOldData}
+                      setOpenConfirmPopup={setOpenConfirmPopup}
+                    />
+                  </>
+                </ClickAwayListener>
+              </div>
+
+              {globalState?.loggedInUser?.editAccess?.includes?.(getUrlParams?.()?.serviceName) && (
+                <Tooltip title={enableEditMode ? "Edit Mode" : "View Mode"}>
+                  <ThemeSwitch
+                    checked={enableEditMode}
+                    onChange={(e) => {
+                      setEnableEditMode(e?.target.checked);
+                    }}
+                    className={appStyles["mode-switch"]}
+                  />
+                </Tooltip>
+              )}
+            </div>
+          </section>
+
           {readmeFiles?.length ? (
             <section className={appStyles["readme-cnt"]}>
               <div id="readme" className={appStyles.title}>
@@ -212,84 +294,9 @@ const Documentation = (props) => {
           ) : null}
 
           <section className={appStyles["endpoints-cnt"]}>
-            <div
-              id="endpoints"
-              className={cx(appStyles.title, enableShadow ? appStyles["header-shadow"] : appStyles["no-shadow"])}
-            >
+            {/* <div id="endpoints" className={cx(appStyles.title)}>
               <div>APIs</div>
-              <div className={appStyles["title--right"]}>
-                <div className={appStyles.title__envs}>
-                  <div className={appStyles["title__envs-dropdown"]}>
-                    <ThemeAutocomplete
-                      options={environments}
-                      getOptionLabel={(option) => option?.envName || ""}
-                      customStyle={{ width: "250px", padding: 0 }}
-                      renderInput={(params) => (
-                        <ThemeTextField
-                          {...params}
-                          InputLabelProps={{
-                            focused: false,
-                          }}
-                          customStyle={{ backgroundColor: "rgba(178, 178, 178, 0.35)" }}
-                        />
-                      )}
-                      onChange={(e, selectedOption) => {
-                        setSelectedEnvOldData({ ...selectedOption });
-                        setSelectedEnv(selectedOption);
-                      }}
-                      value={selectedEnv || ""}
-                      disableClearable
-                    />
-                  </div>
-                  <div className={appStyles["title__add-env"]}>
-                    <Tooltip title="Add Environment">
-                      <AddEnvIcon
-                        onClick={(e) => {
-                          e?.stopPropagation();
-                          setOpenTextfieldPopup({ open: true, placeholder1: "Enter environment name" });
-                        }}
-                      />
-                    </Tooltip>
-                  </div>
-                  <ClickAwayListener onClickAway={handleCloseEnvPopover}>
-                    <>
-                      <div
-                        className={appStyles["title__edit-env"]}
-                        onClick={toggleOpenEnvPopover}
-                        role="button"
-                        tabIndex="0"
-                        onKeyDown={() => {}}
-                      >
-                        <Tooltip title="Edit Environment">
-                          <img src={envVariables} alt="Env Variables" className={appStyles["title__edit-env__icon"]} />
-                        </Tooltip>
-                      </div>
-                      <EnvPopoverComponent
-                        openEnvPopover={openEnvPopover}
-                        handleCloseEnvPopover={handleCloseEnvPopover}
-                        selectedEnv={selectedEnv}
-                        setSelectedEnv={setSelectedEnv}
-                        selectedEnvOldData={selectedEnvOldData}
-                        setSelectedEnvOldData={setSelectedEnvOldData}
-                        setOpenConfirmPopup={setOpenConfirmPopup}
-                      />
-                    </>
-                  </ClickAwayListener>
-                </div>
-
-                {globalState?.loggedInUser?.editAccess?.includes?.(getUrlParams?.()?.serviceName) && (
-                  <Tooltip title={enableEditMode ? "Edit Mode" : "View Mode"}>
-                    <ThemeSwitch
-                      checked={enableEditMode}
-                      onChange={(e) => {
-                        setEnableEditMode(e?.target.checked);
-                      }}
-                      className={appStyles["mode-switch"]}
-                    />
-                  </Tooltip>
-                )}
-              </div>
-            </div>
+            </div> */}
             <EndpointsWrapperComponent
               selectedEnv={selectedEnv}
               sortedApisTree={sortedApisTree}
