@@ -181,6 +181,7 @@ const AppTable = (props) => {
                   });
                 }
               }}
+              // customStyle={{ padding: 0 }}
             />
           )}
           onChange={(e, selectedOption) => {

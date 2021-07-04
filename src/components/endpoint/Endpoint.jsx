@@ -446,6 +446,57 @@ const Endpoint = (props) => {
     }
   };
 
+  const putEnvVariablesValues = (endpointData, paramsToSend, headersToSend) => {
+    let modifiedPath = "";
+
+    const getEnvVarValue = (varName) => {
+      let varValue = "";
+      selectedEnv?.variables?.map((variable) => {
+        if (varName === variable?.key) {
+          varValue = variable?.value;
+        }
+        return variable;
+      });
+      return varValue;
+    };
+
+    if (endpointData?.path?.includes("{{")) {
+      const url = endpointData?.path;
+      const variableName = url?.substring(url.indexOf("{") + 2, url.indexOf("}"));
+      const variableValue = getEnvVarValue(variableName);
+      const regex = new RegExp(`{{${variableName}}}`, "");
+      modifiedPath = url.replace(regex, variableValue);
+    }
+
+    if (headersToSend && Object.keys(headersToSend)?.length) {
+      Object.keys(headersToSend)?.map((headerKey) => {
+        const value = headersToSend?.[headerKey];
+        if (value?.includes?.("{{")) {
+          const variableName = value?.substring(value.indexOf("{") + 2, value.indexOf("}"));
+          const variableValue = getEnvVarValue(variableName);
+          const regex = new RegExp(`{{${variableName}}}`, "");
+          headersToSend[headerKey] = headersToSend[headerKey].replace(regex, variableValue);
+        }
+        return headerKey;
+      });
+    }
+
+    if (paramsToSend && Object.keys(paramsToSend)?.length) {
+      Object.keys(paramsToSend)?.map((paramKey) => {
+        const value = paramsToSend?.[paramKey];
+        if (value?.includes?.("{{")) {
+          const variableName = value?.substring(value.indexOf("{") + 2, value.indexOf("}"));
+          const variableValue = getEnvVarValue(variableName);
+          const regex = new RegExp(`{{${variableName}}}`, "");
+          paramsToSend[paramKey] = paramsToSend[paramKey].replace(regex, variableValue);
+        }
+        return paramKey;
+      });
+    }
+
+    return [modifiedPath, paramsToSend, headersToSend];
+  };
+
   const sendApiCall = () => {
     const headersToSend = {};
     let isError = false;
@@ -498,20 +549,8 @@ const Endpoint = (props) => {
       return;
     }
 
-    let modifiedPath = "";
-    if (endpoint?.path?.includes("{{")) {
-      const url = endpoint?.path;
-      const variableName = url?.substring(url.indexOf("{") + 2, url.indexOf("}"));
-      let variableValue = "";
-      selectedEnv?.variables?.map((variable) => {
-        if (variableName === variable?.key) {
-          variableValue = variable?.value;
-        }
-        return variable;
-      });
-      const regex = new RegExp(`{{${variableName}}}`, "");
-      modifiedPath = url.replace(regex, variableValue);
-    }
+    const [modifiedPath] = putEnvVariablesValues(endpoint, paramsToSend, headersToSend);
+    // IMPORTANT: Modifying the same object reference works, no need to assign new variable for params and header
 
     axios
       .request({
