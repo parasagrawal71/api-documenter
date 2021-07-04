@@ -1,5 +1,19 @@
 @import "../../utils/commonStyles/flex.scss";
 
+.env-cnt {
+  max-height: 600px;
+  overflow: overlay;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+  }
+}
+
 .padding10px {
   padding: 10px;
 }

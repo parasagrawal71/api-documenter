@@ -28,7 +28,9 @@ const useStyles = makeStyles((theme) => ({
   popover: {
     marginTop: 5,
   },
-  paper: {},
+  paper: {
+    overflow: "hidden",
+  },
   table: {
     minWidth: 650,
   },
@@ -167,7 +169,7 @@ export default function EnvPopover(props) {
       }}
       disableRestoreFocus
     >
-      <section>
+      <section className={appStyles["env-cnt"]}>
         <div className={appStyles.envTitle}>
           <div className={appStyles["envTitle--left"]}>
             <span>
