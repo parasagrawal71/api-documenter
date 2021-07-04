@@ -58,7 +58,7 @@ const Login = (props) => {
     if (response?.success) {
       const { token, expiry, user } = response?.data;
       resetForm();
-      setCookie("token", token, expiry);
+      setCookie("userToken", token, expiry);
       setCookie("tokenProvider", "documenter");
       setCookie("userMID", user?._id);
       fetchLoggedInUserData().then((userData) => {
@@ -125,7 +125,7 @@ const Login = (props) => {
     if (response?.success) {
       toast.success(response?.message);
       const { token, expiry, user } = response?.data;
-      setCookie("token", token, expiry);
+      setCookie("userToken", token, expiry);
       setCookie("tokenProvider", "documenter");
       setCookie("userMID", user?._id);
       fetchLoggedInUserData().then((userData) => {
@@ -205,7 +205,7 @@ const Login = (props) => {
         },
       });
       if (response?.success) {
-        setCookie("token", idToken, expiresAt * 1000);
+        setCookie("userToken", idToken, expiresAt * 1000);
         setCookie("tokenProvider", "google");
         setCookie("userMID", response?.data?._id);
         fetchLoggedInUserData().then((userData) => {
