@@ -219,7 +219,7 @@ const AppTable = (props) => {
     } else if ((headerKey === "value" && !disableValueTextbox) || addMode || editMode) {
       return (
         <ThemeTextField
-          disabled={headerKey === "value" && !disableValueTextbox && (editMode || addMode)}
+          // disabled={headerKey === "value" && !disableValueTextbox && (editMode || addMode)}
           value={(headerKey === "value" && !disableValueTextbox) || editMode ? fieldValue : ""}
           multiline={isMultiline === "multiline"}
           onChange={(e) => {
@@ -336,7 +336,11 @@ const AppTable = (props) => {
                   }}
                 >
                   {header?.displayName}
-                  {header?.required ? <span className={appStyles["required-asterisk"]}>*</span> : ""}
+                  {header?.required && (addMode || editMode) ? (
+                    <span className={appStyles["required-asterisk"]}>*</span>
+                  ) : (
+                    ""
+                  )}
                 </TableCell>
               );
             })}

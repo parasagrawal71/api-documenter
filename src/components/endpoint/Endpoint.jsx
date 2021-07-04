@@ -772,7 +772,7 @@ const Endpoint = (props) => {
             ref={jsonTextareaRef}
             id="json-textarea"
             className={cx(appStyles["request-body__json"], {
-              [appStyles.disabled]: addMode || editMode,
+              // [appStyles.disabled]: addMode || editMode,
             })}
             rows="15"
             value={requestBody}
@@ -780,7 +780,7 @@ const Endpoint = (props) => {
               setInvalidReqBody(false);
               setRequestBody(e?.target?.value);
             }}
-            disabled={addMode || editMode}
+            // disabled={addMode || editMode}
           />
           <span className={appStyles.invalidJSONErr}>{invalidReqBody ? "Invalid JSON" : ""}</span>
         </section>
