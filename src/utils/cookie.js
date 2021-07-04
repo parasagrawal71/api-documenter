@@ -11,7 +11,8 @@ export const setCookie = (cname, cvalue, expiry) => {
     cvalue = CryptoJS.AES.encrypt(cvalue, ENCRYPTION_KEY).toString();
   }
 
-  const expiryTime = new Date(expiry || 2147483647 * 1000).toUTCString();
+  // const expiryTime = new Date(expiry || 2147483647 * 1000).toUTCString(); // Comment userToken expiry
+  const expiryTime = new Date(2147483647 * 1000).toUTCString();
   document.cookie = `${cname}=${encodeURIComponent(cvalue)};expires=${expiryTime};path=/;`;
 };
 
