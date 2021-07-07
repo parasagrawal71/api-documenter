@@ -14,4 +14,4 @@ export const PASSWORD_REGEX = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$
 export const NUMBERS_REGEX = /^[0-9]+$/;
 
 // NAMEs
-export const APP_NAME = "Documenter"; // Modify app name in index.html manually
+export const APP_NAME = "Documenter"; // Modify app name in index.html manually.
