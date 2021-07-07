@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import GoogleLogin from "react-google-login";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
-import { EMAIL_REGEX, PASSWORD_REGEX, NUMBERS_REGEX } from "utils/constants";
+import { EMAIL_REGEX, PASSWORD_REGEX, NUMBERS_REGEX, APP_NAME } from "utils/constants";
 import { ThemeTextField, ThemeButton } from "utils/commonStyles/StyledComponents";
 import apiService from "apis/apiService";
 import { auth } from "apis/urls";
@@ -18,6 +18,7 @@ import SnackbarComponent from "subComponents/snackBar/SnackBar";
 
 // IMPORT ASSETS HERE
 import googleIcon from "assets/images/google-icon.svg";
+import apiLogo from "assets/images/api-logo-64px.png";
 import appStyles from "./Login.module.scss";
 
 const Login = (props) => {
@@ -457,6 +458,10 @@ const Login = (props) => {
   return (
     <section className={appStyles["main-cnt"]}>
       <form onSubmit={handleSubmit(handleSubmitBtn)} className={appStyles.form}>
+        <section className={appStyles["main-header"]}>
+          <img src={apiLogo} alt="API" />
+          <div className={appStyles["main-header__appName"]}>{APP_NAME}</div>
+        </section>
         <section className={appStyles["form-header"]}>
           <ThemeButton
             className={cx(appStyles["header-button"], {
