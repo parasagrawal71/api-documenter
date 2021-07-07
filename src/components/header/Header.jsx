@@ -8,8 +8,10 @@ import { toast } from "react-toastify";
 import { clearSession } from "utils/cookie";
 import useGlobal from "redux/globalHook";
 import GenericActionsPopoverComponent from "subComponents/genericActionsPopover/GenericActionsPopover";
+import { APP_NAME } from "utils/constants";
 
 // IMPORT ASSETS HERE
+import apiLogo from "assets/images/api-logo-64px.png";
 import appStyles from "./Header.module.scss";
 
 const Header = (props) => {
@@ -25,7 +27,8 @@ const Header = (props) => {
   return (
     <header className={appStyles["app-header"]}>
       <section className={appStyles["app-header--left"]}>
-        <div className={appStyles["app-header__appName"]}>Documentation</div>
+        <img src={apiLogo} alt="API" />
+        <div className={appStyles["app-header__appName"]}>{APP_NAME}</div>
       </section>
       <section className={appStyles["app-header--right"]}>
         <Link

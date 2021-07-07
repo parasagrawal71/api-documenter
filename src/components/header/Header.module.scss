@@ -12,6 +12,14 @@
   // box-shadow: 0 8px 6px -6px rgba(0, 0, 0, 0.26);
 
   .app-header--left {
+    @include flex-row-v-cen;
+
+    img {
+      width: 35px;
+      height: 35px;
+      margin-right: 5px;
+    }
+
     .app-header__appName {
     }
   }

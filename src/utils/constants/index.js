@@ -12,3 +12,6 @@ export const EMAIL_REGEX =
 export const PASSWORD_REGEX = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
 // PASSWORD_REGEX: At least one upper case, one lower case, one digit, one special character and Minimum eight in length
 export const NUMBERS_REGEX = /^[0-9]+$/;
+
+// NAMEs
+export const APP_NAME = "Documenter"; // Modify app name in index.html manually
