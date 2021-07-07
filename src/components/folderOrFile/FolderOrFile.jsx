@@ -31,6 +31,7 @@ const FolderOrFile = (props) => {
     deleteText,
     deleteCallback,
     href,
+    enableEditMode,
   } = props;
 
   // HOOKS HERE
@@ -114,7 +115,7 @@ const FolderOrFile = (props) => {
         </a>
       </section>
 
-      {(showActionsBtn || showActionPopup) && (
+      {enableEditMode && (showActionsBtn || showActionPopup) && (
         <section className={appStyles["folder-file-cnt--right"]}>
           <MoreIcon
             className={appStyles.actionIcons}

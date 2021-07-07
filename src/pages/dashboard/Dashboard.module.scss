@@ -1,11 +1,70 @@
 .main-cnt {
-  .service-link {
-    text-decoration: none;
-    color: #000000;
-  }
+  .services-cnt {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
 
-  .service-cnt {
-    padding: 50px;
-    border: 1px solid lightgrey;
+    .services-cnt__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .services-cnt__header__title {
+        font-size: 20px;
+        font-weight: 500;
+      }
+
+      .add-service-btn {
+        margin-bottom: 20px;
+      }
+    }
+
+    .service-cnt {
+      padding: 30px;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      background-color: rgba(220, 228, 222, 0.15);
+      box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+      min-height: 50px;
+
+      &:not(:last-child) {
+        margin-bottom: 20px;
+      }
+
+      .serviceName {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        width: 500px;
+        margin-right: 20px;
+      }
+
+      .endpointsCount {
+      }
+
+      .actionBtns {
+        flex: 1;
+        display: flex;
+        justify-content: flex-end;
+
+        .actionBtn {
+          padding: 10px;
+          border-radius: 5px;
+
+          &:hover {
+            background-color: lightgrey;
+
+            // &.cancelBtn {
+            //   background-color: var(--secondary);
+            // }
+
+            // &.saveBtn {
+            //   background-color: var(--primary);
+            // }
+          }
+        }
+      }
+    }
   }
 }

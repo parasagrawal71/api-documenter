@@ -5,16 +5,20 @@ import { toast } from "react-toastify";
 import GoogleLogin from "react-google-login";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
-import { EMAIL_REGEX, PASSWORD_REGEX, NUMBERS_REGEX } from "utils/constants";
+import { EMAIL_REGEX, PASSWORD_REGEX, NUMBERS_REGEX, APP_NAME } from "utils/constants";
 import { ThemeTextField, ThemeButton } from "utils/commonStyles/StyledComponents";
 import apiService from "apis/apiService";
 import { auth } from "apis/urls";
 import { setCookie } from "utils/cookie";
 import { startCountDown } from "utils/functions";
 import { GOOGLE_CLIENT_ID } from "config";
+import { fetchLoggedInUserData } from "apis/apiCalls";
+import useGlobal from "redux/globalHook";
+import SnackbarComponent from "subComponents/snackBar/SnackBar";
 
 // IMPORT ASSETS HERE
 import googleIcon from "assets/images/google-icon.svg";
+import apiLogo from "assets/images/api-logo-64px.png";
 import appStyles from "./Login.module.scss";
 
 const Login = (props) => {
@@ -29,6 +33,7 @@ const Login = (props) => {
     reset,
     formState: { errors },
   } = useForm({ mode: "all" });
+  const [globalState, globalActions] = useGlobal();
   const [tab, setTab] = useState("login");
   const [showFields, setShowFields] = useState({});
   const [disableFields, setDisableFields] = useState({});
@@ -40,6 +45,7 @@ const Login = (props) => {
   const [showGoogleBtn, setShowGoogleBtn] = useState(false);
   const [pwdPatternValidation, setPwdPatternValidation] = useState(false);
   const [loaders, setLoaders] = useState({});
+  const [snackBar, setSnackBar] = useState({});
 
   useEffect(() => {
     modifyStates("LOGIN");
@@ -51,23 +57,31 @@ const Login = (props) => {
       params: { email: getValues("email"), password: getValues("password") },
     });
     if (response?.success) {
-      const { token, expiry } = response?.data;
+      const { token, expiry, user } = response?.data;
       resetForm();
-      setCookie("token", token, expiry);
+      setCookie("userToken", token, expiry);
       setCookie("tokenProvider", "documenter");
+      setCookie("userMID", user?._id);
+      fetchLoggedInUserData().then((userData) => {
+        globalActions.updateLoggedInUser(userData);
+      });
       props?.history?.push("/dashboard");
     } else {
+      let isErrorToast = true;
+
       if (response?.errorCode === "PASSWORD_NOT_SET") {
-        setTab("login");
-        setSubmitButton({ id: "set_password", value: "Set Password" });
-        setPwdPatternValidation(true);
-        setShowFields({ email: true, password: true, confirmPassword: true });
-        setRequiredFields({ email: true, password: true, confirmPassword: true });
-        setDisableFields({ email: true });
-        setShowGoogleBtn(false);
+        modifyStates("SET_PASSWORD");
       }
-      toast.error(response?.message);
-      toast.clearWaitingQueue();
+
+      if (response?.errorCode === "USER_NOT_VERIFIED") {
+        setSnackBar({ show: true, message: `Your email is not verified yet.` });
+        isErrorToast = false;
+      }
+
+      if (isErrorToast) {
+        toast.error(response?.message);
+        toast.clearWaitingQueue();
+      }
     }
     setLoaders({ submit: false });
   };
@@ -77,18 +91,29 @@ const Login = (props) => {
     const response = await apiService(auth().register, {
       email: getValues("email"),
       password: getValues("password"),
+      name: getValues("name"),
     });
     if (response?.success) {
       toast.success(response?.message);
       resetForm();
       modifyStates("LOGIN");
     } else {
+      let isErrorToast = true;
+
       if (response?.error?.code === "ALREADY_REGISTERED") {
         resetForm();
         modifyStates("LOGIN");
       }
-      toast.error(response?.message);
-      toast.clearWaitingQueue();
+
+      if (response?.error?.code === "USER_NOT_VERIFIED") {
+        setSnackBar({ show: true, message: `Your email is not verified yet.` });
+        isErrorToast = false;
+      }
+
+      if (isErrorToast) {
+        toast.error(response?.message);
+        toast.clearWaitingQueue();
+      }
     }
     setLoaders({ submit: false });
   };
@@ -100,9 +125,13 @@ const Login = (props) => {
     });
     if (response?.success) {
       toast.success(response?.message);
-      const { token, expiry } = response?.data;
-      setCookie("token", token, expiry);
+      const { token, expiry, user } = response?.data;
+      setCookie("userToken", token, expiry);
       setCookie("tokenProvider", "documenter");
+      setCookie("userMID", user?._id);
+      fetchLoggedInUserData().then((userData) => {
+        globalActions.updateLoggedInUser(userData);
+      });
       props?.history?.push("/dashboard");
       resetForm();
     } else {
@@ -177,8 +206,12 @@ const Login = (props) => {
         },
       });
       if (response?.success) {
-        setCookie("token", idToken, expiresAt * 1000);
+        setCookie("userToken", idToken, expiresAt * 1000);
         setCookie("tokenProvider", "google");
+        setCookie("userMID", response?.data?._id);
+        fetchLoggedInUserData().then((userData) => {
+          globalActions.updateLoggedInUser(userData);
+        });
         props?.history?.push("/dashboard");
       } else {
         toast.error(response?.message);
@@ -213,6 +246,23 @@ const Login = (props) => {
     }
   };
 
+  const handleResendVerificationEmail = async () => {
+    setSnackBar({ show: false });
+    resetForm();
+    modifyStates("LOGIN");
+    const response = await apiService(auth().resendVerificationEmail, null, {
+      params: {
+        email: getValues("email"),
+      },
+    });
+    if (response?.success) {
+      toast.success(response?.message);
+    } else {
+      toast.error(response?.message);
+      toast.clearWaitingQueue();
+    }
+  };
+
   const modifyStates = (mode) => {
     if (mode === "LOGIN") {
       setTab("login");
@@ -228,8 +278,8 @@ const Login = (props) => {
     } else if (mode === "REGISTER") {
       setTab("register");
       setSubmitButton({ id: "register", value: "Register" });
-      setShowFields({ email: true, password: true, confirmPassword: true });
-      setRequiredFields({ email: true, password: true, confirmPassword: true });
+      setShowFields({ name: true, email: true, password: true, confirmPassword: true });
+      setRequiredFields({ name: true, email: true, password: true, confirmPassword: true });
       setDisableFields({});
       setShowGoogleBtn(false);
       setShowForgotPassword(false);
@@ -272,6 +322,24 @@ const Login = (props) => {
   };
 
   // COMPONENTS HERE
+  const nameComponent = () => {
+    return (
+      <ThemeTextField
+        id="name"
+        name="name"
+        customlabel="Name"
+        {...register("name", {
+          required: { value: requiredFields?.name, message: "Required" },
+        })}
+        error={!!errors?.name}
+        className={appStyles.inputTextField}
+        disabled={disableFields?.name}
+        helperText={errors?.name?.message}
+        ishelpertext="true"
+      />
+    );
+  };
+
   const emailComponent = () => {
     return (
       <ThemeTextField
@@ -390,6 +458,10 @@ const Login = (props) => {
   return (
     <section className={appStyles["main-cnt"]}>
       <form onSubmit={handleSubmit(handleSubmitBtn)} className={appStyles.form}>
+        <section className={appStyles["main-header"]}>
+          <img src={apiLogo} alt="API" />
+          <div className={appStyles["main-header__appName"]}>{APP_NAME}</div>
+        </section>
         <section className={appStyles["form-header"]}>
           <ThemeButton
             className={cx(appStyles["header-button"], {
@@ -410,6 +482,8 @@ const Login = (props) => {
             Register
           </ThemeButton>
         </section>
+
+        {showFields?.name && nameComponent()}
 
         {showFields?.email && emailComponent()}
 
@@ -461,6 +535,18 @@ const Login = (props) => {
           )}
         </div>
       </form>
+
+      <SnackbarComponent
+        snackBar={snackBar}
+        stayOpen
+        severity="warning"
+        isButton
+        buttonText="Resend Email Verification"
+        buttonCallback={handleResendVerificationEmail}
+        handleClose={() => {
+          setSnackBar({ show: false });
+        }}
+      />
     </section>
   );
 };

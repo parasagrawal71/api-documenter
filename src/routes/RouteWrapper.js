@@ -7,8 +7,8 @@ import { readCookie } from "utils/cookie";
 const RouteWrapper = ({ component: Component, isPrivate, ...rest }) => {
   let signed = false;
 
-  const token = readCookie("token");
-  signed = !!token;
+  const userToken = readCookie("userToken");
+  signed = !!userToken;
 
   if (isPrivate && !signed) {
     toast.error("Please login first");

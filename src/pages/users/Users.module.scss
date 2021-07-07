@@ -1,0 +1,81 @@
+.main-cnt {
+  .users-cnt {
+    padding: 30px;
+
+    .users-cnt__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 56px;
+
+      .users-cnt__header__title {
+        font-size: 20px;
+        font-weight: 500;
+      }
+    }
+
+    .user-cnt {
+      padding: 30px;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: rgba(220, 228, 222, 0.15);
+      box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+      min-height: 50px;
+
+      .user-cnt--left {
+        display: flex;
+        align-items: center;
+
+        div:not(:last-child) {
+          margin-right: 50px;
+        }
+
+        .user-cnt__name {
+          width: 200px;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+        }
+
+        .user-cnt__email {
+          width: 300px;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+        }
+      }
+
+      &:not(:last-child) {
+        margin-bottom: 20px;
+      }
+
+      .formControl {
+        margin: 1px;
+        min-width: 200px;
+        max-width: 400px;
+        min-height: 50px;
+
+        .select {
+          padding-left: 5px;
+        }
+      }
+
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+      }
+
+      .chip {
+        margin: 2px;
+      }
+
+      .menu-item {
+        &.selected {
+          font-weight: bold;
+        }
+      }
+    }
+  }
+}

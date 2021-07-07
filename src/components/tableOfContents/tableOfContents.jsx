@@ -18,7 +18,8 @@ import appStyles from "./tableOfContents.module.scss";
 
 const tableOfContents = (props) => {
   // PROPS HERE
-  const { models, setModels, readmeFiles, setReadmeFiles, sortedApisTree, updateSortedApisTree } = props;
+  const { models, setModels, readmeFiles, setReadmeFiles, sortedApisTree, updateSortedApisTree, enableEditMode } =
+    props;
 
   // VARIABLES HERE
   const serviceMID = getUrlParams()?.serviceMID;
@@ -307,6 +308,7 @@ const tableOfContents = (props) => {
           });
         }}
         href={aFileObj?.fileName}
+        enableEditMode={enableEditMode}
       />
     );
   };
@@ -341,6 +343,7 @@ const tableOfContents = (props) => {
           });
         }}
         href={aFileObj?.fileName}
+        enableEditMode={enableEditMode}
       />
     );
   };
@@ -389,6 +392,7 @@ const tableOfContents = (props) => {
             });
           }}
           href={subFolder?.folderName}
+          enableEditMode={enableEditMode}
         />
 
         <SortableCont
@@ -448,6 +452,7 @@ const tableOfContents = (props) => {
             });
           }}
           href="readme"
+          enableEditMode={enableEditMode}
         />
 
         {openReadme &&
@@ -468,6 +473,7 @@ const tableOfContents = (props) => {
                     });
                   }}
                   href={aFileObj?.fileName}
+                  enableEditMode={enableEditMode}
                 />
               );
             })
@@ -496,6 +502,7 @@ const tableOfContents = (props) => {
             });
           }}
           href="models"
+          enableEditMode={enableEditMode}
         />
 
         {openModels &&
@@ -516,6 +523,7 @@ const tableOfContents = (props) => {
                     });
                   }}
                   href={aFileObj?.fileName}
+                  enableEditMode={enableEditMode}
                 />
               );
             })
@@ -529,7 +537,7 @@ const tableOfContents = (props) => {
         <span>APIs</span>
         <Tooltip title="Add Folder">
           <AddFolderIcon
-            className={appStyles.addFolderIcon}
+            className={cx(appStyles.addFolderIcon, { visibilityHidden: !enableEditMode })}
             onClick={(e) => {
               e.stopPropagation();
               setOpenTextfieldPopup({
@@ -583,6 +591,7 @@ const tableOfContents = (props) => {
                     });
                   }}
                   href={apiFolder?.folderName}
+                  enableEditMode={enableEditMode}
                 />
 
                 <SortableCont

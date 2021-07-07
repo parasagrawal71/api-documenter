@@ -3,10 +3,15 @@ export const INITIAL_STATE = {
     position: "top-right",
     autoCloseTime: 2000,
   },
+  loggedInUser: {},
 };
 
 export const actions = {
   updateToastState: (store, newToastState) => {
     store.setState({ toastState: newToastState });
+  },
+
+  updateLoggedInUser: (store, updatedUser) => {
+    store.setState({ loggedInUser: updatedUser });
   },
 };

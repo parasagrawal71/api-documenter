@@ -18,7 +18,7 @@ const apiService = (apiResource, body, { params, headers, ...restConfig } = {}) 
 
   const configToRequest = {
     params: { serviceMID: paramsObj?.serviceMID, ...(params || {}) },
-    headers: { Authorization: `Bearer ${readCookie("token")}`, ...(headers || {}) },
+    headers: { Authorization: `Bearer ${readCookie("userToken")}`, ...(headers || {}) },
     ...(restConfig || {}),
   };
 

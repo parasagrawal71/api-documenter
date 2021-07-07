@@ -72,7 +72,7 @@ export const getUrlParams = () => {
 
   for (let i = 0; i < params?.length; i++) {
     let tmpArr = params[i]?.split("=");
-    paramsObj[tmpArr[0]] = tmpArr[1];
+    paramsObj[tmpArr[0]] = decodeURIComponent(tmpArr[1]);
   }
   return paramsObj || {};
 };

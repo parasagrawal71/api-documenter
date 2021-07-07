@@ -11,10 +11,11 @@ import moment from "moment";
 import cx from "classnames";
 import { toast } from "react-toastify";
 import ReactHtmlParser from "react-html-parser";
+import _ from "lodash";
 
 // IMPORT USER-DEFINED COMPONENTS HERE
 import { ThemeTextField, ThemeAutocomplete, ThemeButton } from "utils/commonStyles/StyledComponents";
-import GenericActionsPopover from "subComponents/genericActionsPopover/GenericActionsPopover";
+import GenericActionsPopoverComponent from "subComponents/genericActionsPopover/GenericActionsPopover";
 import { capitalizeFirstLetter, getStatusText, prettyPrintJson, validateJSON } from "utils/functions";
 import AppTableComponent from "components/appTable/AppTable";
 import ViewMorePopupComponent from "components/viewMorePopup/ViewMorePopup";
@@ -44,7 +45,7 @@ const Endpoint = (props) => {
   const [requestBody, setRequestBody] = useState("");
   const [apiResponse, setApiResponse] = useState("");
   const [invalidReqBody, setInvalidReqBody] = useState(false);
-  const [openSendOptions, sendOpenSendOptions] = useState(false);
+  const [openSendOptions, setOpenSendOptions] = useState(false);
 
   // REDUCERS HERE
   const endpointReducers = (state, action) => {
@@ -71,6 +72,9 @@ const Endpoint = (props) => {
         const updatedParameters = state?.parameters?.map((param, index) => {
           if (index === payload?.rowIndex) {
             param[payload?.headerKey] = payload?.value;
+            if (param?.error) {
+              param.error[payload?.headerKey] = undefined;
+            }
             return param;
           }
           return param;
@@ -80,6 +84,15 @@ const Endpoint = (props) => {
 
       case "add-parameter":
         const updatedParametersAfterAddingNew = [...(state?.parameters || [])];
+        const paramLastIndex = updatedParametersAfterAddingNew?.length - 1;
+        if (paramLastIndex >= 0 && !updatedParametersAfterAddingNew?.[paramLastIndex]?.name) {
+          if (!updatedParametersAfterAddingNew?.[paramLastIndex]?.error) {
+            updatedParametersAfterAddingNew[paramLastIndex].error = {};
+          }
+          updatedParametersAfterAddingNew[paramLastIndex].error.name = true;
+          return { ...state, parameters: updatedParametersAfterAddingNew };
+        }
+
         updatedParametersAfterAddingNew?.push({
           name: "",
           required: false,
@@ -98,6 +111,9 @@ const Endpoint = (props) => {
         const updatedReqHeaders = state?.requestHeaders?.map((reqHeader, index) => {
           if (index === payload?.rowIndex) {
             reqHeader[payload?.headerKey] = payload?.value;
+            if (reqHeader?.error) {
+              reqHeader.error[payload?.headerKey] = undefined;
+            }
             return reqHeader;
           }
           return reqHeader;
@@ -107,6 +123,15 @@ const Endpoint = (props) => {
 
       case "add-requestHeader":
         const updatedRequestHeadersAfterAddingNew = [...(state?.requestHeaders || [])];
+        const headerLastIndex = updatedRequestHeadersAfterAddingNew?.length - 1;
+        if (headerLastIndex >= 0 && !updatedRequestHeadersAfterAddingNew?.[headerLastIndex]?.name) {
+          if (!updatedRequestHeadersAfterAddingNew?.[headerLastIndex]?.error) {
+            updatedRequestHeadersAfterAddingNew[headerLastIndex].error = {};
+          }
+          updatedRequestHeadersAfterAddingNew[headerLastIndex].error.name = true;
+          return { ...state, requestHeaders: updatedRequestHeadersAfterAddingNew };
+        }
+
         updatedRequestHeadersAfterAddingNew?.push({
           name: "",
           required: false,
@@ -230,6 +255,7 @@ const Endpoint = (props) => {
       if (fieldName === "method") {
         return (
           <ThemeAutocomplete
+            disableClearable
             options={["GET", "POST", "PUT", "DELETE", "PATCH"]}
             getOptionLabel={(option) => option || ""}
             customStyle={{ width: "150px" }}
@@ -299,10 +325,88 @@ const Endpoint = (props) => {
     return ReactHtmlParser(coloredFieldValue);
   };
 
+  const isValidationsErrors = () => {
+    const requiredParameters = [];
+    parameterTableHeaders?.filter((p) => {
+      if (p.required) {
+        requiredParameters.push(p.key);
+      }
+      return p;
+    });
+
+    const requiredReqHeaders = [];
+    reqHeadTableHeaders?.filter((h) => {
+      if (h.required) {
+        requiredReqHeaders.push(h.key);
+      }
+      return h;
+    });
+
+    let isError = false;
+    endpoint?.parameters?.map((paramObj, index) => {
+      const isErrorObj = {};
+
+      requiredParameters?.map((requiredParamName) => {
+        if (!paramObj?.[requiredParamName]) {
+          isErrorObj.rowIndex = index;
+          isErrorObj.value = {
+            ...isErrorObj?.value,
+            [requiredParamName]: true,
+          };
+          isError = true;
+        }
+        return requiredParamName;
+      });
+
+      dispatchEndpoint({
+        type: "parameters",
+        payload: {
+          headerKey: "error",
+          rowIndex: isErrorObj?.rowIndex,
+          value: isErrorObj?.value,
+        },
+      });
+
+      return paramObj;
+    });
+
+    endpoint?.requestHeaders?.map((reqHeaderObj, index) => {
+      const isErrorObj = {};
+
+      requiredReqHeaders?.map((requiredHeaderName) => {
+        if (!reqHeaderObj?.[requiredHeaderName]) {
+          isErrorObj.rowIndex = index;
+          isErrorObj.value = {
+            ...isErrorObj?.value,
+            [requiredHeaderName]: true,
+          };
+          isError = true;
+        }
+        return requiredHeaderName;
+      });
+
+      dispatchEndpoint({
+        type: "requestHeaders",
+        payload: {
+          headerKey: "error",
+          rowIndex: isErrorObj?.rowIndex,
+          value: isErrorObj?.value,
+        },
+      });
+
+      return reqHeaderObj;
+    });
+
+    return isError;
+  };
+
   const handleEditSaveBtn = () => {
     if (!editMode) {
       setEditMode(true);
     } else {
+      if (isValidationsErrors()) {
+        return;
+      }
       updateEndpoint();
       setEditMode(false);
     }
@@ -311,7 +415,7 @@ const Endpoint = (props) => {
   const handleCancelBtn = () => {
     dispatchEndpoint({
       type: "all",
-      payload: endpointOldState,
+      payload: _.cloneDeep(endpointOldState),
     });
     setEditMode(false);
   };
@@ -321,7 +425,8 @@ const Endpoint = (props) => {
 
     const response = await apiService(endpointUrl(endpoint?._id).put, requestBodyToPutApi);
     if (response?.success) {
-      setEndpointOldState(response?.data);
+      // IMPORTANT: Nested array or objects (eg. parameters, requestHeaders, etc) had same reference because of that values were mutating
+      setEndpointOldState(_.cloneDeep(response?.data));
       updateApisTree(endpoint?.title, endpoint?.method);
     }
   };
@@ -337,8 +442,59 @@ const Endpoint = (props) => {
         type: "all",
         payload: response?.data,
       });
-      setEndpointOldState(response?.data);
+      setEndpointOldState(_.cloneDeep(response?.data));
     }
+  };
+
+  const putEnvVariablesValues = (endpointData, paramsToSend, headersToSend) => {
+    let modifiedPath = "";
+
+    const getEnvVarValue = (varName) => {
+      let varValue = "";
+      selectedEnv?.variables?.map((variable) => {
+        if (varName === variable?.key) {
+          varValue = variable?.value;
+        }
+        return variable;
+      });
+      return varValue;
+    };
+
+    if (endpointData?.path?.includes("{{")) {
+      const url = endpointData?.path;
+      const variableName = url?.substring(url.indexOf("{") + 2, url.indexOf("}"));
+      const variableValue = getEnvVarValue(variableName);
+      const regex = new RegExp(`{{${variableName}}}`, "");
+      modifiedPath = url.replace(regex, variableValue);
+    }
+
+    if (headersToSend && Object.keys(headersToSend)?.length) {
+      Object.keys(headersToSend)?.map((headerKey) => {
+        const value = headersToSend?.[headerKey];
+        if (value?.includes?.("{{")) {
+          const variableName = value?.substring(value.indexOf("{") + 2, value.indexOf("}"));
+          const variableValue = getEnvVarValue(variableName);
+          const regex = new RegExp(`{{${variableName}}}`, "");
+          headersToSend[headerKey] = headersToSend[headerKey].replace(regex, variableValue);
+        }
+        return headerKey;
+      });
+    }
+
+    if (paramsToSend && Object.keys(paramsToSend)?.length) {
+      Object.keys(paramsToSend)?.map((paramKey) => {
+        const value = paramsToSend?.[paramKey];
+        if (value?.includes?.("{{")) {
+          const variableName = value?.substring(value.indexOf("{") + 2, value.indexOf("}"));
+          const variableValue = getEnvVarValue(variableName);
+          const regex = new RegExp(`{{${variableName}}}`, "");
+          paramsToSend[paramKey] = paramsToSend[paramKey].replace(regex, variableValue);
+        }
+        return paramKey;
+      });
+    }
+
+    return [modifiedPath, paramsToSend, headersToSend];
   };
 
   const sendApiCall = () => {
@@ -393,20 +549,8 @@ const Endpoint = (props) => {
       return;
     }
 
-    let modifiedPath = "";
-    if (endpoint?.path?.includes("{{")) {
-      const url = endpoint?.path;
-      const variableName = url?.substring(url.indexOf("{") + 2, url.indexOf("}"));
-      let variableValue = "";
-      selectedEnv?.variables?.map((variable) => {
-        if (variableName === variable?.key) {
-          variableValue = variable?.value;
-        }
-        return variable;
-      });
-      const regex = new RegExp(`{{${variableName}}}`, "");
-      modifiedPath = url.replace(regex, variableValue);
-    }
+    const [modifiedPath] = putEnvVariablesValues(endpoint, paramsToSend, headersToSend);
+    // IMPORTANT: Modifying the same object reference works, no need to assign new variable for params and header
 
     axios
       .request({
@@ -467,15 +611,15 @@ const Endpoint = (props) => {
 
   return (
     <section className={appStyles["main-container"]}>
+      <span id={endpoint?.title} className={cx("scroll-target")}>
+        &nbsp;
+      </span>
       <section
         className={cx(appStyles["main-header"], {
           [appStyles.editMode]: editMode || addMode,
         })}
       >
         <div className={appStyles["main-header--left"]}>
-          <span id={endpoint?.title} className="scroll-target">
-            &nbsp;
-          </span>
           <span className={appStyles.title}>{TextFieldBoxOrValue("title", endpoint?.title)}</span>
           <span className={appStyles.updatedAt}>
             Updated At: {moment(endpoint?.updatedAt).format("DD-MM-YYYY hh:mm A")}
@@ -497,14 +641,14 @@ const Endpoint = (props) => {
                 <ThemeButton
                   className={appStyles["dropdown-arrow-btn"]}
                   onClick={() => {
-                    sendOpenSendOptions(!openSendOptions);
+                    setOpenSendOptions(!openSendOptions);
                   }}
                 >
                   <div className={cx("dropdown-arrow")} />
-                  <GenericActionsPopover
+                  <GenericActionsPopoverComponent
                     openPopover={openSendOptions}
                     setOpenPopover={(val) => {
-                      sendOpenSendOptions(val);
+                      setOpenSendOptions(val);
                     }}
                     options={["Save as example"]}
                     optionsCallbacks={[
@@ -628,7 +772,7 @@ const Endpoint = (props) => {
             ref={jsonTextareaRef}
             id="json-textarea"
             className={cx(appStyles["request-body__json"], {
-              [appStyles.disabled]: addMode || editMode,
+              // [appStyles.disabled]: addMode || editMode,
             })}
             rows="15"
             value={requestBody}
@@ -636,7 +780,7 @@ const Endpoint = (props) => {
               setInvalidReqBody(false);
               setRequestBody(e?.target?.value);
             }}
-            disabled={addMode || editMode}
+            // disabled={addMode || editMode}
           />
           <span className={appStyles.invalidJSONErr}>{invalidReqBody ? "Invalid JSON" : ""}</span>
         </section>

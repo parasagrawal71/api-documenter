@@ -122,6 +122,10 @@ export const ThemeAutocomplete = styled(React.forwardRef((props, ref) => <Autoco
   ".MuiAutocomplete-input": {
     fontSize: 13,
   },
+  ".MuiAutocomplete-inputRoot": {
+    padding: ({ customStyle, ...props }) => `${customStyle?.padding} !important`,
+    color: ({ customStyle, ...props }) => `${customStyle?.color} !important`,
+  },
 });
 
 /* *********************************************************

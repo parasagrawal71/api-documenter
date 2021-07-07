@@ -69,10 +69,9 @@ const EndpointsWrapper = (props) => {
 
             {apiFolder?.files?.map((aFileObj, fileIndex) => {
               return (
-                <>
+                <div key={fileIndex}>
                   <span>&nbsp;</span>
                   <EndpointComponent
-                    key={fileIndex}
                     endpointMongoId={aFileObj?.endpointMID}
                     selectedEnv={selectedEnv}
                     updateApisTree={(fileName, method) => {
@@ -86,7 +85,7 @@ const EndpointsWrapper = (props) => {
                     enableEditMode={enableEditMode}
                     setEnableEditMode={setEnableEditMode}
                   />
-                </>
+                </div>
               );
             })}
           </section>

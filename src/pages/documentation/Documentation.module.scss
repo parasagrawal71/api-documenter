@@ -1,24 +1,90 @@
+@import "utils/commonStyles/flex.scss";
+@import "utils/commonStyles/flex.scss";
+
 .main-container {
   flex: 1;
 
   .content-cnt {
     display: flex;
-    min-height: calc(100vh - 60px);
+    min-height: calc(100vh - 70px);
 
     .table-of-contents {
       width: 270px;
-      height: calc(100vh - 60px);
+      height: calc(100vh - 70px);
       position: sticky;
-      top: 60px;
+      top: 70px;
       display: flex;
       background-color: rgb(250, 250, 250);
     }
 
     .content-cnt--right {
       flex: 1;
-      padding: 20px 10px 20px 20px;
       display: flex;
       flex-direction: column;
+
+      .subheader {
+        position: sticky;
+        top: 70px;
+        z-index: 50;
+        padding: 10px 20px;
+        background-color: #fff;
+        font-size: 1.3em;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        &.header-shadow {
+          box-shadow: rgba(0, 0, 0, 0.05) 0px 5px 10px;
+        }
+
+        &.no-shadow {
+          box-shadow: none;
+        }
+
+        .subheader--right {
+          display: flex;
+          align-items: center;
+          font-size: 0.6em;
+
+          .subheader__envs {
+            @include flex-row-v-cen;
+            margin-right: 10px;
+
+            .subheader__envs-dropdown {
+              margin-right: 10px;
+            }
+
+            .subheader__add-env {
+              background-color: rgba(178, 178, 178, 0.35);
+              border-radius: 5px;
+              padding: 4px;
+              @include flex-row-b-cen;
+              margin-right: 10px;
+              cursor: pointer;
+              color: grey;
+            }
+
+            .subheader__edit-env {
+              @include flex-row-v-cen;
+              background-color: rgba(178, 178, 178, 0.35);
+              border-radius: 5px;
+              padding: 6px;
+              cursor: pointer;
+
+              .subheader__edit-env__icon {
+                font-size: 2rem;
+                width: 20px;
+                height: 20px;
+
+                &:hover {
+                  cursor: pointer;
+                }
+              }
+            }
+          }
+        }
+      }
 
       .models-cnt,
       .readme-cnt {
@@ -42,18 +108,9 @@
 
         .title {
           font-size: 1.3em;
-          // background-color: rgba(76, 82, 100, 0.2);
-          border-radius: 5px;
+          padding: 10px 20px;
+          background-color: #fff;
           margin-bottom: 10px;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-
-          .title--right {
-            display: flex;
-            align-items: center;
-            font-size: 0.6em;
-          }
         }
       }
     }

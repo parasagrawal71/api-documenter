@@ -1,3 +1,5 @@
+@import "utils/commonStyles/flex.scss";
+
 .main-cnt {
   display: flex;
   justify-content: center;
@@ -13,6 +15,23 @@
     border-radius: 5px;
     position: relative;
     top: 20%;
+
+    .main-header {
+      @include flex-row-v-cen;
+      position: relative;
+      bottom: 100px;
+      display: flex;
+      justify-content: center;
+
+      img {
+        width: 35px;
+        height: 35px;
+        margin-right: 5px;
+      }
+
+      .main-header__appName {
+      }
+    }
 
     .form-header {
       display: flex;

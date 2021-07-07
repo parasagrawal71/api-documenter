@@ -9,6 +9,7 @@ import ReactHtmlParser from "react-html-parser";
 import { ThemeTextField, ThemeCheckbox, ThemeAutocomplete } from "utils/commonStyles/StyledComponents";
 
 // IMPORT ASSETS HERE
+import requestHeadersArray from "utils/constants/request-headers.json";
 import appStyles from "./AppTable.module.scss";
 
 const AppTable = (props) => {
@@ -86,6 +87,20 @@ const AppTable = (props) => {
           }}
           error={tableRowData?.error?.[headerObj?.key]?.toString()}
           onBlur={() => {
+            if (dispatchEndpoint) {
+              dispatchEndpoint({
+                type: arrayKey,
+                payload: {
+                  headerKey: "error",
+                  rowIndex,
+                  value: {
+                    ...(tableRowData?.error || {}),
+                    [headerKey]: headerObj?.required && !tableRowData?.[headerKey] ? true : undefined,
+                  },
+                },
+              });
+            }
+
             if (dispatchModel) {
               dispatchModel({
                 type: "update-modelField",
@@ -94,25 +109,10 @@ const AppTable = (props) => {
                   rowIndex,
                   value: {
                     ...(tableRowData?.error || {}),
-                    [headerKey]: headerObj?.required ? true : undefined,
+                    [headerKey]: headerObj?.required && !tableRowData?.[headerKey] ? true : undefined,
                   },
                 },
               });
-            }
-
-            if (dispatchEndpoint) {
-              // TODO: ADD ENDPOINT FIELD VALIDATIONS
-              // dispatchEndpoint({
-              //   type: "",
-              //   payload: {
-              //     headerKey: "error",
-              //     rowIndex,
-              //     value: {
-              //       ...(tableRowData?.error || {}),
-              //       [headerKey]: headerObj?.required ? true : undefined,
-              //     },
-              //   },
-              // });
             }
           }}
         />
@@ -121,20 +121,52 @@ const AppTable = (props) => {
       ) : (
         "No"
       );
-    } else if (["type"].includes(headerKey) && (addMode || editMode)) {
+    } else if (
+      (["type"].includes(headerKey) && (addMode || editMode)) ||
+      (arrayKey === "requestHeaders" && ["name"].includes(headerKey) && (addMode || editMode))
+    ) {
       return (
         <ThemeAutocomplete
-          options={modelFieldTypes}
-          getOptionLabel={(option) => option?.type || ""}
-          customStyle={{ width: "250px" }}
+          disableClearable
+          options={
+            arrayKey === "modelFields" ? modelFieldTypes : arrayKey === "requestHeaders" ? requestHeadersArray : []
+          }
+          getOptionLabel={
+            arrayKey === "modelFields"
+              ? (option) => option?.type || ""
+              : arrayKey === "requestHeaders"
+              ? (option) => option || ""
+              : ""
+          }
+          customStyle={{ width: arrayKey === "requestHeaders" ? "300px" : "250px" }}
           renderInput={(params) => (
             <ThemeTextField
               {...params}
+              // IMPORTANT: To disable browser's autofill
+              id="field1"
+              inputProps={{
+                ...params.inputProps,
+                autoComplete: "new-password",
+              }}
               InputLabelProps={{
                 focused: false,
               }}
               error={tableRowData?.error?.[headerObj?.key]?.toString()}
               onBlur={() => {
+                if (dispatchEndpoint) {
+                  dispatchEndpoint({
+                    type: arrayKey,
+                    payload: {
+                      headerKey: "error",
+                      rowIndex,
+                      value: {
+                        ...(tableRowData?.error || {}),
+                        [headerKey]: headerObj?.required && !tableRowData?.[headerKey] ? true : undefined,
+                      },
+                    },
+                  });
+                }
+
                 if (dispatchModel) {
                   dispatchModel({
                     type: "update-modelField",
@@ -143,15 +175,27 @@ const AppTable = (props) => {
                       rowIndex,
                       value: {
                         ...(tableRowData?.error || {}),
-                        [headerKey]: headerObj?.required ? true : undefined,
+                        [headerKey]: headerObj?.required && !tableRowData?.[headerKey] ? true : undefined,
                       },
                     },
                   });
                 }
               }}
+              // customStyle={{ padding: 0 }}
             />
           )}
           onChange={(e, selectedOption) => {
+            if (dispatchEndpoint) {
+              dispatchEndpoint({
+                type: arrayKey,
+                payload: {
+                  headerKey,
+                  rowIndex,
+                  value: arrayKey === "requestHeaders" ? selectedOption : "",
+                },
+              });
+            }
+
             if (dispatchModel) {
               dispatchModel({
                 type: "update-modelField",
@@ -163,13 +207,19 @@ const AppTable = (props) => {
               });
             }
           }}
-          value={{ type: fieldValue } || ""}
+          value={
+            arrayKey === "modelFields"
+              ? { type: fieldValue } || ""
+              : arrayKey === "requestHeaders"
+              ? fieldValue || ""
+              : ""
+          }
         />
       );
     } else if ((headerKey === "value" && !disableValueTextbox) || addMode || editMode) {
       return (
         <ThemeTextField
-          disabled={headerKey === "value" && !disableValueTextbox && (editMode || addMode)}
+          // disabled={headerKey === "value" && !disableValueTextbox && (editMode || addMode)}
           value={(headerKey === "value" && !disableValueTextbox) || editMode ? fieldValue : ""}
           multiline={isMultiline === "multiline"}
           onChange={(e) => {
@@ -198,6 +248,20 @@ const AppTable = (props) => {
           rows={2}
           error={tableRowData?.error?.[headerObj?.key]?.toString()}
           onBlur={() => {
+            if (dispatchEndpoint) {
+              dispatchEndpoint({
+                type: arrayKey,
+                payload: {
+                  headerKey: "error",
+                  rowIndex,
+                  value: {
+                    ...(tableRowData?.error || {}),
+                    [headerKey]: headerObj?.required && !tableRowData?.[headerKey] ? true : undefined,
+                  },
+                },
+              });
+            }
+
             if (dispatchModel) {
               dispatchModel({
                 type: "update-modelField",
@@ -206,7 +270,7 @@ const AppTable = (props) => {
                   rowIndex,
                   value: {
                     ...(tableRowData?.error || {}),
-                    [headerKey]: headerObj?.required ? true : undefined,
+                    [headerKey]: headerObj?.required && !tableRowData?.[headerKey] ? true : undefined,
                   },
                 },
               });
@@ -264,10 +328,19 @@ const AppTable = (props) => {
                     [classes.centerAlign]: ["required", "unique"].includes(header?.key),
                     [classes.widthToNameField]: ["name"].includes(header?.key),
                   })}
-                  style={{ padding: cellPadding }}
+                  style={{
+                    padding: cellPadding,
+                    width:
+                      header?.key === "name" &&
+                      ((arrayKey === "requestHeaders" && "300px") || (arrayKey === "parameters" && "250px")),
+                  }}
                 >
                   {header?.displayName}
-                  {header?.required ? <span className={appStyles["required-asterisk"]}>*</span> : ""}
+                  {header?.required && (addMode || editMode) ? (
+                    <span className={appStyles["required-asterisk"]}>*</span>
+                  ) : (
+                    ""
+                  )}
                 </TableCell>
               );
             })}
@@ -286,14 +359,22 @@ const AppTable = (props) => {
                         [classes.centerAlign]: ["required", "unique"].includes(header?.key),
                         [classes.widthToNameField]: ["name"].includes(header?.key),
                       })}
-                      style={{ padding: cellPadding }}
+                      style={{
+                        padding: cellPadding,
+                        width:
+                          header?.key === "name" &&
+                          ((arrayKey === "requestHeaders" && "300px") || (arrayKey === "parameters" && "250px")),
+                      }}
                     >
                       {TextFieldBoxOrValue(tableRow, header, rowIndex, tableRow[header?.key])}
                     </TableCell>
                   );
                 })}
                 {(addMode || editMode) && (
-                  <TableCell className={classes.tableBodyCell} style={{ padding: cellPadding }}>
+                  <TableCell
+                    className={classes.tableBodyCell}
+                    style={{ padding: 0, textAlign: "center", width: "50px" }}
+                  >
                     <RemoveIcon
                       className={appStyles.removeIcon}
                       onClick={() => {

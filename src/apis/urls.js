@@ -96,6 +96,18 @@ export const service = (mongoId) => ({
     method: "GET",
     endpoint: "/service",
   },
+  post: {
+    method: "POST",
+    endpoint: "/service",
+  },
+  delete: {
+    method: "DELETE",
+    endpoint: `/service/${mongoId}`,
+  },
+  put: {
+    method: "PUT",
+    endpoint: `/service/${mongoId}`,
+  },
 });
 // ****************************************************************************************** //
 
@@ -128,6 +140,48 @@ export const auth = () => ({
   verifyEmail: {
     method: "PATCH",
     endpoint: "/auth/verify-email",
+  },
+  resendVerificationEmail: {
+    method: "PATCH",
+    endpoint: "/auth/resend-verification-email",
+  },
+});
+// ****************************************************************************************** //
+
+// ********************************** 'User' endpoints *********************************** //
+export const user = (mongoId) => ({
+  getById: {
+    method: "GET",
+    endpoint: `/user/${mongoId}`,
+  },
+  getAll: {
+    method: "GET",
+    endpoint: `/user`,
+  },
+  put: {
+    method: "PUT",
+    endpoint: `/user/${mongoId}`,
+  },
+});
+// ****************************************************************************************** //
+
+// ********************************** 'Environment' endpoints *********************************** //
+export const environment = (mongoId) => ({
+  getAll: {
+    method: "GET",
+    endpoint: "/environment",
+  },
+  post: {
+    method: "POST",
+    endpoint: "/environment",
+  },
+  put: {
+    method: "PUT",
+    endpoint: `/environment/${mongoId}`,
+  },
+  delete: {
+    method: "DELETE",
+    endpoint: `/environment/${mongoId}`,
   },
 });
 // ****************************************************************************************** //

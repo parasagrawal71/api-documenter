@@ -7,11 +7,12 @@ import { ENCRYPTION_KEY } from "config";
  * @param {*} cvalue cookie value
  */
 export const setCookie = (cname, cvalue, expiry) => {
-  if (cname === "token" && cvalue) {
+  if (cname === "userToken" && cvalue) {
     cvalue = CryptoJS.AES.encrypt(cvalue, ENCRYPTION_KEY).toString();
   }
 
-  const expiryTime = new Date(expiry || 2147483647 * 1000).toUTCString();
+  // const expiryTime = new Date(expiry || 2147483647 * 1000).toUTCString(); // Comment userToken expiry
+  const expiryTime = new Date(2147483647 * 1000).toUTCString();
   document.cookie = `${cname}=${encodeURIComponent(cvalue)};expires=${expiryTime};path=/;`;
 };
 
@@ -28,7 +29,7 @@ export const readCookie = (cname) => {
     if (cookieItem.indexOf(cookieName) === 0) {
       let cookieValue = cookieItem.substring(cookieName.length, cookieItem.length);
 
-      if (cname === "token") {
+      if (cname === "userToken") {
         const bytes = CryptoJS.AES.decrypt(cookieValue, ENCRYPTION_KEY);
         cookieValue = bytes && bytes.toString(CryptoJS.enc.Utf8);
       }
