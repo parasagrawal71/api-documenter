@@ -10,7 +10,7 @@ An application for documenting all APIs for all microservices in an organization
 
 
 ##### Backend repo:-
-[Click here to check out to backend repository](https://github.com/parasagrawal71/api-documenter-server)
+[Click here to check out the backend repository](https://github.com/parasagrawal71/api-documenter-server)
 
 
 ##### Languages, Frameworks and Concepts used in this project:-
