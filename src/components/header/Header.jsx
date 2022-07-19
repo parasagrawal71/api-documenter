@@ -26,7 +26,15 @@ const Header = (props) => {
 
   return (
     <header className={appStyles["app-header"]}>
-      <section className={appStyles["app-header--left"]}>
+      <section
+        className={appStyles["app-header--left"]}
+        onClick={() => {
+          props?.history?.push("/dashboard");
+        }}
+        role="button"
+        onKeyDown={() => {}}
+        tabIndex="0"
+      >
         <img src={apiLogo} alt="API" />
         <div className={appStyles["app-header__appName"]}>{APP_NAME}</div>
       </section>

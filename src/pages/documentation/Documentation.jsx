@@ -32,7 +32,7 @@ const Documentation = (props) => {
   const [models, setModels] = useState([]);
   const [readmeFiles, setReadmeFiles] = useState([]);
   const [sortedApisTree, setSortedApisTree] = useState([]);
-  const [enableEditMode, setEnableEditMode] = useState(false);
+  const [enableEditMode, setEnableEditMode] = useState(true);
   const [globalState] = useGlobal();
   const [environments, setEnvironments] = useState([]);
   const [openEnvPopover, setOpenEnvPopover] = useState(null);
@@ -79,6 +79,10 @@ const Documentation = (props) => {
       }
     };
   }, []);
+
+  useEffect(() => {
+    setEnableEditMode(globalState?.loggedInUser?.editAccess?.includes?.(getUrlParams?.()?.serviceName));
+  }, [globalState?.loggedInUser]);
 
   const enableHeaderShadow = () => {
     const positionFromTop = 200;
