@@ -177,7 +177,7 @@ const Documentation = (props) => {
 
   return (
     <section className={appStyles["main-container"]}>
-      <HeaderComponent />
+      <HeaderComponent {...props} />
       <section className={appStyles["content-cnt"]}>
         <section className={appStyles["table-of-contents"]}>
           <TableOfContentsComponent
