@@ -13,6 +13,7 @@
 
   .app-header--left {
     @include flex-row-v-cen;
+    cursor: pointer;
 
     img {
       width: 35px;

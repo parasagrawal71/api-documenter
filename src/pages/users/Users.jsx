@@ -90,7 +90,7 @@ const Users = (props) => {
 
   return (
     <section className={appStyles["main-cnt"]}>
-      <HeaderComponent />
+      <HeaderComponent {...props} />
       <section className={appStyles["users-cnt"]}>
         <section className={appStyles["users-cnt__header"]}>
           <div className={appStyles["users-cnt__header__title"]}>Users</div>

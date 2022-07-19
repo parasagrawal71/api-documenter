@@ -91,6 +91,14 @@
         }
       }
 
+      .login-with-sample-creds {
+        cursor: pointer;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+
       .resend-otp {
         &.active {
           cursor: pointer;

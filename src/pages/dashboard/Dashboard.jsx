@@ -98,7 +98,7 @@ const Dashboard = (props) => {
 
   return (
     <section className={appStyles["main-cnt"]}>
-      <HeaderComponent />
+      <HeaderComponent {...props} />
       <section className={appStyles["services-cnt"]}>
         <section className={appStyles["services-cnt__header"]}>
           <div className={appStyles["services-cnt__header__title"]}>Services</div>

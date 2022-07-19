@@ -40,6 +40,7 @@ const Login = (props) => {
   const [submitButton, setSubmitButton] = useState({});
   const [requiredFields, setRequiredFields] = useState({});
   const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [showSampleCreds, setShowSampleCreds] = useState(false);
   const [showResendOtp, setShowResendOtp] = useState(false);
   const [timer, setTimer] = useState(null);
   const [showGoogleBtn, setShowGoogleBtn] = useState(false);
@@ -51,10 +52,10 @@ const Login = (props) => {
     modifyStates("LOGIN");
   }, []);
 
-  const login = async () => {
+  const login = async (email = "", password = "") => {
     setLoaders({ submit: true });
     const response = await apiService(auth().login, null, {
-      params: { email: getValues("email"), password: getValues("password") },
+      params: { email: email || getValues("email"), password: password || getValues("password") },
     });
     if (response?.success) {
       const { token, expiry, user } = response?.data;
@@ -180,6 +181,10 @@ const Login = (props) => {
     modifyStates("SEND_OTP");
   };
 
+  const handleLoginWithSampleCreds = () => {
+    login("johndoe@gmail.com", "Abc@1234");
+  };
+
   const toggleMode = (newMode) => {
     resetForm();
     setTab(newMode);
@@ -272,6 +277,7 @@ const Login = (props) => {
       setDisableFields({});
       setShowGoogleBtn(true);
       setShowForgotPassword(true);
+      setShowSampleCreds(true);
       setShowResendOtp(false);
       setTimer(null);
       setPwdPatternValidation(false);
@@ -283,6 +289,7 @@ const Login = (props) => {
       setDisableFields({});
       setShowGoogleBtn(false);
       setShowForgotPassword(false);
+      setShowSampleCreds(false);
       setShowResendOtp(false);
       setTimer(null);
       setPwdPatternValidation(true);
@@ -294,6 +301,7 @@ const Login = (props) => {
       setDisableFields({ email: true });
       setShowGoogleBtn(false);
       setShowForgotPassword(false);
+      setShowSampleCreds(false);
       setShowResendOtp(false);
       setTimer(null);
       setPwdPatternValidation(true);
@@ -305,6 +313,7 @@ const Login = (props) => {
       setDisableFields({});
       setShowGoogleBtn(false);
       setShowForgotPassword(false);
+      setShowSampleCreds(false);
       setShowResendOtp(false);
       setTimer(null);
       setPwdPatternValidation(false);
@@ -316,6 +325,7 @@ const Login = (props) => {
       setDisableFields({ email: true });
       setShowGoogleBtn(false);
       setShowForgotPassword(false);
+      setShowSampleCreds(false);
       setShowResendOtp(true);
       setTimer("01:00");
     }
@@ -532,6 +542,19 @@ const Login = (props) => {
               </span>
               {timer && <span>&nbsp;in {timer}</span>}
             </>
+          )}
+        </div>
+        <div className={appStyles.footer}>
+          {showSampleCreds && (
+            <span
+              className={appStyles["login-with-sample-creds"]}
+              onClick={handleLoginWithSampleCreds}
+              role="button"
+              onKeyDown={() => {}}
+              tabIndex="0"
+            >
+              Login with sample credentials ?
+            </span>
           )}
         </div>
       </form>
