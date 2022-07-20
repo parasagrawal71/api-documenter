@@ -88,7 +88,8 @@ An application for documenting all APIs for all microservices in an organization
 
 #### DevOps
 
-* [![Firebase][firebase-icon]][icon-url]
+* [![Firebase][firebase-icon]][icon-url] (Client)
+* [![Heroku][heroku-icon]][icon-url] (Server)
 
 
 <p align="right">(<a href="#top">Back to top</a>)</p>
@@ -121,6 +122,7 @@ An application for documenting all APIs for all microservices in an organization
 [material-ui-icon]: https://img.shields.io/badge/Material%20UI-20232A?style=for-the-badge&logo=MUI&logoColor=007FFF
 [express-icon]: https://img.shields.io/badge/Express.js-20232A?style=for-the-badge&logo=Express&logoColor=FFFFFF
 [mongoose-icon]: https://img.shields.io/badge/Mongoose-20232A?style=for-the-badge
+[heroku-icon]: https://img.shields.io/badge/Heroku-20232A?style=for-the-badge&logo=Heroku&logoColor=430098
 
 
 
