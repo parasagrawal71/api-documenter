@@ -43,7 +43,7 @@
 
 ## About The Project
 
-[![API Documenter][product-screenshot]][website-link]
+[![API Documenter][product-gif]][website-link]
 
 
 
@@ -107,6 +107,7 @@ An application for documenting all APIs for all microservices in an organization
 [website-link]: https://api-documenter.web.app
 
 [product-screenshot]: src/assets/images/product-screenshot.png
+[product-gif]: src/assets/gifs/product-gif.gif
 
 <!-- SKILLS -->
 [icon-url]: #
