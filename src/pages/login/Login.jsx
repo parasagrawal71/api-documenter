@@ -253,11 +253,12 @@ const Login = (props) => {
 
   const handleResendVerificationEmail = async () => {
     setSnackBar({ show: false });
+    const email = getValues("email");
     resetForm();
     modifyStates("LOGIN");
     const response = await apiService(auth().resendVerificationEmail, null, {
       params: {
-        email: getValues("email"),
+        email,
       },
     });
     if (response?.success) {
