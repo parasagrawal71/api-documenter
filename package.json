@@ -39,7 +39,7 @@
     "eject": "react-scripts eject",
     "lint": "eslint ./ --fix",
     "prettier": "prettier -w ./src",
-    "deploy": "yarn build && firebase deploy"
+    "deploy": "npm run build && firebase deploy"
   },
   "eslintConfig": {
     "extends": [
