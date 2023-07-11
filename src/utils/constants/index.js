@@ -2,7 +2,7 @@
  * URLs
  */
 export const SERVER_URL_LOCAL = "http://localhost:5001/api/v1";
-export const SERVER_URL_HEROKU = "https://api-documenter-server.up.railway.app/api/v1";
+export const SERVER_URL_HEROKU = "https://api-documenter-server-bp2sirryrq-uc.a.run.app/api/v1";
 
 /*
  * REGEXs
