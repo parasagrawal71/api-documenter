@@ -1,14 +1,14 @@
 import axios from "axios";
 
 // IMPORTS //
-import { SERVER_URL_LOCAL, SERVER_URL_HEROKU } from "utils/constants";
+import { SERVER_URL_LOCAL, SERVER_URL_PROD } from "utils/constants";
 import { getUrlParams } from "utils/functions";
 import { readCookie } from "utils/cookie";
 import { GET, POST, PUT, DELETE, PATCH } from "./httpConstants";
 import handleError from "./handleError";
 
 const request = axios.create({
-  baseURL: window.location.origin?.includes("localhost") ? SERVER_URL_LOCAL : SERVER_URL_HEROKU,
+  baseURL: window.location.origin?.includes("localhost") ? SERVER_URL_LOCAL : SERVER_URL_PROD,
 });
 
 const apiService = (apiResource, body, { params, headers, ...restConfig } = {}) => {
